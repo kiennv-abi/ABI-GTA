@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "playcanvas": "^1.60.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1",
+    "gh-pages": "^5.0.0"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "esbuild-loader": "^2.19.0",
+    "html-webpack-plugin": "^5.5.0",
+    "clean-webpack-plugin": "^4.0.0"
+  },
+  "name": "abi-gta",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack serve --env env=dev --open",
+    "build": "webpack --env env=preview",
+    "deploy": "gh-pages -d dist"
+  },
+  "author": "Kien Ngueyn",
+  "license": "ISC",
+  "description": ""
+}

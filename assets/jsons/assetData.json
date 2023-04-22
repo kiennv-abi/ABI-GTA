@@ -1,0 +1,262 @@
+[
+  {
+    "key": "background",
+    "url": "../../assets/sprites/background.png",
+    "type": "sprite"
+  },
+
+  {
+    "key": "bgSelectCar",
+    "url": "../../assets/sprites/bg_selectCar.png",
+    "type": "sprite"
+  },
+
+  {
+    "key": "borderActive",
+    "url": "../../assets/sprites/Border_Icon_Car.png",
+    "type": "sprite"
+  },
+
+  {
+    "key": "buttonSelect",
+    "url": "../../assets/sprites/buttonSelect.png",
+    "type": "sprite"
+  },
+  {
+    "key": "iconLargeCar",
+    "url": "../../assets/sprites/iconLargeCar.png",
+    "type": "texture"
+  },
+  {
+    "key": "iconSmallCar",
+    "url": "../../assets/sprites/iconSmallCar.png",
+    "type": "texture"
+  },
+  {
+    "key": "PolygonCity_Texture_01_A",
+    "url": "../../assets/textures/PolygonCity_Texture_01_A.png",
+    "type": "texture"
+  },
+  {
+    "key": "PolygonCity_Road_01",
+    "url": "../../assets/textures/PolygonCity_Road_01.png",
+    "type": "texture"
+  },
+  {
+    "key": "texCarBlue",
+    "url": "../../assets/textures/texCarLarge.png",
+    "type": "texture"
+  },
+  {
+    "key": "texCarRed",
+    "url": "../../assets/textures/texCarSmall.png",
+    "type": "texture"
+  },
+  {
+    "key": "texCarWhite",
+    "url": "../../assets/textures/tex_car_white.png",
+    "type": "texture"
+  },
+  {
+    "key": "model_car_large",
+    "url": "../../assets/models/model_car_large.glb",
+    "type": "model"
+  },
+  {
+    "key": "model_car_small",
+    "url": "../../assets/models/model_car_small.glb",
+    "type": "model"
+  },
+  {
+    "key": "icon_small_car",
+    "url": "../../assets/sprites/iconSmallCar.png",
+    "type": "sprite"
+  },
+  {
+    "key": "icon_large_car",
+    "url": "../../assets/sprites/iconLargeCar.png",
+    "type": "sprite"
+  },
+  {
+    "key": "CityHall",
+    "url": "../../assets/models/CityHall.glb",
+    "type": "model"
+  },
+  {
+    "key": "Office_Round01",
+    "url": "../../assets/models/Office_Round01.glb",
+    "type": "model"
+  },
+  {
+    "key": "OfficeOld_Large_Base",
+    "url": "../../assets/models/OfficeOld_Large_Base.glb",
+    "type": "model"
+  },
+  {
+    "key": "OfficeSquare",
+    "url": "../../assets/models/OfficeSquare.glb",
+    "type": "model"
+  },
+  {
+    "key": "Road_Crossing_01",
+    "url": "../../assets/models/Road_Crossing_01.glb",
+    "type": "model"
+  },
+  {
+    "key": "Road01",
+    "url": "../../assets/models/Road01.glb",
+    "type": "model"
+  },
+  {
+    "key": "RoadVertical",
+    "url": "../../assets/models/Road01.glb",
+    "type": "model"
+  },
+  {
+    "key": "Side_Walk_1",
+    "url": "../../assets/models/Side_Walk_1.glb",
+    "type": "model"
+  },
+  {
+    "key": "Side_Walk_2",
+    "url": "../../assets/models/Side_Walk_2.glb",
+    "type": "model"
+  },
+  {
+    "key": "SideWalK_Dip_Corner",
+    "url": "../../assets/models/SideWalK_Dip_Corner.glb",
+    "type": "model"
+  },
+  {
+    "key": "Station_01",
+    "url": "../../assets/models/Station_01.glb",
+    "type": "model"
+  },
+  {
+    "key": "RoadCrossing",
+    "url": "../../assets/models/RoadCrossing.glb",
+    "type": "model"
+  },
+  {
+    "key": "leftArrow",
+    "url": "../../assets/sprites/leftArrow.png",
+    "type": "sprite"
+  },
+  {
+    "key": "rightArrow",
+    "url": "../../assets/sprites/rightArrow.png",
+    "type": "sprite"
+  },
+  {
+    "key": "buttonDelete",
+    "url": "../../assets/sprites/buttonDelete.png",
+    "type": "sprite"
+  },
+  {
+    "key": "iconOfficeRound",
+    "url": "../../assets/sprites/iconOfficeRound.png",
+    "type": "sprite"
+  },
+  {
+    "key": "iconOfficeSquare",
+    "url": "../../assets/sprites/iconOfficeSquare.png",
+    "type": "sprite"
+  },
+  {
+    "key": "iconCityHall",
+    "url": "../../assets/sprites/iconCityHall.png",
+    "type": "sprite"
+  },
+  {
+    "key": "iconStation",
+    "url": "../../assets/sprites/iconStation.png",
+    "type": "sprite"
+  },
+  {
+    "key": "iconOfficeOld_Large_Base",
+    "url": "../../assets/../assets/sprites/iconOfficeOld_Large_Base.png",
+    "type": "sprite"
+  },
+  {
+    "key": "tex_skybox_back",
+    "url": "../../assets/textures/tex_skybox_back.jpg",
+    "type": "texture"
+  },
+  {
+    "key": "tex_skybox_down",
+    "url": "../../assets/textures/tex_skybox_down.jpg",
+    "type": "texture"
+  },
+  {
+    "key": "tex_skybox_front",
+    "url": "../../assets/textures/tex_skybox_front.jpg",
+    "type": "texture"
+  },
+  {
+    "key": "tex_skybox_left",
+    "url": "../../assets/textures/tex_skybox_left.jpg",
+    "type": "texture"
+  },
+  {
+    "key": "tex_skybox_right",
+    "url": "../../assets/textures/tex_skybox_right.jpg",
+    "type": "texture"
+  },
+  {
+    "key": "tex_skybox_up",
+    "url": "../../assets/textures/tex_skybox_up.jpg",
+    "type": "texture"
+  },
+  {
+    "key": "iconPlus",
+    "url": "../../assets/sprites/iconPlus.png",
+    "type": "sprite"
+  },
+  {
+    "key": "iconRoadHorizontal",
+    "url": "../../assets/sprites/iconRoadHorizontal.png",
+    "type": "sprite"
+  },
+  {
+    "key": "iconRoadVertical",
+    "url": "../../assets/sprites/iconRoadVertical.png",
+    "type": "sprite"
+  },
+  {
+    "key": "largeCar",
+    "url": "../../assets/models/largeCar.glb",
+    "type": "model"
+  },
+  {
+    "key": "largeCarWheel",
+    "url": "../../assets/models/largeCarWheel.glb",
+    "type": "model"
+  },
+
+  {
+    "key": "smallCar",
+    "url": "../../assets/models/smallCar.glb",
+    "type": "model"
+  },
+  {
+    "key": "map1",
+    "url": "../../assets/sprites/map1.png",
+    "type": "sprite"
+  },
+  {
+    "key": "map2",
+    "url": "../../assets/sprites/map2.png",
+    "type": "sprite"
+  },
+  {
+    "key": "map3",
+    "url": "../../assets/sprites/map3.png",
+    "type": "sprite"
+  },
+  {
+    "key": "buttonDownload",
+    "url": "../../assets/sprites/buttonDownload.png",
+    "type": "sprite"
+  }
+]
+
