@@ -1,7 +1,7 @@
 import { BLEND_ADDITIVE, BLEND_NORMAL, StandardMaterial, Texture, Vec3 } from "playcanvas";
-import { AssetLoader } from "./assetLoader";
-import { Game } from "../game";
-import { Util } from "../helpers/util";
+import { AssetLoader } from "../../assetLoader/assetLoader";
+import { Game } from "../../game";
+import { Util } from "../../helpers/util";
 
 export class AssetConfigurator {
   static config() {
@@ -48,9 +48,9 @@ export class AssetConfigurator {
     let matGlass = new StandardMaterial();
     matGlass.diffuse = Util.createColor(50, 82, 82);
     matGlass.blendType = BLEND_NORMAL;
-    matGlass.opacity = 0.3;
-    this.setModelMaterial("model_car_muscle", matGlass, 1);
-    this.setModelMaterialWithIndexes("model_car_muscle", mat, [0, 2, 3]);
+    matGlass.opacity = 0;
+    this.setModelMaterialWithIndexes("model_car_muscle", mat, [1, 2, 3]);
+    this.setModelMaterial("model_car_muscle", matGlass, 0);
   }
 
   static _configSkyboxCubemap() {

@@ -13,7 +13,8 @@ import { Time } from "./template/systems/time/time";
 import { Tween } from "./template/systems/tween/tween";
 import { Application, ElementInput, Keyboard, Mouse, TouchDevice, FILLMODE_FILL_WINDOW, RESOLUTION_AUTO, WasmModule } from "playcanvas";
 import "./template/extensions/index";
-import { AssetConfigurator } from "./assetLoader/assetConfigtor";
+import { AssetConfigurator } from "./abi-gta/configtor/assetConfigtor";
+import { Configurator } from "./abi-gta/configtor/configtor";
 export class Game {
   
   static init() {
@@ -53,7 +54,7 @@ export class Game {
     GameStateManager.init(GameState.Intro);
     Time.init(this.app);
     Tween.init(this.app);
-    AssetConfigurator.config();
+    Configurator.config(this.app);
   }
 
   static create() {

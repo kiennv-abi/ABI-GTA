@@ -1,4 +1,5 @@
-[{"key":"tex_car_police","url":"../../assets/textures/tex_car_police.png","type":"texture"},
+[{"key":"helipad-env-atlas","url":"../../assets/textures/helipad-env-atlas.png","type":"texture"},
+{"key":"tex_car_police","url":"../../assets/textures/tex_car_police.png","type":"texture"},
 {"key":"tex_emissive_01","url":"../../assets/textures/tex_emissive_01.png","type":"texture"},
 {"key":"model_car_muscle","url":"../../assets/models/model_car_muscle.glb","type":"model"},
 {"key":"model_car_police","url":"../../assets/models/model_car_police.glb","type":"model"},
