@@ -1,6 +1,5 @@
 import { Entity, Vec3 } from "playcanvas";
 import { Car, CarType } from "./car";
-import { Rotate } from "../../scripts/components/rotate";
 import { AssetLoader } from "../../../assetLoader/assetLoader";
 
 export class CarViewer extends Entity{
@@ -13,10 +12,6 @@ export class CarViewer extends Entity{
     this.modelCar = new Car("model_car_police", "model_car_wheel");
     this.addChild(this.modelCar);
     this.modelCar.configWheel(1.609, -1.262, 0.659, -0.659, 0.384);
-
-    this.addScript(Rotate, {
-      speed: new Vec3(0, 90, 0),
-    });
     this.changeCar(CarType.MuscleCar);
   }
   
@@ -28,7 +23,7 @@ export class CarViewer extends Entity{
 
     } else {
       this.modelCar.carModel.model.asset = AssetLoader.getAssetByKey("model_car_muscle");
-      this.modelCar.configWheel(-1.906, 1.373, 0.8, -0.8, 0.384);
+      this.modelCar.configWheel(-1.373, 1.906, 0.8, -0.8, 0.384);
     }
   }
 }

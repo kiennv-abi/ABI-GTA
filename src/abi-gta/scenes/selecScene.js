@@ -7,6 +7,7 @@ import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarSc
 export class SelectScene extends Scene{
   constructor() {
     super(GameConstant.SCENE_SELECT);
+    this.currTime = 0;
   }
 
   create() { 
@@ -51,6 +52,17 @@ export class SelectScene extends Scene{
     this.directionalLight.setLocalEulerAngles(45, 135, 0);
   }
 
+  update(dt) {
+    super.update(dt);
+    this.currTime += dt;
+    this.mainCamera.setLocalPosition(
+      10 * Math.sin(this.currTime * 0.1),
+      5,
+      10 * Math.cos(this.currTime * 0.1)
+    );
+    this.mainCamera.lookAt(this.carViewer.getPosition());
+  }
+
   _initCamera() {
     this.mainCamera = new Entity();
     this.addChild(this.mainCamera);
@@ -60,6 +72,15 @@ export class SelectScene extends Scene{
       fov: 45,
       nearClip: 0.1,
     });
+    this.mainCamera.addComponent("script");
+    this.mainCamera.script.create("orbitCamera", {
+      attributes: {
+        inertiaFactor: 0.3, // Override default of 0 (no inertia)
+      },
+    });
+    
+    this.mainCamera.script.create("orbitCameraInputMouse");
+    this.mainCamera.script.create("orbitCameraInputTouch");
     this.mainCamera.setLocalPosition(11.56, 10, 0);
     this.mainCamera.setLocalEulerAngles(-44.2, 90, 0);
   }
