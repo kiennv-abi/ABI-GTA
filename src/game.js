@@ -1,28 +1,36 @@
-import * as pc from "playcanvas";
 import { ActionPhysicsReset } from "../assets/libs/action-physics-reset";
 import { RenderPhysics } from "../assets/libs/render-physics";
 import { TrackingCamera } from "../assets/libs/tracking-camera";
 import { vehicleScript } from "../assets/libs/vehicle";
-import {loadObitCameraPlugin} from  "../src/orbit-camera";
+import { loadObitCameraPlugin } from  "../src/orbit-camera";
 import { AssetLoader } from "./assetLoader/assetLoader";
-
+import { SceneManager } from "./template/scene/sceneManager";
+import { SelectScene } from "./abi-gta/scenes/selecScene";
+import { GameConstant } from "./gameConstant";
+import { InputManager } from "./template/systems/input/inputManager";
+import { GameState, GameStateManager } from "./template/gameStateManager";
+import { Time } from "./template/systems/time/time";
+import { Tween } from "./template/systems/tween/tween";
+import { Application, ElementInput, Keyboard, Mouse, TouchDevice, FILLMODE_FILL_WINDOW, RESOLUTION_AUTO, WasmModule } from "playcanvas";
+import "./template/extensions/index";
+import { AssetConfigurator } from "./assetLoader/assetConfigtor";
 export class Game {
   
   static init() {
     const canvas = document.createElement("canvas");
     document.body.appendChild(canvas);
-    this.app = new pc.Application(canvas, {
-      elementInput: new pc.ElementInput(canvas),
-      keyboard: new pc.Keyboard(window),
-      mouse: new pc.Mouse(canvas),
-      touch: new pc.TouchDevice(canvas),
+    this.app = new Application(canvas, {
+      elementInput: new ElementInput(canvas),
+      keyboard: new Keyboard(window),
+      mouse: new Mouse(canvas),
+      touch: new TouchDevice(canvas),
     });
-    this.app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW);
-    this.app.setCanvasResolution(pc.RESOLUTION_AUTO);
+    this.app.setCanvasFillMode(FILLMODE_FILL_WINDOW);
+    this.app.setCanvasResolution(RESOLUTION_AUTO);
     this.app.graphicsDevice.maxPixelRatio = window.devicePixelRatio;
     window.addEventListener("resize", () => this.app.resizeCanvas);
 
-    pc.WasmModule.setConfig("Ammo", {
+    WasmModule.setConfig("Ammo", {
       glueUrl: "../assets/libs/ammo.wasm.js",
       wasmUrl: "../assets/libs/ammo.wasm.wasm",
       fallbackUrl: "../assets/libs/ammo.js",
@@ -32,16 +40,38 @@ export class Game {
     RenderPhysics();
     TrackingCamera();
     ActionPhysicsReset();
-    pc.WasmModule.getInstance("Ammo", () => {
+    WasmModule.getInstance("Ammo", () => {
       AssetLoader.loadAssets(this.app, () => {
-        this.app.start();
-        this.app.on("update", this.update, this);
+        this.load();
+        this.create();
       });
     });
   }
 
+  static load() {
+    InputManager.init(this.app);
+    GameStateManager.init(GameState.Intro);
+    Time.init(this.app);
+    Tween.init(this.app);
+    AssetConfigurator.config();
+  }
+
+  static create() {
+    this.gameCreated = true;
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.app.graphicsDevice.maxPixelRatio = window.devicePixelRatio;
+    this.app.resizeCanvas(this.width, this.height);
+    SceneManager.init([
+      new SelectScene(),
+    ]);
+    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_SELECT));
+    this.app.start();
+    this.app.on("update", this.update, this);
+  }
+
   static update(dt) {
-    
+    SceneManager.update(Time.dt);
   }
 
   static resize(screenSize) {

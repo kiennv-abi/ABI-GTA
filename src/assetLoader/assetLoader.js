@@ -102,6 +102,10 @@ export class AssetLoader {
 
   static _loadTextures(onLoad) {
     this.onLoadTextures = onLoad;
+    if (this.textures.length === 0) { 
+      this.onLoadTextures && this.onLoadTextures();
+      return;
+    }
     for (let index = 0; index < this.textures.length; index++) {
       this._loadTexture(this.textures[index]);
     }
@@ -129,18 +133,19 @@ export class AssetLoader {
     }
   }
 
-  static createCanvasFont(text, name, fontSize, fontWeight) {
+  static createCanvasFont(name, fontSize, fontWeight) {
     let canvasFontArial = new pc.CanvasFont(this.app, {
       color: new pc.Color(1, 1, 1),
       fontName: name,
       fontSize: fontSize,
       fontWeight: fontWeight,
     });
-    canvasFontArial.createTextures(text);
+    canvasFontArial.createTextures("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?-+/():;%&`'*#=[]\"");
     let fontAsset = new pc.Asset("CanvasFont", "font", {});
     fontAsset.resource = canvasFontArial;
     fontAsset.loaded = true;
     this.app.assets.add(fontAsset);
+    this.assets.push(fontAsset);
     return fontAsset;
   }
 

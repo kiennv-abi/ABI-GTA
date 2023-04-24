@@ -45,13 +45,5 @@ export class GameStateManager {
 }
 
 export const GameState = {
-  MainMenu     : "mainmenu",
-  Playing      : "playing",
-  Paused       : "paused",
-  Lose         : "lose",
-  Win          : "win",
-  GameOver     : "gameover",
-  Tutorial     : "tutorial",
-  AutoPlay     : "autoplay",
-  AutoPlayOver : "autoplayover",
+  Intro: "intro",
 };
