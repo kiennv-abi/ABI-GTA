@@ -18,6 +18,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "data": "node ./scripts/assetReader.js",
     "start": "webpack serve --env env=dev --open",
     "build": "webpack --env env=preview",
     "deploy": "gh-pages -d dist"
