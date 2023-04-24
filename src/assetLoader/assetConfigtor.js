@@ -1,72 +1,59 @@
-import { BLEND_NORMAL, StandardMaterial, Texture } from "playcanvas";
+import { BLEND_ADDITIVE, BLEND_NORMAL, StandardMaterial, Texture, Vec3 } from "playcanvas";
 import { AssetLoader } from "./assetLoader";
+import { Game } from "../game";
+import { Util } from "../helpers/util";
 
 export class AssetConfigurator {
-  static config(app) {
-    this._configObject("PolygonCity_Texture_01_A", "CityHall");
-    this._configObject("PolygonCity_Texture_01_A", "Office_Round01");
-    this._configObject("PolygonCity_Texture_01_A", "OfficeOld_Large_Base");
-    this._configObject("PolygonCity_Texture_01_A", "OfficeSquare");
-    this._configObject("PolygonCity_Texture_01_A", "Side_Walk_2");
-    this._configObject("PolygonCity_Texture_01_A", "Side_Walk_1");
-    this._configObject("PolygonCity_Texture_01_A", "SideWalK_Dip_Corner");
-    this._configObject("PolygonCity_Texture_01_A", "Station_01");
-    this._configObject("PolygonCity_Road_01", "Road01");
-    this._configObject("PolygonCity_Road_01", "RoadCrossing");
-    this._configObject("PolygonCity_Road_01", "RoadVertical");
-    this._configObject("PolygonCity_Road_01", "Road_Crossing_01");
-    this._configObject("texCarBlue", "model_car_large");
-    this._configObject("texCarBlue", "largeCar");
-    this._configObject("texCarBlue", "largeCarWheel");
-    this._configObject("texCarRed", "smallCar");
-    this._configCarMaterial();
-    this._configSkyboxCubemap(app);
+  static config() {
+    this._configPoliceCar();
+    this._configMuscleCar();
+    this._configWheel();
+    this._createCanvasFont();
+    // this._configSkyboxCubemap();
   }
 
-  static _configObject(nameMaterial, keyModel) {
-    let material = new StandardMaterial();
-    material.diffuseMap = AssetLoader.getAssetByKey(nameMaterial).resource;
-    material.update();
-
-    let model = AssetLoader.getAssetByKey(keyModel).resource;
-    model.meshInstances.forEach((mesh) => {
-      mesh.material = material;
-    });
+  static _createCanvasFont() { 
+     AssetLoader.createCanvasFont("Arial", 106, "bold");
   }
 
-  static _configCarMaterial() {
-    let redCarMaterial = new pc.StandardMaterial();
-    let redTex = AssetLoader.getAssetByKey("texCarRed");
-    redCarMaterial.diffuseMap = redTex;
-    AssetLoader.registerAsset(redCarMaterial, "material_red_car", "material");
+  static _configWheel() {
+    let mat = new StandardMaterial();
+    let tex = AssetLoader.getAssetByKey("tex_car_police").resource;
+    let texEmissive = AssetLoader.getAssetByKey("tex_emissive_01").resource;
+    mat.diffuseMap = tex;
+    mat.emissiveMap = texEmissive;
+    this.setModelMaterial("model_car_wheel", mat);
   }
 
-  static materialGreen() {
-    let material = new StandardMaterial();
-    material.diffuseMap = AssetLoader.getAssetByKey(
-      "PolygonCity_Road_01"
-    ).resource;
-    material.blendType = BLEND_NORMAL;
-    material.diffuseTint = true;
-    material.diffuse.set(7 / 255, 185 / 255, 0);
-    material.opacity = 0.3;
-    material.update();
-    return material;
+  static _configPoliceCar() {
+    let mat = new StandardMaterial();
+    let tex = AssetLoader.getAssetByKey("tex_car_police").resource;
+    let texEmissive = AssetLoader.getAssetByKey("tex_emissive_01").resource;
+    mat.diffuseMap = tex;
+    mat.emissiveMap = texEmissive;
+    let matGlass = new StandardMaterial();
+    matGlass.diffuse = Util.createColor(50, 82, 82);
+    matGlass.blendType = BLEND_NORMAL;
+    matGlass.opacity = 0.3;
+    this.setModelMaterial("model_car_police", matGlass, 1);
+    this.setModelMaterialWithIndexes("model_car_police", mat, [0, 2, 3]);
   }
 
-  static materialRed() {
-    let material = new StandardMaterial();
-    material.diffuseMap = AssetLoader.getAssetByKey(
-      "PolygonCity_Road_01"
-    ).resource;
-    material.diffuseTint = true;
-    material.diffuse.set(182 / 255, 0, 0);
-    material.opacity = 0.3;
-    material.update();
-    return material;
+  static _configMuscleCar() {
+    let mat = new StandardMaterial();
+    let tex = AssetLoader.getAssetByKey("tex_car_police").resource;
+    let texEmissive = AssetLoader.getAssetByKey("tex_emissive_01").resource;
+    mat.diffuseMap = tex;
+    mat.emissiveMap = texEmissive;
+    let matGlass = new StandardMaterial();
+    matGlass.diffuse = Util.createColor(50, 82, 82);
+    matGlass.blendType = BLEND_NORMAL;
+    matGlass.opacity = 0.3;
+    this.setModelMaterial("model_car_muscle", matGlass, 1);
+    this.setModelMaterialWithIndexes("model_car_muscle", mat, [0, 2, 3]);
   }
 
-  static _configSkyboxCubemap(app) {
+  static _configSkyboxCubemap() {
     let textures = [
       AssetLoader.getAssetByKey("tex_skybox_right"),
       AssetLoader.getAssetByKey("tex_skybox_left"),
@@ -75,10 +62,93 @@ export class AssetConfigurator {
       AssetLoader.getAssetByKey("tex_skybox_front"),
       AssetLoader.getAssetByKey("tex_skybox_back"),
     ];
-    let cmSkybox = new Texture(app.graphicsDevice, {
+    let cmSkybox = new Texture(Game.app.graphicsDevice, {
       cubemap: true,
     });
     cmSkybox.setSource(textures.map((texture) => texture.resource.getSource()));
     AssetLoader.registerAsset(cmSkybox, "cm_skybox", "cubemap");
+  }
+
+  /**
+   * @param {pc.Texture} texture
+   */
+  static setTextureFiltering(texture, filter = FILTER_NEAREST, address = ADDRESS_REPEAT) {
+    texture.minFilter = filter;
+    texture.magFilter = filter;
+    texture.addressU = address;
+    texture.addressV = address;
+  }
+
+  static setSpriteSlice(spriteAsset, border = new Vec4(), pixelsPerUnit = 1) {
+    let asset = AssetLoader.getAssetByKey(spriteAsset);
+    asset.resource.renderMode = SPRITE_RENDERMODE_SLICED;
+    this.setSpriteBorder(asset, border.x, border.y, border.z, border.w);
+    this.setSpritePixelsPerUnit(spriteAsset, pixelsPerUnit);
+  }
+
+  static setSpriteBorder(spriteAsset, left = 0, bottom = 0, right = 0, top = 0) {
+    let sprite = AssetLoader.getAssetByKey(spriteAsset).resource;
+    sprite.atlas.frames[sprite.frameKeys[0]].border.set(left, bottom, right, top);
+  }
+
+  static setSpritePixelsPerUnit(spriteAsset, pixelsPerUnit = 100) {
+    let sprite = AssetLoader.getAssetByKey(spriteAsset).resource;
+    sprite.pixelsPerUnit = pixelsPerUnit;
+  }
+
+  static setModelTexture(modelAsset, textureAsset, index = 0) {
+    let material = this.getMaterial(modelAsset, index);
+    let texture = AssetLoader.getAssetByKey(textureAsset);
+    material.diffuseMap = texture.resource;
+  }
+
+  static setModelDiffuse(modelAsset, color, index = 0) {
+    let material = this.getMaterial(modelAsset, index);
+    material.diffuse.copy(color);
+    material.diffuseTint = true;
+  }
+
+  static setModelMaterial(modelAsset, material, index = 0) {
+    let model = AssetLoader.getAssetByKey(modelAsset).resource;
+    model.meshInstances[index].material = material;
+  }
+
+  static setModelMaterialInRange(modelAsset, material, startIndex, endIndex) {
+    for (var i = startIndex; i <= endIndex; i++) {
+      this.setModelMaterial(modelAsset, material, i);
+    }
+  }
+
+  static setModelMaterialWithIndexes(modelAsset, material, indexes = []) {
+    indexes.forEach((index) => {
+      this.setModelMaterial(modelAsset, material, index);
+    });
+  }
+
+  static createColorMaterial(r = 255, g = 255, b = 255, a = 1) {
+    let material = new StandardMaterial();
+    if (typeof r === "object") {
+      material.diffuse = r;
+    }
+    else {
+      material.diffuse = Util.createColor(r, g, b, a);
+    }
+    return material;
+  }
+
+  /**
+   * @param {string} modelName
+   * @returns {pc.StandardMaterial}
+   */
+  static getMaterial(modelName, index = 0) {
+    let model = AssetLoader.getAssetByKey(modelName);
+    let material = model.resource.meshInstances[index].material;
+
+    if (material.id === 1) { // default material
+      material = new StandardMaterial();
+      model.resource.meshInstances[index].material = material;
+    }
+
+    return material;
   }
 }
