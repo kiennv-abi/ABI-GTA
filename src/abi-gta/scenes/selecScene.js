@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL } from "playcanvas";
+import { BLEND_NORMAL, Color, Entity, LIGHTTYPE_DIRECTIONAL, StandardMaterial } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { CarViewer } from "../objects/car/carViewer";
@@ -26,12 +26,25 @@ export class SelectScene extends Scene{
   _initialize() {
     this._initLight();
     this._initCamera();
+    this._initGround();
     this._initCarViewer();
   }
 
   _initCarViewer() {
     this.carViewer = new CarViewer();
     this.addChild(this.carViewer);
+  }
+
+  _initGround() {
+    this.ground = new Entity();
+    this.addChild(this.ground);
+    this.ground.addComponent("model", { type: "plane" });
+    this.ground.setLocalScale(8, 1, 8);
+    let mat = new StandardMaterial();
+    mat.blendType = BLEND_NORMAL;
+    mat.diffuse = new Color(0.5, 0.5, 0.5);
+    mat.opacity = 1;
+    this.ground.model.meshInstances[0].material = mat;
   }
 
   _initLight() {
