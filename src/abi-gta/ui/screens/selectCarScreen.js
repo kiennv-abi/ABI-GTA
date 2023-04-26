@@ -1,14 +1,15 @@
-import { Color, ELEMENTTYPE_GROUP, ELEMENTTYPE_IMAGE, ELEMENTTYPE_TEXT, Entity, Texture, Vec2, Vec3, Vec4 } from "playcanvas";
+import { Color, ELEMENTTYPE_GROUP, ELEMENTTYPE_IMAGE, ELEMENTTYPE_TEXT, Entity, Texture, Vec2, Vec3, Vec4, log } from "playcanvas";
 import { UIScreen } from "../../../template/ui/uiScreen";
 import { Button } from "../core/button";
 import { GameConstant } from "../../../gameConstant";
-import { CarSpecifics, CarType } from "../../objects/car/car";
+import { CarColorCode, CarType } from "../../objects/car/car";
 import { AssetLoader } from "../../../assetLoader/assetLoader";
 import { ObjectFactory } from "../../../template/objects/objectFactory";
 import { Util } from "../../../helpers/util";
 
 export const SelectCarScreenEvent = Object.freeze({
   ButtonClicked: "clicked",
+  ButtonColorClicked: "buttonColor:clicked",
 });
 
 export class SelectCarScreen extends UIScreen{
@@ -25,7 +26,6 @@ export class SelectCarScreen extends UIScreen{
       this.fire(SelectCarScreenEvent.ButtonClicked, CarType.MuscleCar);
     });
 
-
     this.button2 = new Button({
       anchor: new Vec4(0.7, 0.2, 0.7, 0.2),
       pivot: new Vec2(0.5, 0.5),
@@ -37,7 +37,21 @@ export class SelectCarScreen extends UIScreen{
       this.fire(SelectCarScreenEvent.ButtonClicked, CarType.PoliceCar);
     });
 
+    this.colorSelected = 1;
     this._initPanelDetail();
+    this._initColorButtons();
+  }
+
+  _initColorButtons() {
+    this.options = [];
+    this.redBtn = this._createColorButton(Util.createColor(255, 0, 0), new Vec3(30, -30, 0), CarColorCode.Red);
+    this.panelBg.addChild(this.redBtn);
+
+    this.greenBtn = this._createColorButton(Util.createColor(0, 255, 0), new Vec3(80, -30, 0), CarColorCode.Green);
+    this.panelBg.addChild(this.greenBtn);
+
+    this.blueBtn = this._createColorButton(Util.createColor(0, 0, 255), new Vec3(130, -30, 0), CarColorCode.Blue);
+    this.panelBg.addChild(this.blueBtn);
   }
   
   updateSpecifics(data) {
@@ -46,6 +60,9 @@ export class SelectCarScreen extends UIScreen{
     this.topSpeedSpec.updateValue(data.TopSpeed.value, data.TopSpeed.maxValue, data.TopSpeed.currentValue);
     this.handlingSpec.updateValue(data.Handling.value, data.Handling.maxValue, data.Handling.currentValue);
     this.nitroSpec.updateValue(data.Nitro.value, data.Nitro.maxValue, data.Nitro.currentValue);
+    this.redBtn.element.color = data.Colors.Color1;
+    this.greenBtn.element.color = data.Colors.Color2;
+    this.blueBtn.element.color = data.Colors.Color3;
   }
 
   _initPanelDetail() {
@@ -70,6 +87,25 @@ export class SelectCarScreen extends UIScreen{
     this.panelBg.addChild(this.handlingSpec);
     this.nitroSpec = this._createRaceCarSpecs("NITRO", "37 km/h", 250, 200, new Vec3(0, -90, 0));
     this.panelBg.addChild(this.nitroSpec);
+  }
+
+  _createColorButton(color, pos = new Vec3(), type) {
+    let colorButton = ObjectFactory.createImageElement("spr_dark", {
+      height: 30,
+      width: 30,
+      opacity: 1,
+      anchor: new Vec4(0, 1, 0, 1),
+      pivot: new Vec2(0, 1),
+    });
+    colorButton.element.useInput = true;
+    colorButton.element.on("click", () => {
+      this.fire(SelectCarScreenEvent.ButtonColorClicked, type);
+      this.colorSelected = type;
+    });
+    colorButton.element.color = color;
+    colorButton.setLocalPosition(pos);
+    this.options.push(colorButton);
+    return colorButton;
   }
 
   _createText(text, fontSize = 18, pos = new Vec3()) { 

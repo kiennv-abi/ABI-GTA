@@ -1,15 +1,13 @@
-import { BLEND_ADDITIVE, BLEND_NORMAL, StandardMaterial, Texture, Vec3 } from "playcanvas";
+import { BLEND_NORMAL, StandardMaterial, Texture, Vec3 } from "playcanvas";
 import { AssetLoader } from "../../assetLoader/assetLoader";
 import { Game } from "../../game";
 import { Util } from "../../helpers/util";
 
 export class AssetConfigurator {
   static config() {
-    this._configPoliceCar();
-    this._configMuscleCar();
+    this._configMaterialCars();
     this._configWheel();
     this._createCanvasFont();
-    // this._configSkyboxCubemap();
   }
 
   static _createCanvasFont() { 
@@ -18,39 +16,40 @@ export class AssetConfigurator {
 
   static _configWheel() {
     let mat = new StandardMaterial();
-    let tex = AssetLoader.getAssetByKey("tex_car_police").resource;
+    let tex = AssetLoader.getAssetByKey("tex_car_police_01").resource;
     let texEmissive = AssetLoader.getAssetByKey("tex_emissive_01").resource;
     mat.diffuseMap = tex;
     mat.emissiveMap = texEmissive;
     this.setModelMaterial("model_car_wheel", mat);
   }
 
-  static _configPoliceCar() {
-    let mat = new StandardMaterial();
-    let tex = AssetLoader.getAssetByKey("tex_car_police").resource;
-    let texEmissive = AssetLoader.getAssetByKey("tex_emissive_01").resource;
-    mat.diffuseMap = tex;
-    mat.emissiveMap = texEmissive;
-    let matGlass = new StandardMaterial();
-    matGlass.diffuse = Util.createColor(50, 82, 82);
-    matGlass.blendType = BLEND_NORMAL;
-    matGlass.opacity = 0.3;
-    this.setModelMaterial("model_car_police", matGlass, 1);
-    this.setModelMaterialWithIndexes("model_car_police", mat, [0, 2, 3]);
-  }
-
-  static _configMuscleCar() {
-    let mat = new StandardMaterial();
-    let tex = AssetLoader.getAssetByKey("tex_car_police").resource;
-    let texEmissive = AssetLoader.getAssetByKey("tex_emissive_01").resource;
-    mat.diffuseMap = tex;
-    mat.emissiveMap = texEmissive;
+  static _configMaterialCars() {
     let matGlass = new StandardMaterial();
     matGlass.diffuse = Util.createColor(50, 82, 82);
     matGlass.blendType = BLEND_NORMAL;
     matGlass.opacity = 0;
-    this.setModelMaterialWithIndexes("model_car_muscle", mat, [1, 2, 3]);
-    this.setModelMaterial("model_car_muscle", matGlass, 0);
+    this.setModelMaterial("model_car_muscle", matGlass, 1);
+    this.setModelMaterial("model_car_police", matGlass, 1);
+
+    let texEmissive = AssetLoader.getAssetByKey("tex_emissive_01").resource;
+    let mat = new StandardMaterial();
+    let tex = AssetLoader.getAssetByKey("tex_car_police_01").resource;
+    mat.diffuseMap = tex;
+    mat.emissiveMap = texEmissive;
+
+    let mat02 = new StandardMaterial();
+    let tex02 = AssetLoader.getAssetByKey("tex_car_police_02").resource;
+    mat02.diffuseMap = tex02;
+    mat02.emissiveMap = texEmissive;
+
+    let mat03 = new StandardMaterial();
+    let tex03 = AssetLoader.getAssetByKey("tex_car_police_03").resource;
+    mat03.diffuseMap = tex03;
+    mat03.emissiveMap = texEmissive;
+
+    AssetLoader.registerAsset(mat, "mat_car_1", "material");
+    AssetLoader.registerAsset(mat02, "mat_car_2", "material");
+    AssetLoader.registerAsset(mat03, "mat_car_3", "material");
   }
 
   static _configSkyboxCubemap() {

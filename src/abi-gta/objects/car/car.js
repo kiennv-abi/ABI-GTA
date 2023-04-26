@@ -1,14 +1,26 @@
 import { Entity } from "playcanvas";
 import { AssetLoader } from "../../../assetLoader/assetLoader";
+import { Util } from "../../../helpers/util";
 
 export const CarType = Object.freeze({
   PoliceCar: "Police",
   MuscleCar: "Muscle",
 });
 
+export const CarColorCode = Object.freeze({
+  Red: 1,
+  Green: 2,
+  Blue: 3,
+});
+
 export const CarSpecifics = Object.freeze({
   Muscle: {
     Name: "Muscle Car",
+    Colors: {
+      Color1: Util.createColor(94, 56, 33),
+      Color2: Util.createColor(15, 88, 216),
+      Color3: Util.createColor(110, 16, 98),
+    },
     Acceleration: {
       maxValue: 230,
       currentValue: 190,
@@ -32,6 +44,11 @@ export const CarSpecifics = Object.freeze({
   },
   Police: {
     Name: "Police Car",
+    Colors: {
+      Color1: Util.createColor(80, 95, 120),
+      Color2: Util.createColor(87, 36, 118),
+      Color3: Util.createColor(100, 174, 80),
+    },
     Acceleration: {
       maxValue: 220,
       currentValue: 200,
@@ -62,7 +79,7 @@ export class Car extends Entity{
     this.carModel = new Entity();
     this.carModel.addComponent("model", { asset: AssetLoader.getAssetByKey(modelCar) });
     this.addChild(this.carModel);
-
+    this.colorCodeSelected = 1;
     this.wheelFl = new Entity();
     this.wheelFl.addComponent("model", { asset: AssetLoader.getAssetByKey(modelWheel) });
     this.addChild(this.wheelFl);
@@ -82,5 +99,13 @@ export class Car extends Entity{
     this.wheelFr.setLocalPosition(posRight, posY, posFront);
     this.wheelBl.setLocalPosition(posLeft, posY, posBack);
     this.wheelBr.setLocalPosition(posRight, posY, posBack);
+  }
+
+  changeSkin(colorCode) {
+    let mat = AssetLoader.getAssetByKey(`mat_car_${colorCode}`).resource;
+    this.carModel.model.meshInstances[0].material = mat;
+    this.carModel.model.meshInstances[2].material = mat;
+    this.carModel.model.meshInstances[3].material = mat;
+    this.colorCodeSelected = colorCode;
   }
 }

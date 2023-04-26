@@ -19,9 +19,12 @@ export class SelectScene extends Scene{
     );
     this.ui.setScreenActive(GameConstant.SCREEN_SELECT_CAR);
     this.selectCarScreen = this.ui.getScreen(GameConstant.SCREEN_SELECT_CAR);
-    this.selectCarScreen.on(SelectCarScreenEvent.ButtonClicked, (type) => {
-      this.carViewer.changeCar(type);
+    this.selectCarScreen.on(SelectCarScreenEvent.ButtonClicked, (type, colorCode) => {
+      this.carViewer.changeCar(type, colorCode);
       this.selectCarScreen.updateSpecifics(CarSpecifics[type]);
+    });
+    this.selectCarScreen.on(SelectCarScreenEvent.ButtonColorClicked, (colorCode) => {
+      this.carViewer.changeColor(colorCode);
     });
   }
 
@@ -55,7 +58,7 @@ export class SelectScene extends Scene{
 
     this.directionalLight.addComponent("light", {
       type: LIGHTTYPE_DIRECTIONAL,
-      color: new Color(1, 1, 1),
+      color: new Color(0, 0, 0),
       castShadows: false,
       shadowDistance: 30,
       shadowResolution: 1024,
@@ -71,9 +74,9 @@ export class SelectScene extends Scene{
     super.update(dt);
     this.currTime += dt;
     this.mainCamera.setLocalPosition(
-      10 * Math.sin(this.currTime * 0.1),
-      5,
-      10 * Math.cos(this.currTime * 0.1)
+      5 * Math.sin(this.currTime * 0.1),
+      3,
+      5 * Math.cos(this.currTime * 0.1)
     );
     this.mainCamera.lookAt(this.carViewer.getPosition());
   }
@@ -96,7 +99,7 @@ export class SelectScene extends Scene{
     
     this.mainCamera.script.create("orbitCameraInputMouse");
     this.mainCamera.script.create("orbitCameraInputTouch");
-    this.mainCamera.setLocalPosition(11.56, 10, 0);
+    this.mainCamera.setLocalPosition(11.56, 15, 0);
     this.mainCamera.setLocalEulerAngles(-44.2, 90, 0);
   }
 }
