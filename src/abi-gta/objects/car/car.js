@@ -2,8 +2,58 @@ import { Entity } from "playcanvas";
 import { AssetLoader } from "../../../assetLoader/assetLoader";
 
 export const CarType = Object.freeze({
-  PoliceCar: "police",
-  MuscleCar: "muscle",
+  PoliceCar: "Police",
+  MuscleCar: "Muscle",
+});
+
+export const CarSpecifics = Object.freeze({
+  Muscle: {
+    Name: "Muscle Car",
+    Acceleration: {
+      maxValue: 230,
+      currentValue: 190,
+      value: "2.86 s"
+    },
+    TopSpeed: {
+      maxValue: 200,
+      currentValue: 180,
+      value: "245 km/h"
+    },
+    Handling: {
+      maxValue: 220,
+      currentValue: 170,
+      value: "2.500 Gs"
+    },
+    Nitro: {
+      maxValue: 250,
+      currentValue: 200,
+      value: "55 km/h"
+    }
+  },
+  Police: {
+    Name: "Police Car",
+    Acceleration: {
+      maxValue: 220,
+      currentValue: 200,
+      value: "5.10 s"
+    },
+    TopSpeed: {
+      maxValue: 250,
+      currentValue: 240,
+      value: "344 km/h"
+    },
+    Handling: {
+      maxValue: 210,
+      currentValue: 190,
+      value: "3.2405 Gs"
+    },
+    Nitro: {
+      maxValue: 230,
+      currentValue: 230,
+      value: "70 km/h"
+    }
+  }
+ 
 });
 
 export class Car extends Entity{

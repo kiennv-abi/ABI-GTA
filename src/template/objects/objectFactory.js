@@ -1,7 +1,7 @@
-import { AssetManager } from "../assetManager";
 import { GameBackground } from "./gameBackground";
 import { Util } from "../../helpers/util";
 import { Color, ELEMENTTYPE_GROUP, ELEMENTTYPE_IMAGE, ELEMENTTYPE_TEXT, Entity, Vec2, Vec4 } from "playcanvas";
+import { AssetLoader } from "../../assetLoader/assetLoader";
 
 export class ObjectFactory {
   static createGameBackground() {
@@ -84,7 +84,7 @@ export class ObjectFactory {
   }
 
   static createImageElement(spriteAsset, data = {}) {
-    let asset = AssetManager.find(spriteAsset);
+    let asset = AssetLoader.getAssetByKey(spriteAsset);
     let x = data.x || 0;
     let y = data.y || 0;
     let z = data.z || 0;

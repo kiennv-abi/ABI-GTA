@@ -3,6 +3,7 @@ import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { CarViewer } from "../objects/car/carViewer";
 import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarScreen";
+import { CarSpecifics } from "../objects/car/car";
 
 export class SelectScene extends Scene{
   constructor() {
@@ -20,6 +21,7 @@ export class SelectScene extends Scene{
     this.selectCarScreen = this.ui.getScreen(GameConstant.SCREEN_SELECT_CAR);
     this.selectCarScreen.on(SelectCarScreenEvent.ButtonClicked, (type) => {
       this.carViewer.changeCar(type);
+      this.selectCarScreen.updateSpecifics(CarSpecifics[type]);
     });
   }
 
