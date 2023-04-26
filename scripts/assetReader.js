@@ -7,6 +7,17 @@ const OUTPUT_PATH = path.resolve(__dirname, "../assets/jsons/assetData.json");
 // clear file output
 fs.writeFileSync(OUTPUT_PATH, "");
 
+// read and write all sprites
+console.log("--------------- SPRITES ---------------");
+var allSprite = read("sprites");
+allSprite.forEach((sprite, index) => {
+  fs.appendFileSync(OUTPUT_PATH, JSON.stringify(sprite) + ",\n");
+  console.log("Writing sprites: " + sprite.key);
+  if (index === allSprite.length - 1) {
+    console.log("All sprites passed: " + allSprite.length);
+  }
+});
+
 // read and write all textures
 console.log("--------------- TEXTURES ---------------");
 var allTexture = read("textures");
@@ -42,7 +53,7 @@ function read(type) {
     data.push({
       key: file.split(".")[0],
       url: `../../assets/${type}/${file}`,
-      type: type.split("s")[0],
+      type: type.slice(0, -1), // remove 's' from type
     });
   });
   return data;
