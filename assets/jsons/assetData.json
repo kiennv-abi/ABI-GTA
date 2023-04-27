@@ -1,4 +1,5 @@
 [{"key":"spr_dark","url":"../../assets/sprites/spr_dark.png","type":"sprite"},
+{"key":"spr_stroke","url":"../../assets/sprites/spr_stroke.png","type":"sprite"},
 {"key":"helipad-env-atlas","url":"../../assets/textures/helipad-env-atlas.png","type":"texture"},
 {"key":"tex_car_police_01","url":"../../assets/textures/tex_car_police_01.png","type":"texture"},
 {"key":"tex_car_police_02","url":"../../assets/textures/tex_car_police_02.png","type":"texture"},

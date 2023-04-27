@@ -3,7 +3,7 @@ import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { CarViewer } from "../objects/car/carViewer";
 import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarScreen";
-import { CarSpecifics } from "../objects/car/car";
+import { CarSpecifics, CarType } from "../objects/car/car";
 
 export class SelectScene extends Scene{
   constructor() {
@@ -19,13 +19,14 @@ export class SelectScene extends Scene{
     );
     this.ui.setScreenActive(GameConstant.SCREEN_SELECT_CAR);
     this.selectCarScreen = this.ui.getScreen(GameConstant.SCREEN_SELECT_CAR);
-    this.selectCarScreen.on(SelectCarScreenEvent.ButtonClicked, (type, colorCode) => {
-      this.carViewer.changeCar(type, colorCode);
-      this.selectCarScreen.updateSpecifics(CarSpecifics[type]);
+    this.selectCarScreen.on(SelectCarScreenEvent.ButtonCarClicked, (type) => {
+      let colorCode = this.carViewer.changeCar(type);
+      this.selectCarScreen.updateSpecifics(CarSpecifics[type], colorCode);
     });
-    this.selectCarScreen.on(SelectCarScreenEvent.ButtonColorClicked, (colorCode) => {
-      this.carViewer.changeColor(colorCode);
+    this.selectCarScreen.on(SelectCarScreenEvent.ButtonColorClicked, (carType, colorCode) => {
+      this.carViewer.changeColor(carType, colorCode);
     });
+    this.selectCarScreen.fire(SelectCarScreenEvent.ButtonCarClicked, CarType.MuscleCar);
   }
 
   _initialize() {

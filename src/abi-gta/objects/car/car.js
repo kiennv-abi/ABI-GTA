@@ -79,7 +79,7 @@ export class Car extends Entity{
     this.carModel = new Entity();
     this.carModel.addComponent("model", { asset: AssetLoader.getAssetByKey(modelCar) });
     this.addChild(this.carModel);
-    this.colorCodeSelected = 1;
+    this.colorCode = 1;
     this.wheelFl = new Entity();
     this.wheelFl.addComponent("model", { asset: AssetLoader.getAssetByKey(modelWheel) });
     this.addChild(this.wheelFl);
@@ -106,6 +106,6 @@ export class Car extends Entity{
     this.carModel.model.meshInstances[0].material = mat;
     this.carModel.model.meshInstances[2].material = mat;
     this.carModel.model.meshInstances[3].material = mat;
-    this.colorCodeSelected = colorCode;
+    this.colorCode = colorCode;
   }
 }

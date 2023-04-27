@@ -8,36 +8,37 @@ import { ObjectFactory } from "../../../template/objects/objectFactory";
 import { Util } from "../../../helpers/util";
 
 export const SelectCarScreenEvent = Object.freeze({
-  ButtonClicked: "clicked",
+  ButtonCarClicked: "clicked",
   ButtonColorClicked: "buttonColor:clicked",
 });
 
 export class SelectCarScreen extends UIScreen{
   constructor() {
     super(GameConstant.SCREEN_SELECT_CAR);
-    this.button1 = new Button({
+    this.muscleCarBtn = new Button({
       anchor: new Vec4(0.3, 0.2, 0.3, 0.2),
       pivot: new Vec2(0.5, 0.5),
       margin: new Vec4()
     })
-    this.addChild(this.button1);
-    this.button1.text.element.text = "Muscle";
-    this.button1.button.on("click", () => {
-      this.fire(SelectCarScreenEvent.ButtonClicked, CarType.MuscleCar);
+    this.addChild(this.muscleCarBtn);
+    this.muscleCarBtn.text.element.text = "Muscle";
+    this.muscleCarBtn.button.on("click", () => {
+      this.carSelected = CarType.MuscleCar;
+      this.fire(SelectCarScreenEvent.ButtonCarClicked, CarType.MuscleCar);
     });
 
-    this.button2 = new Button({
+    this.policeCarBtn = new Button({
       anchor: new Vec4(0.7, 0.2, 0.7, 0.2),
       pivot: new Vec2(0.5, 0.5),
       margin: new Vec4()
     })
-    this.addChild(this.button2);
-    this.button2.text.element.text = "Police";
-    this.button2.button.on("click", () => {
-      this.fire(SelectCarScreenEvent.ButtonClicked, CarType.PoliceCar);
+    this.addChild(this.policeCarBtn);
+    this.policeCarBtn.text.element.text = "Police";
+    this.policeCarBtn.button.on("click", () => {
+      this.carSelected = CarType.PoliceCar;
+      this.fire(SelectCarScreenEvent.ButtonCarClicked, CarType.PoliceCar);
     });
-
-    this.colorSelected = 1;
+    this.carSelected = CarType.MuscleCar;
     this._initPanelDetail();
     this._initColorButtons();
   }
@@ -54,7 +55,7 @@ export class SelectCarScreen extends UIScreen{
     this.panelBg.addChild(this.blueBtn);
   }
   
-  updateSpecifics(data) {
+  updateSpecifics(data, colorCode) {
     this.titleText.element.text = data.Name;
     this.accelerationSpec.updateValue(data.Acceleration.value, data.Acceleration.maxValue, data.Acceleration.currentValue);
     this.topSpeedSpec.updateValue(data.TopSpeed.value, data.TopSpeed.maxValue, data.TopSpeed.currentValue);
@@ -63,6 +64,14 @@ export class SelectCarScreen extends UIScreen{
     this.redBtn.element.color = data.Colors.Color1;
     this.greenBtn.element.color = data.Colors.Color2;
     this.blueBtn.element.color = data.Colors.Color3;
+    this.disableAllStrokeOfColor();
+    this.options[colorCode - 1].stroke.enabled = true;
+  }
+
+  disableAllStrokeOfColor() {
+    this.options.forEach(btn => {
+      btn.stroke.enabled = false;
+    });
   }
 
   _initPanelDetail() {
@@ -99,11 +108,21 @@ export class SelectCarScreen extends UIScreen{
     });
     colorButton.element.useInput = true;
     colorButton.element.on("click", () => {
-      this.fire(SelectCarScreenEvent.ButtonColorClicked, type);
+      this.fire(SelectCarScreenEvent.ButtonColorClicked, this.carSelected, type);
+      this.disableAllStrokeOfColor();
+      colorButton.stroke.enabled = true;
       this.colorSelected = type;
     });
     colorButton.element.color = color;
     colorButton.setLocalPosition(pos);
+    let stroke = ObjectFactory.createImageElement("spr_stroke", {
+      height: 30, 
+      width: 30,
+      pivot: new Vec2(0.5, 0.5),
+    });
+    stroke.enabled = false;
+    colorButton.stroke = stroke;
+    colorButton.addChild(stroke);
     this.options.push(colorButton);
     return colorButton;
   }

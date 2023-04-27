@@ -9,25 +9,34 @@ export class CarViewer extends Entity{
   }
 
   _initCar() {
-    this.modelCar = new Car("model_car_police", "model_car_wheel");
-    this.addChild(this.modelCar);
-    this.modelCar.configWheel(1.609, -1.262, 0.659, -0.659, 0.384);
-    this.changeCar(CarType.MuscleCar);
+    this.policeCar = new Car("model_car_police", "model_car_wheel");
+    this.addChild(this.policeCar);
+    this.policeCar.configWheel(1.609, -1.262, 0.659, -0.659, 0.384);
+    this.muscleCar = new Car("model_car_muscle", "model_car_wheel");
+    this.addChild(this.muscleCar);
+    this.muscleCar.configWheel(-1.373, 1.906, 0.8, -0.8, 0.384);
   }
 
-  changeColor(colorCode) {
-    this.modelCar.changeSkin(colorCode);
-  }
-
-  changeCar(type, colorCode = 1) {
+  changeColor(type, colorCode) {
     if (type === CarType.PoliceCar) {
-      this.modelCar.carModel.model.asset = AssetLoader.getAssetByKey("model_car_police");
-      this.modelCar.configWheel(1.609, -1.262, 0.659, -0.659, 0.384);
-
+      this.policeCar.changeSkin(colorCode);
     } else {
-      this.modelCar.carModel.model.asset = AssetLoader.getAssetByKey("model_car_muscle");
-      this.modelCar.configWheel(-1.373, 1.906, 0.8, -0.8, 0.384);
+      this.muscleCar.changeSkin(colorCode);
+     }
+  }
+
+  changeCar(type) {
+    let colorCode = 1;
+    if (type === CarType.PoliceCar) {
+      this.policeCar.enabled = true;
+      this.muscleCar.enabled = false;
+      colorCode = this.policeCar.colorCode;
+    } else {
+      this.policeCar.enabled = false;
+      this.muscleCar.enabled = true;
+      colorCode = this.muscleCar.colorCode;
     }
-    this.changeColor(colorCode);
+    this.changeColor(type, colorCode);
+    return colorCode;
   }
 }
