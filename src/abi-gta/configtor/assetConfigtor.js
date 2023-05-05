@@ -7,11 +7,21 @@ export class AssetConfigurator {
   static config() {
     this._configMaterialCars();
     this._configWheel();
+    this._configSidewalk();
     this._createCanvasFont();
   }
 
   static _createCanvasFont() { 
      AssetLoader.createCanvasFont("Arial", 106, "bold");
+  }
+
+  static _configSidewalk() {
+    let mat = new StandardMaterial();
+    let tex = AssetLoader.getAssetByKey("tex_car_police_01").resource;
+    let texEmissive = AssetLoader.getAssetByKey("tex_emissive_01").resource;
+    mat.diffuseMap = tex;
+    mat.emissiveMap = texEmissive;
+    this.setModelMaterial("model_sidewalk", mat);
   }
 
   static _configWheel() {

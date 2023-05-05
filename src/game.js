@@ -15,6 +15,7 @@ import { Application, ElementInput, Keyboard, Mouse, TouchDevice, FILLMODE_FILL_
 import "./template/extensions/index";
 import { AssetConfigurator } from "./abi-gta/configtor/assetConfigtor";
 import { Configurator } from "./abi-gta/configtor/configtor";
+import { MapEditorScene } from "./abi-gta/scenes/mapEditorScene";
 export class Game {
   
   static init() {
@@ -65,8 +66,9 @@ export class Game {
     this.app.resizeCanvas(this.width, this.height);
     SceneManager.init([
       new SelectScene(),
+      new MapEditorScene(),
     ]);
-    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_SELECT));
+    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
     this.app.start();
     this.app.on("update", this.update, this);
   }

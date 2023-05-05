@@ -451,7 +451,7 @@ OrbitCameraInputMouse.prototype.onMouseDown = function (event) {
       break;
     case pc.MOUSEBUTTON_MIDDLE:
     case pc.MOUSEBUTTON_RIGHT:
-      // this.panButtonDown = true;
+      this.panButtonDown = true;
       break;
   }
 };
