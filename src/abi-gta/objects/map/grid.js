@@ -4,6 +4,9 @@ import { AssetLoader } from "../../../assetLoader/assetLoader";
 export class Grid extends Entity{
   constructor() {
     super("grid");
+    this.col = mapData.mapData.length;
+    this.row = mapData.mapData[0].length;
+    this.gridUnit = mapData.unit;
     this.generateGrid();
   }
 

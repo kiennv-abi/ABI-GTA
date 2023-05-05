@@ -1,5 +1,4 @@
-import { BUTTON_TRANSITION_MODE_TINT, Color, ELEMENTTYPE_GROUP, ELEMENTTYPE_IMAGE, Entity, ORIENTATION_VERTICAL, Vec2, Vec4 } from "playcanvas";
-import { AssetManager } from "../../../../template/assetManager";
+import { BUTTON_TRANSITION_MODE_TINT, Color, ELEMENTTYPE_GROUP, ELEMENTTYPE_IMAGE, Entity, ORIENTATION_HORIZONTAL, ORIENTATION_VERTICAL, Vec2, Vec4 } from "playcanvas";
 
 export class ScrollBar extends Entity {
   constructor(data = {}) {
@@ -14,7 +13,7 @@ export class ScrollBar extends Entity {
     this._initHandle();
 
     this.addComponent("scrollbar", {
-      orientation  : ORIENTATION_VERTICAL,
+      orientation  : ORIENTATION_HORIZONTAL,
       value        : 0,
       handleSize   : 0.5,
       handleEntity : this.handle,
@@ -22,33 +21,29 @@ export class ScrollBar extends Entity {
   }
 
   _initBg() {
-    let spriteAsset = AssetManager.find("spr_scrollbar_bg");
     this.bg = new Entity("bg");
     this.bg.addComponent("element", {
       type        : ELEMENTTYPE_IMAGE,
-      spriteAsset : spriteAsset,
-      anchor      : new Vec4(0.5, 0, 0.5, 1),
+      anchor      : new Vec4(0, 0.5, 1, 0.5),
       pivot       : new Vec2(0.5, 0.5),
-      margin      : new Vec4(0, 8, 0, 8),
+      margin      : new Vec4(8, 0, 8, 0),
       color       : new Color(),
-      opacity     : 0.5,
-      width       : 4,
+      opacity: 1,
+      height: 10,
     });
     this.addChild(this.bg);
   }
 
   _initHandle() {
-    let spriteAsset = AssetManager.find("spr_scrollbar_handle");
     this.handle = new Entity("handler");
 
     this.handle.addComponent("element", {
       type        : ELEMENTTYPE_IMAGE,
-      spriteAsset : spriteAsset,
-      anchor      : new Vec4(0.5, 1, 0.5, 1),
-      pivot       : new Vec2(0.5, 1),
-      margin      : new Vec4(0, 8, 0, 8),
-      width       : 8,
-      height      : 300,
+      anchor      : new Vec4(0, 0.5, 0, 0.5),
+      pivot       : new Vec2(0, 0.5),
+      margin      : new Vec4(8, 0, 8, 0),
+      width       : 10,
+      height      : 8,
       useInput    : true,
     });
     this.addChild(this.handle);

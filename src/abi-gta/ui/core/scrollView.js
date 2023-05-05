@@ -7,9 +7,9 @@ import {
   Vec2,
   Vec4,
 } from "playcanvas";
-import { ObjectFactory } from "../../../objectFactory";
-import { OnEnable } from "../../../scripts/components/onEnable";
 import { ScrollBar } from "./scrollBar";
+import { ObjectFactory } from "../../../template/objects/objectFactory";
+import { OnEnable } from "../../scripts/components/onEnable";
 
 export class ScrollView extends Entity {
   constructor(content, data = {}) {
@@ -34,10 +34,9 @@ export class ScrollView extends Entity {
       mouseWheelSensitivity       : new Vec2(1, 1),
       viewportEntity              : this.viewport,
       contentEntity               : content,
-      horizontal                  : false,
-      vertical                    : true,
-      verticalScrollbarEntity     : this.scrollBar,
-      verticalScrollbarVisibility : SCROLLBAR_VISIBILITY_SHOW_WHEN_REQUIRED,
+      horizontal                    : true,
+      horizontalScrollbarEntity     : this.scrollBar,
+      horizontalScrollbarVisibility : SCROLLBAR_VISIBILITY_SHOW_WHEN_REQUIRED,
     });
 
     this.addScript(OnEnable, {
@@ -69,7 +68,7 @@ export class ScrollView extends Entity {
 
   _initScrollBar() {
     this.scrollBar = new ScrollBar({
-      anchor: new Vec4(1, 0, 1, 1),
+      anchor: new Vec4(0, 0, 1, 0),
     });
     this.addChild(this.scrollBar);
   }

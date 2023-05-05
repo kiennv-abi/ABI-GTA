@@ -10,6 +10,18 @@ export class ObjectFactory {
     return new GameBackground(asset);
   }
 
+  static createUIBackground() {
+    let sprBackground = new Entity("spr_bg");
+    sprBackground.addComponent("element", {
+      type: "image",
+      anchor: new Vec4(0, 0, 1, 1),
+      color: new Vec4(1, 1, 1),
+      margin: new Vec4(),
+      opacity: 1,
+    });
+    return sprBackground;
+  }
+
   static createCamera(name, data) {
     let entity = new Entity(name);
     entity.addComponent("camera", data);

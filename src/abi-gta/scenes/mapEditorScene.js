@@ -2,6 +2,10 @@ import { Color, Entity, LIGHTTYPE_DIRECTIONAL } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
+import { Raycast, RaycastEvent } from "../scripts/raycast/raycast";
+import { InputHandler, InputHandlerEvent } from "../scripts/input/inputHandler";
+import { CastBox } from "../scripts/raycast/castBox";
+import { MapEditorScreen } from "../ui/screens/mapEditorScreen";
 
 export class MapEditorScene extends Scene{
   constructor(){
@@ -10,18 +14,27 @@ export class MapEditorScene extends Scene{
   
   create() {
     super.create()
+    this.ui.addScreens(
+      new MapEditorScreen()
+    );
+    this.mapEditorScreen = this.ui.getScreen(GameConstant.SCREEN_MAP_EDITOR);
+    this.ui.setScreenActive(GameConstant.SCREEN_MAP_EDITOR);
     this._initialize();
   }
 
   _initialize() {
+    this._initInputHandler();
     this._initLight();
     this._initCamera();
+    this._initRaycast();
     this._initMap();
   }
 
   _initMap() {
     this.map = new Map();
     this.addChild(this.map);
+
+    this.raycast
   }
 
   _initCamera() {
@@ -66,5 +79,26 @@ export class MapEditorScene extends Scene{
     this.directionalLight.setLocalEulerAngles(45, 135, 0);
   }
 
+  _initInputHandler() {
+    let inputHandlerEntity = new Entity("input");
+    this.inputHandler = inputHandlerEntity.addScript(InputHandler);
+    // this.inputHandler.enabled = false;
+    this.addChild(inputHandlerEntity);
+  }
 
+  _initRaycast() {
+    let raycasterEntity = new Entity();
+    this.addChild(raycasterEntity);
+
+    this.raycast = raycasterEntity.addScript(Raycast, {
+      camera: this.mainCamera.camera,
+    });
+
+    this.inputHandler.on(InputHandlerEvent.PointerDown, this.raycast.onPointerDown, this.raycast);
+    this.raycast.on(RaycastEvent.Cast, this.onCast, this);
+  }
+
+  onCast(ray) {
+    let intersect = this.map.groundBox.getScript(CastBox).checkIntersects(ray);
+  }
 }

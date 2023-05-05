@@ -87,6 +87,14 @@ export class Game {
       this.app.fire("resize");
     }
   }
+
+  static isPortrait() {
+    return this.width < this.height;
+  }
+
+  static isLandscape() { 
+    return this.width > this.height;
+  }
 }
 
 window.addEventListener("contextmenu", (e) => e.preventDefault());
