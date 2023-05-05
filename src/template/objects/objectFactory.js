@@ -37,23 +37,15 @@ export class ObjectFactory {
     return entity;
   }
 
-  static createBox(materialAsset) {
+  static createBox() {
     let entity = new Entity();
     entity.addComponent("model", { type: "box" });
-    if (materialAsset) {
-      let material = AssetManager.find(materialAsset).resource;
-      entity.model.meshInstances[0].material = material;
-    }
     return entity;
   }
 
-  static createSphere(materialAsset) {
+  static createSphere() {
     let entity = new Entity();
     entity.addComponent("model", { type: "sphere" });
-    if (materialAsset) {
-      let material = AssetManager.find(materialAsset).resource;
-      entity.model.meshInstances[0].material = material;
-    }
     return entity;
   }
 

@@ -10,5 +10,6 @@ export const GameConstant = Object.freeze({
   SCENE_SELECT    : "SelectScene",
   SCENE_MAP_EDITOR    : "MapEditorScene",
 
-  SCREEN_SELECT_CAR  : "SelectCarScreen",
+  SCREEN_SELECT_CAR: "SelectCarScreen",
+  SCREEN_MAP_EDITOR: "MapEditorScreen"
 });
