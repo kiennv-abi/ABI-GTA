@@ -5,10 +5,11 @@ import { Util } from "../../helpers/util";
 
 export class AssetConfigurator {
   static config() {
+    this._createCanvasFont();
     this._configMaterialCars();
     this._configWheel();
     this._configSidewalk();
-    this._createCanvasFont();
+    this._configRoad();
   }
 
   static _createCanvasFont() { 
@@ -22,6 +23,14 @@ export class AssetConfigurator {
     mat.diffuseMap = tex;
     mat.emissiveMap = texEmissive;
     this.setModelMaterial("model_sidewalk", mat);
+  }
+
+  static _configRoad() {
+    let mat = new StandardMaterial();
+    let tex = AssetLoader.getAssetByKey("tex_road").resource;
+    mat.diffuseMap = tex;
+    this.setModelMaterialInRange("model_road", mat, 0, 1);
+    this.setModelMaterialInRange("model_crossing", mat, 0, 1);
   }
 
   static _configWheel() {
