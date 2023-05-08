@@ -5,10 +5,6 @@ import { Map } from "../objects/map/map";
 import { Raycast, RaycastEvent } from "../scripts/raycast/raycast";
 import { InputHandler, InputHandlerEvent } from "../scripts/input/inputHandler";
 import { MapEditorScreen, MapEditorScreenEvent } from "../ui/screens/mapEditorScreen";
-import { Spawner } from "../scripts/spawners/spawner";
-import { Road } from "../objects/map/road";
-import { MapItemType } from "../ui/objects/mapItemUI";
-import { SpawningEvent } from "../scripts/spawners/spawningEvent";
 import { DataManager } from "../data/dataManager";
 
 export class MapEditorScene extends Scene{
@@ -33,7 +29,6 @@ export class MapEditorScene extends Scene{
     this._initCamera();
     this._initMap();
     this._initRaycast();
-    this._initSpawners();
   }
 
   _initMap() {
@@ -138,8 +133,6 @@ export class MapEditorScene extends Scene{
         let rowEnd = this.endBrick.row;
         let data = DataManager.findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd);
         this.map.addRoad(data);
-        console.log(DataManager.mapData);
-        DataManager.applyMapData(data, 1);
         this.mapItemSelected = null;
         break;
       }
@@ -152,20 +145,5 @@ export class MapEditorScene extends Scene{
   
   onMapItemSelected(type) {
     this.mapItemSelected = type;
-    let item = null;
-    switch (type) { 
-      case MapItemType.ROAD:
-        item = this.roadSpawner.spawn();
-    }
-  }
-
-  _initSpawners() {
-    let roadSpawnerEntity = new Entity("road-spawner");
-    this.addChild(roadSpawnerEntity);
-
-    this.roadSpawner = roadSpawnerEntity.addScript(Spawner, {
-      class: Road,
-      poolSize: 10,
-    });
   }
 }

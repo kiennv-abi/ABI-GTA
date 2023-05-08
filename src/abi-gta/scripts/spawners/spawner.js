@@ -7,7 +7,8 @@ export const Spawner = Script.createScript({
   attributes: {
     class    : {},
     args     : { default: [] },
-    poolSize : { default: 0 },
+    poolSize: { default: 0 },
+    callback: { default: null },
   },
 
   initialize() {
@@ -16,6 +17,7 @@ export const Spawner = Script.createScript({
 
   postInitialize() {
     this._createPool();
+    this.callback && this.callback();
   },
 
   spawn(parent = null, index = -1) {
