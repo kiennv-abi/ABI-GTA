@@ -6,6 +6,7 @@ import { Raycast, RaycastEvent } from "../scripts/raycast/raycast";
 import { InputHandler, InputHandlerEvent } from "../scripts/input/inputHandler";
 import { MapEditorScreen, MapEditorScreenEvent } from "../ui/screens/mapEditorScreen";
 import { DataManager } from "../data/dataManager";
+import { MapItemType } from "../ui/objects/mapItemUI";
 
 export class MapEditorScene extends Scene{
   constructor(){
@@ -46,8 +47,10 @@ export class MapEditorScene extends Scene{
       nearClip: 0.1,
     });
     this.mainCamera.addComponent("script");
-    this.mainCamera.setLocalPosition(50, 130, 50);
-    this.mainCamera.setLocalEulerAngles(-90, 0, 0);
+    // this.mainCamera.setLocalPosition(50, 130, 50);
+    // this.mainCamera.setLocalEulerAngles(-90, 0, 0);
+    this.mainCamera.setLocalPosition(40, 50, 100);
+    this.mainCamera.setLocalEulerAngles(-40, 0, 0);
     if (GameConstant.DEBUG_CAMERA) {
       this.mainCamera.script.create("orbitCamera", {
         attributes: {
@@ -67,14 +70,14 @@ export class MapEditorScene extends Scene{
     this.directionalLight.addComponent("light", {
       type: LIGHTTYPE_DIRECTIONAL,
       color: new Color(1, 1, 1),
-      castShadows: false,
-      shadowDistance: 30,
+      castShadows: true,
+      shadowDistance: 1000,
       shadowResolution: 1024,
       shadowBias: 0.2,
       normalOffsetBias: 0.05,
       intensity: 0.85,
     });
-    this.directionalLight.setLocalPosition(2, 30, -2);
+    this.directionalLight.setLocalPosition(2, 40, -2);
     this.directionalLight.setLocalEulerAngles(45, 135, 0);
   }
 
@@ -106,21 +109,51 @@ export class MapEditorScene extends Scene{
     if (!this.mapItemSelected) {
       return;
     }
-    let bricks = this.map.bricks;
-    for (let i = 0; i < bricks.length; i++) {
-      let brick = bricks[i];
-      let castBox = brick.castBox;
-      if (castBox.checkIntersects(ray)) {
-        this.startBrick = brick;
-        break;
+
+    if (this.mapItemSelected === MapItemType.ROAD) {
+      let bricks = this.map.bricks;
+      for (let i = 0; i < bricks.length; i++) {
+        let brick = bricks[i];
+        let castBox = brick.castBox;
+        if (castBox.checkIntersects(ray)) {
+          this.startBrick = brick;
+          break;
+        }
+      }
+    } else {
+      let buildings = this.map.buildings;
+      for (let i = 0; i < buildings.length; i++) { 
+        let building = buildings[i];
+        let castBox = building.castBox;
+        if (castBox.checkIntersects(ray)) {
+          this.buildingSelected = building;
+          let tmpPos = this.buildingSelected.getLocalPosition();
+          tmpPos.y += 1;
+          this.buildingSelected.setLocalPosition(tmpPos);
+          break;
+        }
       }
     }
+    
   }
 
   onCastUp(ray) {
     if (!this.mapItemSelected) {
       return;
     }
+    if (this.mapItemSelected === MapItemType.ROAD) { 
+      this.buildRoad(ray);
+    } else {
+      if (this.buildingSelected) {
+        let tmpPos = this.buildingSelected.getLocalPosition();
+        tmpPos.y = 0;
+        this.buildingSelected.setLocalPosition(tmpPos);
+      }
+      this.buildingSelected = false;
+    }
+  }
+
+  buildRoad(ray) {
     let bricks = this.map.bricks;
     for (let i = 0; i < bricks.length; i++) {
       let brick = bricks[i];
@@ -142,10 +175,23 @@ export class MapEditorScene extends Scene{
   }
 
   onCastMove(ray) {
-    
+    let bricks = this.map.bricks;
+    for (let i = 0; i < bricks.length; i++) {
+      let brick = bricks[i];
+      let castBox = brick.castBox;
+      if (castBox.checkIntersects(ray) && this.buildingSelected) {
+        let tmpPos = this.buildingSelected.getLocalPosition();
+        let brickPos = brick.getLocalPosition();
+        this.buildingSelected.setLocalPosition(brickPos.x, tmpPos.y, brickPos.z);
+        break;
+      }
+    }
   }
   
   onMapItemSelected(type) {
     this.mapItemSelected = type;
+    if (this.mapItemSelected !== MapItemType.ROAD) {
+      this.map.addBuilding(this.mapItemSelected);
+    }
   }
 }

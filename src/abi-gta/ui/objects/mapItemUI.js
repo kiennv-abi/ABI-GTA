@@ -4,7 +4,9 @@ import { Util } from "../../../helpers/util";
 
 export const MapItemType = Object.freeze({
   ROAD: "road",
-  BUILDING: "building",
+  BUILDING1: "building_1",
+  BUILDING2: "building_2",
+  BUILDING3: "building_3",
 });
 export const MapItemEvent = Object.freeze({
   Selected: "Selected",
