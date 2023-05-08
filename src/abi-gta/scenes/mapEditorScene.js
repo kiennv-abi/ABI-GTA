@@ -1,11 +1,15 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL } from "playcanvas";
+import { Color, Entity, LIGHTTYPE_DIRECTIONAL, log } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
 import { Raycast, RaycastEvent } from "../scripts/raycast/raycast";
 import { InputHandler, InputHandlerEvent } from "../scripts/input/inputHandler";
-import { CastBox } from "../scripts/raycast/castBox";
-import { MapEditorScreen } from "../ui/screens/mapEditorScreen";
+import { MapEditorScreen, MapEditorScreenEvent } from "../ui/screens/mapEditorScreen";
+import { Spawner } from "../scripts/spawners/spawner";
+import { Road } from "../objects/map/road";
+import { MapItemType } from "../ui/objects/mapItemUI";
+import { SpawningEvent } from "../scripts/spawners/spawningEvent";
+import { DataManager } from "../data/dataManager";
 
 export class MapEditorScene extends Scene{
   constructor(){
@@ -18,6 +22,7 @@ export class MapEditorScene extends Scene{
       new MapEditorScreen()
     );
     this.mapEditorScreen = this.ui.getScreen(GameConstant.SCREEN_MAP_EDITOR);
+    this.mapEditorScreen.on(MapEditorScreenEvent.MapItemSelected, this.onMapItemSelected, this);
     this.ui.setScreenActive(GameConstant.SCREEN_MAP_EDITOR);
     this._initialize();
   }
@@ -26,15 +31,14 @@ export class MapEditorScene extends Scene{
     this._initInputHandler();
     this._initLight();
     this._initCamera();
-    this._initRaycast();
     this._initMap();
+    this._initRaycast();
+    this._initSpawners();
   }
 
   _initMap() {
     this.map = new Map();
     this.addChild(this.map);
-
-    this.raycast
   }
 
   _initCamera() {
@@ -47,8 +51,8 @@ export class MapEditorScene extends Scene{
       nearClip: 0.1,
     });
     this.mainCamera.addComponent("script");
-    this.mainCamera.setLocalPosition(40, 200, 40);
-    this.mainCamera.setLocalEulerAngles(-90.2, 90, 0);
+    this.mainCamera.setLocalPosition(50, 130, 50);
+    this.mainCamera.setLocalEulerAngles(-90, 0, 0);
     if (GameConstant.DEBUG_CAMERA) {
       this.mainCamera.script.create("orbitCamera", {
         attributes: {
@@ -95,10 +99,73 @@ export class MapEditorScene extends Scene{
     });
 
     this.inputHandler.on(InputHandlerEvent.PointerDown, this.raycast.onPointerDown, this.raycast);
-    this.raycast.on(RaycastEvent.Cast, this.onCast, this);
+    this.inputHandler.on(InputHandlerEvent.PointerMove, this.raycast.onPointerMove, this.raycast);
+    this.inputHandler.on(InputHandlerEvent.PointerUp, this.raycast.onPointerUp, this.raycast);
+    
+    this.raycast.on(RaycastEvent.CastDown, this.onCastDown, this);
+    this.raycast.on(RaycastEvent.CastMove, this.onCastMove, this);
+    this.raycast.on(RaycastEvent.CastUp, this.onCastUp, this);
   }
 
-  onCast(ray) {
-    let intersect = this.map.groundBox.getScript(CastBox).checkIntersects(ray);
+  onCastDown(ray) {
+    if (!this.mapItemSelected) {
+      return;
+    }
+    let bricks = this.map.bricks;
+    for (let i = 0; i < bricks.length; i++) {
+      let brick = bricks[i];
+      let castBox = brick.castBox;
+      if (castBox.checkIntersects(ray)) {
+        this.startBrick = brick;
+        break;
+      }
+    }
+  }
+
+  onCastUp(ray) {
+    if (!this.mapItemSelected) {
+      return;
+    }
+    let bricks = this.map.bricks;
+    for (let i = 0; i < bricks.length; i++) {
+      let brick = bricks[i];
+      let castBox = brick.castBox;
+      if (castBox.checkIntersects(ray) && this.startBrick) {
+        this.endBrick = brick;
+        let colStart = this.startBrick.col;
+        let rowStart = this.startBrick.row;
+        let colEnd = this.endBrick.col;
+        let rowEnd = this.endBrick.row;
+        let data = DataManager.findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd);
+        this.map.addRoad(data);
+        console.log(DataManager.mapData);
+        DataManager.applyMapData(data, 1);
+        this.mapItemSelected = null;
+        break;
+      }
+    }
+  }
+
+  onCastMove(ray) {
+    
+  }
+  
+  onMapItemSelected(type) {
+    this.mapItemSelected = type;
+    let item = null;
+    switch (type) { 
+      case MapItemType.ROAD:
+        item = this.roadSpawner.spawn();
+    }
+  }
+
+  _initSpawners() {
+    let roadSpawnerEntity = new Entity("road-spawner");
+    this.addChild(roadSpawnerEntity);
+
+    this.roadSpawner = roadSpawnerEntity.addScript(Spawner, {
+      class: Road,
+      poolSize: 10,
+    });
   }
 }

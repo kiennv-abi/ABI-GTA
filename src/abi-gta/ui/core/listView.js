@@ -15,7 +15,7 @@ export class ListView extends Entity {
     this.addComponent("layoutgroup", {
       orientation : ORIENTATION_HORIZONTAL,
       alignment   : new Vec2(0.5, 0.5),
-      spacing     : new Vec2(0, 4),
+      spacing     : new Vec2(20, 0),
     });
 
     this.layoutGroupFitter = this.addScript(LayoutGroupFitter, {

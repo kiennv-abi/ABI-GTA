@@ -3,8 +3,12 @@ import { GameConstant } from "../../../gameConstant";
 import { UIScreen } from "../../../template/ui/uiScreen";
 import { ListView } from "../core/listView";
 import { ScrollView } from "../core/scrollView";
-import MapItem from "../objects/mapItemUI";
+import MapItem, { MapItemEvent, MapItemType } from "../objects/mapItemUI";
+import { AssetLoader } from "../../../assetLoader/assetLoader";
 
+export const MapEditorScreenEvent = Object.freeze({
+  MapItemSelected: "MapItemSelected",
+});
 export class MapEditorScreen extends UIScreen{
   constructor() {
     super(GameConstant.SCREEN_MAP_EDITOR);
@@ -14,32 +18,30 @@ export class MapEditorScreen extends UIScreen{
 
   _initScrollList() {
     this.listMapItem = new ListView({
-      anchor: new Vec4(0, 1, 0, 1),
-      pivot: new Vec2(0, 1),
+      anchor: new Vec4(0.5, 0.5, 0.5, 0.5),
+      pivot: new Vec2(0.5, 0.5),
       margin: new Vec4(),
     });
-    this.listMapItem.layoutgroup.spacing.set(20, 0);
 
     this.scrollView = new ScrollView(this.listMapItem, {
-      anchor: new Vec4(0, 0, 1, 1),
-      pivot: new Vec2(0.5, 1),
-      margin: new Vec4(80, 70, 80, 200),
+      anchor: new Vec4(0, 0, 1, 0.15),
+      pivot: new Vec2(0.5, 0.5),
+      margin: new Vec4(100, 0, 100, 0),
     });
-    this.scrollView.bg.enabled = false;
     this.addChild(this.scrollView);
 
-    this.addMapItem();
-    this.addMapItem();
-    this.addMapItem();
-    this.addMapItem();
-    this.addMapItem();
-    this.addMapItem();
-    this.addMapItem();
+    this.addMapItem({
+      type: MapItemType.ROAD,
+      spriteAsset: AssetLoader.getAssetByKey("spr_road_item"),
+    });
   }
 
-  addMapItem() { 
-    let item = new MapItem();
+  addMapItem(data) { 
+    let item = new MapItem(data);
     this.listMapItem.addItem(item);
+    item.on(MapItemEvent.Selected, (type) => { 
+    this.fire(MapEditorScreenEvent.MapItemSelected, type);
+    });
     return item;
   }
 }

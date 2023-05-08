@@ -1,37 +1,45 @@
 import { Entity, Vec3 } from "playcanvas";
-import { Grid } from "./grid";
-import mapData from "../../../../assets/jsons/mapData.json";
-import { AssetLoader } from "../../../assetLoader/assetLoader";
-import { CastBox } from "../../scripts/raycast/castBox";
-import { GameConstant } from "../../../gameConstant";
+import { DataManager } from "../../data/dataManager";
+import { Brick } from "./brick";
+import { Road } from "./road";
 
 export class Map extends Entity{
   constructor() {
     super();
-    this.grid = new Grid();
-    this.addChild(this.grid);
-
-    this.groundBox = new Entity();
-    this.addChild(this.groundBox);
-    this.groundBox.setLocalPosition(this.grid.row * this.grid.gridUnit / 2, 0, this.grid.col * this.grid.gridUnit / 2);
-    this.groundBox.addScript(CastBox, {
-      scale: new Vec3(100, 1, 100),
-      render: GameConstant.DEBUG_ON,
-    });
+    DataManager.init();
+    this.col = DataManager.mapData.length - 1;
+    this.row = DataManager.mapData[0].length - 1;
+    this.gridUnit = DataManager.mapUnit;
+    this.bricks = [];
+    this.roads = [];
+    this.generate();
   }
 
-  _initOcean() {
-    for (let i = 0; i < mapData.oceanData.length; i++) {
-      let row = mapData.oceanData[i];
+  generate() {
+    for (let i = 0; i < DataManager.mapData.length; i++) {
+      let row = DataManager.mapData[i];
       for (let j = 0; j < row.length; j++) {
         let tile = row[j];
         if (tile === 0) {
-          let tileEntity = new Entity("tile");
-          tileEntity.addComponent("model", { asset: AssetLoader.getAssetByKey("model_ocean") });
-          tileEntity.setLocalPosition(j * mapData.oceanUnit, -1, i * mapData.oceanUnit);
-          this.addChild(tileEntity);
+          let brick = new Brick();
+          brick.row = j;
+          brick.col = i;
+          brick.setLocalPosition(i * this.gridUnit, -0.5, j * this.gridUnit);
+          this.addChild(brick);
+          this.bricks.push(brick);
         }
       }
     }
+  }
+
+  addRoad(newData) { 
+    newData.forEach((data) => { 
+      let road = new Road();
+      road.row = data.row;
+      road.col = data.col;
+      road.setLocalPosition(data.col * this.gridUnit, 0, data.row * this.gridUnit);
+      this.addChild(road);
+      this.roads.push(road);
+    });
   }
 }
