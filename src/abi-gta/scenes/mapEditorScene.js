@@ -134,6 +134,8 @@ export class MapEditorScene extends Scene{
         let data = DataManager.findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd);
         this.map.addRoad(data);
         this.mapItemSelected = null;
+        this.startBrick = null;
+        this.endBrick = null;
         break;
       }
     }
