@@ -151,11 +151,23 @@ export class MapEditorScene extends Scene{
       tmpPos.y = 0;
       this.buildingSelected.updateOpacity(1);
       this.buildingSelected.activeShadow(false);
-      this.buildingSelected.setLocalPosition(tmpPos);
       let dataFormat = this.buildingSelected.dataFormat;
+      if (this.buildingSelected.isValid) {
+      } else {
+        let row = this.buildingSelected.row;
+        let col = this.buildingSelected.col;
+        let haftCol = Math.floor(dataFormat[0].length / 2);
+        let haftRow = Math.floor(dataFormat.length / 2);
+        this.buildingSelected.colStart = col - haftCol;
+        this.buildingSelected.rowStart = row - haftRow;
+        this.buildingSelected.colEnd = col + haftCol;
+        this.buildingSelected.rowEnd = row + haftRow;
+        tmpPos = new Vec3(this.buildingSelected.row * this.map.gridUnit, 0, this.buildingSelected.col * this.map.gridUnit);
+      }
       this.buildingPlace(this.buildingSelected, dataFormat[0][0]);
+      this.moveBuilding(tmpPos);
     }
-    this.buildingSelected = false;
+    this.buildingSelected = null;
   }
 
   buildingPlace(building, dataValue) {
@@ -164,6 +176,8 @@ export class MapEditorScene extends Scene{
       let rowStart = building.rowStart;
       let colEnd = building.colEnd;
       let rowEnd = building.rowEnd;
+      building.row = Math.floor((rowStart + rowEnd) / 2);
+      building.col = Math.floor((colStart + colEnd) / 2);
       DataManager.applyMapDataByStartAndEnd(rowStart, rowEnd, colStart, colEnd, dataValue);
     }
   }
@@ -214,6 +228,7 @@ export class MapEditorScene extends Scene{
     let tmpPos = this.buildingSelected.getLocalPosition();
     tmpPos.y += 1;
     this.moveBuilding(tmpPos);
+    this.validateBuilding(this.buildingSelected);
     this.buildingSelected.activeShadow(true);
     this.buildingSelected.updateOpacity(0.5);
   }
@@ -239,7 +254,7 @@ export class MapEditorScene extends Scene{
   onMapItemSelected(type) {
     this.mapItemSelected = type;
     if (this.mapItemSelected !== MapItemType.ROAD) {
-      this.map.addBuilding(this.mapItemSelected);
+      this.map.addBuilding(this.mapItemSelected, 5, 5);
     }
   }
 }
