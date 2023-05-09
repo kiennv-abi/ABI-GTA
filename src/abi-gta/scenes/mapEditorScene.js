@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3, log } from "playcanvas";
+import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
@@ -158,7 +158,6 @@ export class MapEditorScene extends Scene{
       this.buildingSelected.setLocalPosition(tmpPos);
       let dataFormat = this.buildingSelected.dataFormat;
       this.buildingPlace(this.buildingSelected, dataFormat[0][0]);
-      console.log(this.buildingSelected.isValid);
     }
     this.buildingSelected = false;
   }
@@ -170,7 +169,6 @@ export class MapEditorScene extends Scene{
       let colEnd = building.colEnd;
       let rowEnd = building.rowEnd;
       DataManager.applyMapDataByStartAndEnd(rowStart, rowEnd, colStart, colEnd, dataValue);
-      console.log(DataManager.mapData);
     }
   }
 
