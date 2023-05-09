@@ -249,7 +249,7 @@ export class Map extends Entity{
       poolSize: 10,
       args: ["model_building_3", new Vec3(17, 45, 17), DataManager.formatData.building3, {
         type: "sphere",
-        size: new Vec3(22, 1, 22),
+        size: new Vec3(16, 1, 16),
         pos: new Vec3(0, -0.1, 0),
       }],
     });

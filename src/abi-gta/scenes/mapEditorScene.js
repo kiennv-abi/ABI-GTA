@@ -158,6 +158,7 @@ export class MapEditorScene extends Scene{
       this.buildingSelected.setLocalPosition(tmpPos);
       let dataFormat = this.buildingSelected.dataFormat;
       this.buildingPlace(this.buildingSelected, dataFormat[0][0]);
+      console.log(this.buildingSelected.isValid);
     }
     this.buildingSelected = false;
   }
@@ -217,10 +218,12 @@ export class MapEditorScene extends Scene{
 
   validateBuilding(brick) { 
     let formatData = this.buildingSelected.dataFormat;
-    let colStart = Math.ceil(brick.col - formatData[0].length / 2);
-    let rowStart = Math.ceil(brick.row - formatData.length / 2);
-    let colEnd = Math.ceil(brick.col + formatData[0].length / 2);
-    let rowEnd = Math.ceil(brick.row + formatData.length / 2);
+    let haftCol = Math.floor(formatData[0].length / 2);
+    let haftRow = Math.floor(formatData.length / 2);
+    let colStart = brick.col - haftCol;
+    let rowStart = brick.row - haftRow;
+    let colEnd = brick.col + haftCol;
+    let rowEnd = brick.row + haftRow;
     this.buildingSelected.rowStart = rowStart;
     this.buildingSelected.colStart = colStart;
     this.buildingSelected.rowEnd = rowEnd;
@@ -228,6 +231,7 @@ export class MapEditorScene extends Scene{
     let length = formatData.length * formatData[0].length;
     let result = DataManager.checkMapDataIsValid(rowStart, rowEnd, colStart, colEnd, length);
     this.buildingSelected.updateShadow(result);
+    this.buildingSelected.isValid = result;
   }
   
   onMapItemSelected(type) {
