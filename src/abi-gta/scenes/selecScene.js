@@ -4,6 +4,8 @@ import { Scene } from "../../template/scene/scene";
 import { CarViewer } from "../objects/car/carViewer";
 import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarScreen";
 import { CarSpecifics, CarType } from "../objects/car/car";
+import { DataManager } from "../data/dataManager";
+import { SceneManager } from "../../template/scene/sceneManager";
 
 export class SelectScene extends Scene{
   constructor() {
@@ -25,6 +27,11 @@ export class SelectScene extends Scene{
     });
     this.selectCarScreen.on(SelectCarScreenEvent.ButtonColorClicked, (carType, colorCode) => {
       this.carViewer.changeColor(carType, colorCode);
+    });
+    this.selectCarScreen.on(SelectCarScreenEvent.ButtonPlayClicked, (car, color) => {
+      DataManager.carSelected = car;
+      DataManager.carColor = color;
+      this.fire(SelectCarScreenEvent.ButtonPlayClicked);
     });
     this.selectCarScreen.fire(SelectCarScreenEvent.ButtonCarClicked, CarType.MuscleCar);
   }

@@ -10,6 +10,7 @@ import { Util } from "../../../helpers/util";
 export const SelectCarScreenEvent = Object.freeze({
   ButtonCarClicked: "clicked",
   ButtonColorClicked: "buttonColor:clicked",
+  ButtonPlayClicked: "buttonPlay:clicked",
 });
 
 export class SelectCarScreen extends UIScreen{
@@ -41,17 +42,35 @@ export class SelectCarScreen extends UIScreen{
     this.carSelected = CarType.MuscleCar;
     this._initPanelDetail();
     this._initColorButtons();
+    this._initButtonPlay();
+  }
+
+  _initButtonPlay() {
+    this.buttonPlay = new Button({
+      anchor: new Vec4(1, 1, 1, 1),
+      pivot: new Vec2(1, 1),
+      margin: new Vec4(),
+      width: 200,
+      height: 100,
+    });
+    this.buttonPlay.text.element.text = "Play";
+    this.buttonPlay.setLocalPosition(-20, -20, 0);
+    this.addChild(this.buttonPlay);
+
+    this.buttonPlay.button.on("click", () => { 
+      this.fire(SelectCarScreenEvent.ButtonPlayClicked, this.carSelected, this.colorSelected ? this.colorSelected : CarColorCode.Color1);
+    });
   }
 
   _initColorButtons() {
     this.options = [];
-    this.redBtn = this._createColorButton(Util.createColor(255, 0, 0), new Vec3(30, -30, 0), CarColorCode.Red);
+    this.redBtn = this._createColorButton(Util.createColor(255, 0, 0), new Vec3(30, -30, 0), CarColorCode.Color1);
     this.panelBg.addChild(this.redBtn);
 
-    this.greenBtn = this._createColorButton(Util.createColor(0, 255, 0), new Vec3(80, -30, 0), CarColorCode.Green);
+    this.greenBtn = this._createColorButton(Util.createColor(0, 255, 0), new Vec3(80, -30, 0), CarColorCode.Color2);
     this.panelBg.addChild(this.greenBtn);
 
-    this.blueBtn = this._createColorButton(Util.createColor(0, 0, 255), new Vec3(130, -30, 0), CarColorCode.Blue);
+    this.blueBtn = this._createColorButton(Util.createColor(0, 0, 255), new Vec3(130, -30, 0), CarColorCode.Color3);
     this.panelBg.addChild(this.blueBtn);
   }
   

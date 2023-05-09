@@ -15,7 +15,6 @@ export const MapItemCode = Object.freeze({
 export class Map extends Entity{
   constructor() {
     super();
-    DataManager.init();
     this.col = DataManager.mapData.length - 1;
     this.row = DataManager.mapData[0].length - 1;
     this.gridUnit = DataManager.mapUnit;

@@ -8,9 +8,9 @@ export const CarType = Object.freeze({
 });
 
 export const CarColorCode = Object.freeze({
-  Red: 1,
-  Green: 2,
-  Blue: 3,
+  Color1: 1,
+  Color2: 2,
+  Color3: 3,
 });
 
 export const CarSpecifics = Object.freeze({

@@ -4,6 +4,8 @@ export class DataManager{
     this.mapData = data.mapData;
     this.mapUnit = data.unit;
     this.formatData = data;
+    this.carSelected = null;
+    this.carColor = null;
   }
   static getMapData() { 
     return this.mapData;

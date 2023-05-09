@@ -16,6 +16,8 @@ import "./template/extensions/index";
 import { AssetConfigurator } from "./abi-gta/configtor/assetConfigtor";
 import { Configurator } from "./abi-gta/configtor/configtor";
 import { MapEditorScene } from "./abi-gta/scenes/mapEditorScene";
+import { DataManager } from "./abi-gta/data/dataManager";
+import { SelectCarScreenEvent } from "./abi-gta/ui/screens/selectCarScreen";
 export class Game {
   
   static init() {
@@ -56,6 +58,7 @@ export class Game {
     Time.init(this.app);
     Tween.init(this.app);
     Configurator.config(this.app);
+    DataManager.init();
   }
 
   static create() {
@@ -68,7 +71,11 @@ export class Game {
       new SelectScene(),
       new MapEditorScene(),
     ]);
-    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
+    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_SELECT));
+    this.selectCarScene = SceneManager.getScene(GameConstant.SCENE_SELECT);
+    this.selectCarScene.on(SelectCarScreenEvent.ButtonPlayClicked, () => { 
+      SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
+    });
     this.app.start();
     this.app.on("update", this.update, this);
   }
