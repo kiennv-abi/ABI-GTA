@@ -253,7 +253,9 @@ export class MapEditorScene extends Scene{
   onMapItemSelected(type) {
     this.mapItemSelected = type;
     if (this.mapItemSelected !== MapItemType.ROAD) {
-      this.map.addBuilding(this.mapItemSelected, 5, 5);
+      let data = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+      let index = DataManager.findPosition(DataManager.mapData, data);
+      this.map.addBuilding(this.mapItemSelected, index[0], index[1]);
     }
   }
 }
