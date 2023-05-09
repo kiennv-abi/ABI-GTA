@@ -255,7 +255,11 @@ export class MapEditorScene extends Scene{
     if (this.mapItemSelected !== MapItemType.ROAD) {
       let data = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
       let index = DataManager.findPosition(DataManager.mapData, data);
-      this.map.addBuilding(this.mapItemSelected, index[0], index[1]);
+      if (index.length > 0) {
+        this.map.addBuilding(this.mapItemSelected, index[0], index[1]);
+      } else {
+        console.log("Map is full");
+      }
     }
   }
 }
