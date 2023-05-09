@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
+import { Color, Entity, KEY_R, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
@@ -7,6 +7,7 @@ import { InputHandler, InputHandlerEvent } from "../scripts/input/inputHandler";
 import { MapEditorScreen, MapEditorScreenEvent } from "../ui/screens/mapEditorScreen";
 import { DataManager } from "../data/dataManager";
 import { MapItemType } from "../ui/objects/mapItemUI";
+import { Game } from "../../game";
 
 export class MapEditorScene extends Scene{
   constructor(){
@@ -25,11 +26,22 @@ export class MapEditorScene extends Scene{
   }
 
   _initialize() {
+    this._registerKeyboardEvent();
     this._initInputHandler();
     this._initLight();
     this._initCamera();
     this._initMap();
     this._initRaycast();
+  }
+
+  _registerKeyboardEvent() { 
+    Game.app.keyboard.on(pc.EVENT_KEYDOWN, (e) => {
+      if (e.key === KEY_R) {
+        if (this.buildingSelected) {
+          this.buildingSelected.setLocalEulerAngles(0, this.buildingSelected.getLocalEulerAngles().y + 45, 0);
+        }
+      }
+    });
   }
 
   _initMap() {
