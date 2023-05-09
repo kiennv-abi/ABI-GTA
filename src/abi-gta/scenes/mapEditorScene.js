@@ -126,11 +126,7 @@ export class MapEditorScene extends Scene{
         let building = buildings[i];
         let castBox = building.castBox;
         if (castBox.checkIntersects(ray)) {
-          this.buildingSelected = building;
-          this.buildingPlace(this.buildingSelected, 0);
-          let tmpPos = this.buildingSelected.getLocalPosition();
-          tmpPos.y += 1;
-          this.buildingSelected.setLocalPosition(tmpPos);
+          this.onBuildingPicked(building);
           break;
         }
       }
@@ -199,18 +195,26 @@ export class MapEditorScene extends Scene{
       let brick = bricks[i];
       let castBox = brick.castBox;
       if (castBox.checkIntersects(ray) && this.buildingSelected) {
-        let brickPos = brick.getLocalPosition();
-        let tmpPos = this.buildingSelected.getLocalPosition();
-        this.onBuildingMove(new Vec3(brickPos.x, tmpPos.y, brickPos.z));
         this.validateBuilding(brick);
+        let pos = brick.getLocalPosition();
+        let tmpPos = this.buildingSelected.getLocalPosition();
+        this.moveBuilding(new Vec3(pos.x, tmpPos.y, pos.z));
         break;
       }
     }
   }
 
-  onBuildingMove(pos) {
-    this.buildingSelected.activeShadow(true);
+  moveBuilding(pos) { 
     this.buildingSelected.setLocalPosition(pos);
+  }
+
+  onBuildingPicked(building) {
+    this.buildingSelected = building;
+    this.buildingPlace(this.buildingSelected, 0);
+    let tmpPos = this.buildingSelected.getLocalPosition();
+    tmpPos.y += 1;
+    this.moveBuilding(tmpPos);
+    this.buildingSelected.activeShadow(true);
     this.buildingSelected.updateOpacity(0.5);
   }
 
