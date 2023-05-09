@@ -49,8 +49,8 @@ export class MapEditorScene extends Scene{
     this.mainCamera.addComponent("script");
     // this.mainCamera.setLocalPosition(50, 130, 50);
     // this.mainCamera.setLocalEulerAngles(-90, 0, 0);
-    this.mainCamera.setLocalPosition(40, 50, 100);
-    this.mainCamera.setLocalEulerAngles(-40, 0, 0);
+    this.mainCamera.setLocalPosition(60, 170, 100);
+    this.mainCamera.setLocalEulerAngles(-80, 0, 0);
     if (GameConstant.DEBUG_CAMERA) {
       this.mainCamera.script.create("orbitCamera", {
         attributes: {
@@ -131,7 +131,6 @@ export class MapEditorScene extends Scene{
         }
       }
     }
-    
   }
 
   onCastUp(ray) {
