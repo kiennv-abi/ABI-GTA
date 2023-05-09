@@ -74,7 +74,6 @@ export class DataManager{
 
   static findPosition(data1, data2) {
     // Loop through each element in data1
-    console.log(DataManager.mapData);
     for (let i = 0; i < data1.length; i++) {
       for (let j = 0; j < data1[0].length; j++) {
         // Check if the current position can accommodate the size of data2
