@@ -11,10 +11,22 @@ export class AssetConfigurator {
     this._configWheel();
     this._configSidewalk();
     this._configRoad();
+    this._configBuildingShadowMaterial();
   }
 
   static _createCanvasFont() { 
      AssetLoader.createCanvasFont("Arial", 106, "bold");
+  }
+  
+  static _configBuildingShadowMaterial() {
+    let matGreen = new StandardMaterial();
+    let matRed = new StandardMaterial();
+    matGreen.diffuseTint = true;
+    matGreen.diffuse = Util.createColor(18, 184, 57);
+    matRed.diffuseTint = true;
+    matRed.diffuse = Util.createColor(207, 39, 39);
+    AssetLoader.registerAsset(matGreen, "mat_shadow_green", "material");
+    AssetLoader.registerAsset(matRed, "mat_shadow_red", "material");
   }
 
   static _configMapObjects() {

@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, log } from "playcanvas";
+import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3, log } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
@@ -69,16 +69,16 @@ export class MapEditorScene extends Scene{
 
     this.directionalLight.addComponent("light", {
       type: LIGHTTYPE_DIRECTIONAL,
-      color: new Color(1, 1, 1),
+      color: new pc.Color(1, 1, 1),
       castShadows: true,
-      shadowDistance: 1000,
-      shadowResolution: 1024,
-      shadowBias: 0.2,
-      normalOffsetBias: 0.05,
-      intensity: 0.85,
+      shadowDistance: 300,
+      shadowResolution: 2048,
+      shadowBias: 1,
+      normalOffsetBias: 1,
+      intensity: 1,
     });
-    this.directionalLight.setLocalPosition(2, 40, -2);
-    this.directionalLight.setLocalEulerAngles(45, 135, 0);
+    this.directionalLight.setLocalPosition(0, 30, 0);
+    this.directionalLight.setLocalEulerAngles(0, 0, 0);
   }
 
   _initInputHandler() {
@@ -127,6 +127,7 @@ export class MapEditorScene extends Scene{
         let castBox = building.castBox;
         if (castBox.checkIntersects(ray)) {
           this.buildingSelected = building;
+          this.buildingPlace(this.buildingSelected, 0);
           let tmpPos = this.buildingSelected.getLocalPosition();
           tmpPos.y += 1;
           this.buildingSelected.setLocalPosition(tmpPos);
@@ -144,12 +145,31 @@ export class MapEditorScene extends Scene{
     if (this.mapItemSelected === MapItemType.ROAD) { 
       this.buildRoad(ray);
     } else {
-      if (this.buildingSelected) {
-        let tmpPos = this.buildingSelected.getLocalPosition();
-        tmpPos.y = 0;
-        this.buildingSelected.setLocalPosition(tmpPos);
-      }
-      this.buildingSelected = false;
+      this.onBuildingStopMove();
+    }
+  }
+
+  onBuildingStopMove() {
+    if (this.buildingSelected) {
+      let tmpPos = this.buildingSelected.getLocalPosition();
+      tmpPos.y = 0;
+      this.buildingSelected.updateOpacity(1);
+      this.buildingSelected.activeShadow(false);
+      this.buildingSelected.setLocalPosition(tmpPos);
+      let dataFormat = this.buildingSelected.dataFormat;
+      this.buildingPlace(this.buildingSelected, dataFormat[0][0]);
+    }
+    this.buildingSelected = false;
+  }
+
+  buildingPlace(building, dataValue) {
+    if (building) {
+      let colStart = building.colStart;
+      let rowStart = building.rowStart;
+      let colEnd = building.colEnd;
+      let rowEnd = building.rowEnd;
+      DataManager.applyMapDataByStartAndEnd(rowStart, rowEnd, colStart, colEnd, dataValue);
+      console.log(DataManager.mapData);
     }
   }
 
@@ -180,12 +200,34 @@ export class MapEditorScene extends Scene{
       let brick = bricks[i];
       let castBox = brick.castBox;
       if (castBox.checkIntersects(ray) && this.buildingSelected) {
-        let tmpPos = this.buildingSelected.getLocalPosition();
         let brickPos = brick.getLocalPosition();
-        this.buildingSelected.setLocalPosition(brickPos.x, tmpPos.y, brickPos.z);
+        let tmpPos = this.buildingSelected.getLocalPosition();
+        this.onBuildingMove(new Vec3(brickPos.x, tmpPos.y, brickPos.z));
+        this.validateBuilding(brick);
         break;
       }
     }
+  }
+
+  onBuildingMove(pos) {
+    this.buildingSelected.activeShadow(true);
+    this.buildingSelected.setLocalPosition(pos);
+    this.buildingSelected.updateOpacity(0.5);
+  }
+
+  validateBuilding(brick) { 
+    let formatData = this.buildingSelected.dataFormat;
+    let colStart = Math.ceil(brick.col - formatData[0].length / 2);
+    let rowStart = Math.ceil(brick.row - formatData.length / 2);
+    let colEnd = Math.ceil(brick.col + formatData[0].length / 2);
+    let rowEnd = Math.ceil(brick.row + formatData.length / 2);
+    this.buildingSelected.rowStart = rowStart;
+    this.buildingSelected.colStart = colStart;
+    this.buildingSelected.rowEnd = rowEnd;
+    this.buildingSelected.colEnd = colEnd;
+    let length = formatData.length * formatData[0].length;
+    let result = DataManager.checkMapDataIsValid(rowStart, rowEnd, colStart, colEnd, length);
+    this.buildingSelected.updateShadow(result);
   }
   
   onMapItemSelected(type) {

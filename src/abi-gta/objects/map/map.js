@@ -45,7 +45,7 @@ export class Map extends Entity{
   addBuilding(buildingName) {
     let buildingSpawner = this.getBuildingSpawner(buildingName);
     let building = buildingSpawner.spawn();
-    building.setLocalPosition(0, 0, 0);
+    building.setLocalPosition(50, 0, 50);
     this.buildings.push(building);
     this.addChild(building);
   }
@@ -130,6 +130,34 @@ export class Map extends Entity{
     return false;
   }
 
+  findSubarrayIndexes(arr1, arr2) {
+    const row1 = arr1.length;
+    const col1 = arr1[0].length;
+    const row2 = arr2.length;
+    const col2 = arr2[0].length;
+    const indexes = [];
+
+    for (let i = 0; i <= row1 - row2; i++) {
+      for (let j = 0; j <= col1 - col2; j++) {
+        let found = true;
+        for (let k = 0; k < row2; k++) {
+          for (let l = 0; l < col2; l++) {
+            if (arr2[k][l] !== arr1[i + k][j + l]) {
+              found = false;
+              break;
+            }
+          }
+          if (!found) break;
+        }
+        if (found) {
+          indexes.push([i, j]);
+        }
+      }
+    }
+
+    return indexes;
+  }
+
   getIntersection(matrix) {
     let result = [];
     for (let i = 0; i < matrix.length; i++) {
@@ -193,7 +221,11 @@ export class Map extends Entity{
     this.building1Spawner = building1Entity.addScript(Spawner, {
       class: Building,
       poolSize: 10,
-      args: ["model_building_1", new Vec3(17, 40, 17)],
+      args: ["model_building_1", new Vec3(17, 40, 17), DataManager.formatData.building1, {
+        type: "plane",
+        size: new Vec3(16, 1, 16),
+        pos: new Vec3(0, -0.1, 0),
+      }],
     });
 
     let building2Entity = new Entity("brick-spawner");
@@ -202,7 +234,11 @@ export class Map extends Entity{
     this.building2Spawner = building2Entity.addScript(Spawner, {
       class: Building,
       poolSize: 10,
-      args: ["model_building_2", new Vec3(8, 10, 8)],
+      args: ["model_building_2", new Vec3(8, 10, 8), DataManager.formatData.building2, {
+        type: "plane",
+        size: new Vec3(8, 1, 8),
+        pos: new Vec3(0, -0.1, 0),
+      }],
     });
 
     let building3Entity = new Entity("brick-spawner");
@@ -211,7 +247,11 @@ export class Map extends Entity{
     this.building3Spawner = building3Entity.addScript(Spawner, {
       class: Building,
       poolSize: 10,
-      args: ["model_building_3", new Vec3(17, 45, 17)],
+      args: ["model_building_3", new Vec3(17, 45, 17), DataManager.formatData.building3, {
+        type: "sphere",
+        size: new Vec3(22, 1, 22),
+        pos: new Vec3(0, -0.1, 0),
+      }],
     });
   }
 }
