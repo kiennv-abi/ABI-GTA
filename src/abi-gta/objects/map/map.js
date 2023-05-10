@@ -11,6 +11,9 @@ export const MapItemCode = Object.freeze({
   Road: 1,
   Crossing: 2,
   Brick: 0,
+  Building1: 3,
+  Building2: 4,
+  Building3: 5,
 });
 export class Map extends Entity{
   constructor() {
@@ -21,27 +24,51 @@ export class Map extends Entity{
     this.bricks = [];
     this.roads = [];
     this.buildings = [];
+    this.crossings = [];
     this._initSpawners();
   }
 
+  resetMap() {
+    this.bricks = [];
+    this.roads = [];
+    this.crossings = [];
+    this.buildings = [];
+    this.children.forEach((child) => {
+      child.destroy();
+    });
+  }
+
   generate() {
+    this.resetMap();
     for (let i = 0; i < DataManager.mapData.length; i++) {
       let row = DataManager.mapData[i];
       for (let j = 0; j < row.length; j++) {
         let tile = row[j];
+        let obj = null;
         if (tile === MapItemCode.Brick) {
-          let brick = this.brickSpawner.spawn();
-          brick.row = j;
-          brick.col = i;
-          brick.setLocalPosition(i * this.gridUnit, -0.1, j * this.gridUnit);
-          this.addChild(brick);
-          this.bricks.push(brick);
+          obj = this.brickSpawner.spawn();
+          this.bricks.push(obj);
+          obj.row = j;
+          obj.col = i;
+          obj.setLocalPosition(j * this.gridUnit, -0.1, i * this.gridUnit);
+          this.addChild(obj);
         }
       }
     }
+    let roadRowData = DataManager.getRowsWithTypes(DataManager.mapData, MapItemCode.Road);
+    roadRowData.forEach(data => this.addRoad(data));
+    let collRowData = DataManager.getColumnsWithTypes(DataManager.mapData, MapItemCode.Road);
+    collRowData.forEach(data => this.addRoad(data));
+    this.addCross();
+    let building1Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building1);
+    let building2Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building2);
+    let building3Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building3);
+    this.addBuilding(MapItemType.BUILDING1, building1Data[0], building1Data[1]);
+    this.addBuilding(MapItemType.BUILDING2, building2Data[0], building2Data[1]);
+    this.addBuilding(MapItemType.BUILDING3, building3Data[0], building3Data[1]);
   }
 
-  addBuilding(buildingName, row, col) {
+  addBuilding(buildingName, col, row) {
     let buildingSpawner = this.getBuildingSpawner(buildingName);
     let building = buildingSpawner.spawn();
     let dataFormat = building.dataFormat;
@@ -73,9 +100,9 @@ export class Map extends Entity{
     DataManager.applyMapDatas(newData, 1);
     newData.forEach((data) => { 
       let road = this.roadSpawner.spawn();
-      road.row = data.row;
-      road.col = data.col;
-      road.setLocalPosition(data.col * this.gridUnit, 0, data.row * this.gridUnit);
+      road.row = data[0];
+      road.col = data[1];
+      road.setLocalPosition(data[1] * this.gridUnit, 0, data[0]* this.gridUnit);
       this.addChild(road);
       this.roads.push(road);
       let isHorizontal = this.detectRoadHorizontal(newData);
@@ -85,6 +112,9 @@ export class Map extends Entity{
         road.setLocalEulerAngles(0, 90, 0);
       }
     });
+  }
+
+  addCross() {
     let intersection = this.getIntersection(DataManager.mapData);
     this.replaceCrossRoad(intersection);
   }
@@ -130,10 +160,10 @@ export class Map extends Entity{
     DataManager.applyMapData(road.row, road.col, MapItemCode.Brick);
   }
 
-  detectRoadHorizontal(data) { 
+  detectRoadHorizontal(data) {
     let start = data[0];
     let end = data[data.length - 1];
-    if(start.row === end.row) {
+    if(start[0] === end[0]) {
       return true;
     }
     return false;

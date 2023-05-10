@@ -71,7 +71,7 @@ export class Game {
       new SelectScene(),
       new MapEditorScene(),
     ]);
-    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_SELECT));
+    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
     this.selectCarScene = SceneManager.getScene(GameConstant.SCENE_SELECT);
     this.selectCarScene.on(SelectCarScreenEvent.ButtonPlayClicked, () => { 
       SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));

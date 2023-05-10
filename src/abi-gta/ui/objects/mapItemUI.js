@@ -7,6 +7,8 @@ export const MapItemType = Object.freeze({
   BUILDING1: "building_1",
   BUILDING2: "building_2",
   BUILDING3: "building_3",
+  Map1: "map_1",
+  Map2: "map_2",
 });
 export const MapItemEvent = Object.freeze({
   Selected: "Selected",

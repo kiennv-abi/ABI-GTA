@@ -206,6 +206,7 @@ export class MapEditorScene extends Scene{
         let rowEnd = this.endBrick.row;
         let data = DataManager.findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd);
         this.map.addRoad(data);
+        this.map.addCross();
         this.mapItemSelected = null;
         this.startBrick = null;
         this.endBrick = null;

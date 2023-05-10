@@ -2,6 +2,8 @@
 {"key":"spr_building_2","url":"../../assets/sprites/spr_building_2.png","type":"sprite"},
 {"key":"spr_building_3","url":"../../assets/sprites/spr_building_3.png","type":"sprite"},
 {"key":"spr_dark","url":"../../assets/sprites/spr_dark.png","type":"sprite"},
+{"key":"spr_map_1","url":"../../assets/sprites/spr_map_1.png","type":"sprite"},
+{"key":"spr_map_2","url":"../../assets/sprites/spr_map_2.png","type":"sprite"},
 {"key":"spr_road_item","url":"../../assets/sprites/spr_road_item.png","type":"sprite"},
 {"key":"spr_stroke","url":"../../assets/sprites/spr_stroke.png","type":"sprite"},
 {"key":"helipad-env-atlas","url":"../../assets/textures/helipad-env-atlas.png","type":"texture"},

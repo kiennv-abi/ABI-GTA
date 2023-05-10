@@ -1,9 +1,10 @@
 import data from "../../../assets/jsons/mapData.json";
+import mapData1 from "../../../assets/jsons/map1Data.json";
 export class DataManager{
   static init() {
-    this.mapData = data.mapData;
-    this.mapUnit = data.unit;
-    this.formatData = data;
+    this.mapData = mapData1.mapData;
+    this.mapUnit = mapData1.unit;
+    this.formatData = mapData1;
     this.carSelected = null;
     this.carColor = null;
   }
@@ -21,7 +22,7 @@ export class DataManager{
 
   static applyMapDatas(newData, value) { 
     newData.forEach((data) => {
-      this.applyMapData(data.row, data.col, value)
+      this.applyMapData(data[0], data[1], value);
     });
   }
 
@@ -47,7 +48,101 @@ export class DataManager{
         j = j < 0 ? 0 : j;
         let tile = row[j];
         if (tile === 0) {
-          result.push({ row: i, col: j });
+          result.push([i,j]);
+        }
+      }
+    }
+    return result;
+  }
+
+  static getRowsWithTypes(arr, type) {
+    const rowsWithOnes = [];
+    for (let i = 0; i < arr.length; i++) {
+      const row = arr[i];
+      let startIndex = -1;
+      let count = 0;
+      for (let j = 0; j < row.length; j++) {
+        if (row[j] === type) {
+          if (startIndex === -1) {
+            startIndex = j;
+          }
+          count += 1;
+        } else {
+          if (count >= 2) {
+            let indexes = [];
+            for (let k = startIndex; k < j; k++) { 
+              indexes.push([i, k]);
+            }
+            rowsWithOnes.push(indexes);
+          }
+          startIndex = -1;
+          count = 0;
+        }
+      }
+      if (count >= 2) {
+        let indexes = [];
+        for (let k = startIndex; k < j; k++) {
+          indexes.push([i, k]);
+        }
+        rowsWithOnes.push(indexes);
+      }
+    }
+    return rowsWithOnes;
+  }
+
+  static getColumnsWithTypes(arr, type) {
+    const columnsWithOnes = [];
+    for (let j = 0; j < arr[0].length; j++) {
+      let startIndex = -1;
+      let count = 0;
+      for (let i = 0; i < arr.length; i++) {
+        const row = arr[i];
+        if (row[j] === type) {
+          if (startIndex === -1) {
+            startIndex = i;
+          }
+          count += 1;
+        } else {
+          if (count >= 2) {
+            const column = [];
+            for (let k = startIndex; k < i; k++) {
+              const row = arr[k];
+              column.push(row[j]);
+            }
+            let indexes = [];
+            for (let k = startIndex; k < i; k++) {
+              indexes.push([k, j]);
+            }
+            columnsWithOnes.push(indexes);
+          }
+          startIndex = -1;
+          count = 0;
+        }
+      }
+      if (count >= 2) {
+        const column = [];
+        for (let k = startIndex; k < arr.length; k++) {
+          const row = arr[k];
+          column.push(row[j]);
+        }
+        let indexes = [];
+        for (let k = startIndex; k < i; k++) {
+          indexes.push([k, j]);
+        }
+        columnsWithOnes.push(indexes);
+      }
+    }
+    return columnsWithOnes;
+  }
+
+  static getAllMapItemByType(type) {
+    let result = [];
+    for (let i = 0; i < this.mapData.length; i++) {
+      let row = this.mapData[i];
+      for (let j = 0; j < row.length; j++) {
+        let tile = row[j];
+        if (tile === type) {
+          result.push([i,j]);
         }
       }
     }
@@ -88,6 +183,7 @@ export class DataManager{
                 allZeroes = false;
                 break;
               }
+              console.log(data1[k][l]);
             }
             if (!allZeroes) {
               break;
@@ -101,6 +197,35 @@ export class DataManager{
         }
       }
     }
+    return null;
+  }
+
+  static findPositionArrayInArray(arr1, arr2) {
+    const rows1 = arr1.length;
+    const cols1 = arr1[0].length;
+    const rows2 = arr2.length;
+    const cols2 = arr2[0].length;
+
+    for (let i = 0; i <= rows1 - rows2; i++) {
+      for (let j = 0; j <= cols1 - cols2; j++) {
+        let found = true;
+        for (let k = 0; k < rows2; k++) {
+          for (let l = 0; l < cols2; l++) {
+            if (arr2[k][l] !== arr1[i + k][j + l]) {
+              found = false;
+              break;
+            }
+          }
+          if (!found) break;
+        }
+        if (found) {
+          let x = i + Math.floor(arr2.length / 2);
+          let y = j + Math.floor(arr2[0].length / 2);
+          return [x, y];
+        }
+      }
+    }
+
     return null;
   }
 }

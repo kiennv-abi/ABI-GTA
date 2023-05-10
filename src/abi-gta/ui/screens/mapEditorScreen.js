@@ -8,27 +8,53 @@ import { AssetLoader } from "../../../assetLoader/assetLoader";
 
 export const MapEditorScreenEvent = Object.freeze({
   MapItemSelected: "MapItemSelected",
+  MapSelected: "MapSelected",
 });
 export class MapEditorScreen extends UIScreen{
   constructor() {
     super(GameConstant.SCREEN_MAP_EDITOR);
-
-    this._initScrollList()
+    this._initSelectMapPanel();
+    this._initSelectMapItemPanel();
   }
 
-  _initScrollList() {
+  _initSelectMapPanel() {
+    this.listMap = new ListView({
+      anchor: new Vec4(0.5, 0.5, 0.5, 0.5),
+      pivot: new Vec2(0.5, 0.5),
+      margin: new Vec4(),
+    });
+
+    this.scrollViewMap = new ScrollView(this.listMap, {
+      anchor: new Vec4(0, 0, 1, 0.15),
+      pivot: new Vec2(0.5, 0.5),
+      margin: new Vec4(100, 0, 100, 0),
+    });
+    this.addChild(this.scrollViewMap);
+
+    this.addMap({
+      type: MapItemType.Map1,
+      spriteAsset: AssetLoader.getAssetByKey("spr_map_1"),
+    });
+    this.addMap({
+      type: MapItemType.Map2,
+      spriteAsset: AssetLoader.getAssetByKey("spr_map_2"),
+    });
+  }
+
+  _initSelectMapItemPanel() {
     this.listMapItem = new ListView({
       anchor: new Vec4(0.5, 0.5, 0.5, 0.5),
       pivot: new Vec2(0.5, 0.5),
       margin: new Vec4(),
     });
 
-    this.scrollView = new ScrollView(this.listMapItem, {
+    this.scrollViewMap = new ScrollView(this.listMapItem, {
       anchor: new Vec4(0, 0, 1, 0.15),
       pivot: new Vec2(0.5, 0.5),
       margin: new Vec4(100, 0, 100, 0),
     });
-    this.addChild(this.scrollView);
+    this.addChild(this.scrollViewMap);
+    this.scrollViewMap.enabled = false;
 
     this.addMapItem({
       type: MapItemType.ROAD,
@@ -58,5 +84,22 @@ export class MapEditorScreen extends UIScreen{
     this.fire(MapEditorScreenEvent.MapItemSelected, type);
     });
     return item;
+  }
+
+  addMap(data) {
+    let item = new MapItem(data);
+    this.listMap.addItem(item);
+    item.on(MapItemEvent.Selected, (type) => {
+      this.fire(MapEditorScreenEvent.MapSelected, type);
+    });
+    return item;
+  }
+
+  _downloadFileJson(content, fileName) {
+    const a = document.createElement("a");
+    const file = new Blob([content], { type: "text/plain" });
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
   }
 }
