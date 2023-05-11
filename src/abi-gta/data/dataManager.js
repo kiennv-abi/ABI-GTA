@@ -1,7 +1,11 @@
 import data from "../../../assets/jsons/mapData.json";
+import map1 from "../../../assets/jsons/map1Data.json";
+import map2 from "../../../assets/jsons/map2Data.json";
 export class DataManager{
   static init() {
     this.mapData = data.mapData;
+    this.map1 = map1.mapData;
+    this.map2 = map2.mapData;
     this.mapUnit = data.unit;
     this.formatData = data;
     this.carSelected = null;
