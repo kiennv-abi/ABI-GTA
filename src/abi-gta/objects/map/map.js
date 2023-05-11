@@ -63,14 +63,12 @@ export class Map extends Entity{
     collRowData.forEach(data => this.addRoad(data));
     let building1Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building1);
     if (building1Data.length > 0) {
-      console.log(building1Data);
       building1Data.forEach(data => {
         this.addBuilding(MapItemType.BUILDING1, data[0], data[1]);
       });
     }
     let building2Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building2);
     if (building2Data.length > 0) {
-      console.log(building2Data);
       building2Data.forEach(data => {
         this.addBuilding(MapItemType.BUILDING2, data[0], data[1]);
       });
