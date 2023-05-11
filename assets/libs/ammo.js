@@ -1,8 +1,8 @@
 
   // This is ammo.js, a port of Bullet Physics to JavaScript. zlib licensed.
-    
+  
 var Ammo = (function() {
-  var _scriptDir =  typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;
+  var _scriptDir = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;
   if (typeof __filename !== 'undefined') _scriptDir = _scriptDir || __filename;
   return (
 function(Ammo) {
