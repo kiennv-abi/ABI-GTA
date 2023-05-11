@@ -11,6 +11,7 @@ import { DataManager } from "../../data/dataManager";
 export const MapEditorScreenEvent = Object.freeze({
   MapItemSelected: "MapItemSelected",
   MapSelected: "MapSelected",
+  ButtonNewMapClicked: "btnNewMapClicked",
 });
 export class MapEditorScreen extends UIScreen{
   constructor() {
@@ -18,6 +19,45 @@ export class MapEditorScreen extends UIScreen{
     this._initSelectMapPanel();
     this._initSelectMapItemPanel();
     this._initButtonDownload();
+    this._initButtonNewMap();
+  }
+
+  _initButtonNewMap() {
+    this.buttonNewMap = new Button({
+      anchor: new Vec4(0, 1, 0, 1),
+      pivot: new Vec2(0, 1),
+      margin: new Vec4(),
+      width: 100,
+      height: 50,
+    });
+    this.buttonNewMap.text.element.fontSize = 20;
+    this.buttonNewMap.text.element.text = "New Map";
+    this.addChild(this.buttonNewMap);
+    this.buttonNewMap.button.on("click", () => { 
+      this.fire(MapEditorScreenEvent.ButtonNewMapClicked);
+      this.buttonDownload.enabled = true;
+      this.scrollViewMap.enabled = true;
+      this.scrollMap.enabled = false;
+      this.btnCancel.enabled = true;
+    });
+
+    this.btnCancel = new Button({
+      anchor: new Vec4(0, 1, 0, 1),
+      pivot: new Vec2(0, 1),
+      margin: new Vec4(),
+      width: 100,
+      height: 50,
+    });
+    this.btnCancel.text.element.fontSize = 20;
+    this.btnCancel.text.element.text = "Cancle";
+    this.addChild(this.btnCancel);
+    this.btnCancel.enabled = false;
+    this.btnCancel.button.on("click", () => {
+      this.btnCancel.enabled = false;
+      this.buttonDownload.enabled = false;
+      this.scrollViewMap.enabled = false;
+      this.scrollMap.enabled = true;
+    });
   }
 
   _initButtonDownload() {
@@ -31,6 +71,7 @@ export class MapEditorScreen extends UIScreen{
     this.buttonDownload.text.element.fontSize = 20;
     this.buttonDownload.text.element.text = "Download";
     this.addChild(this.buttonDownload);
+    this.buttonDownload.enabled = false;
     this.buttonDownload.button.on("click", () => { 
       this._downloadFileJson(JSON.stringify(DataManager.mapData), "map.json");
     });
@@ -43,12 +84,12 @@ export class MapEditorScreen extends UIScreen{
       margin: new Vec4(),
     });
 
-    this.scrollViewMap = new ScrollView(this.listMap, {
+    this.scrollMap = new ScrollView(this.listMap, {
       anchor: new Vec4(0, 0, 1, 0.15),
       pivot: new Vec2(0.5, 0.5),
       margin: new Vec4(100, 0, 100, 0),
     });
-    this.addChild(this.scrollViewMap);
+    this.addChild(this.scrollMap);
 
     this.addMap({
       type: MapItemType.Map1,

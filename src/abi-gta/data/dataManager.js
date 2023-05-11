@@ -42,6 +42,17 @@ export class DataManager{
     }
   }
 
+  static replaceValue(from, to) {
+    for (let i = 0; i < this.mapData.length; i++) {
+      let row = this.mapData[i];
+      for (let j = 0; j < row.length; j++) {
+        if (row[j] === from) {
+          row[j] = to;
+        }
+      }
+    }
+  }
+
   static findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd) { 
     let result = [];
     for (let i = rowStart; i <= rowEnd; i++) {
@@ -84,7 +95,7 @@ export class DataManager{
       }
       if (count >= 2) {
         let indexes = [];
-        for (let k = startIndex; k < j; k++) {
+        for (let k = startIndex; k < row.length; k++) { 
           indexes.push([i, k]);
         }
         rowsWithOnes.push(indexes);
@@ -129,7 +140,7 @@ export class DataManager{
           column.push(row[j]);
         }
         let indexes = [];
-        for (let k = startIndex; k < i; k++) {
+        for (let k = startIndex; k < j; k++) {
           indexes.push([k, j]);
         }
         columnsWithOnes.push(indexes);
@@ -208,6 +219,7 @@ export class DataManager{
     const cols1 = arr1[0].length;
     const rows2 = arr2.length;
     const cols2 = arr2[0].length;
+    const positions = [];
 
     for (let i = 0; i <= rows1 - rows2; i++) {
       for (let j = 0; j <= cols1 - cols2; j++) {
@@ -224,11 +236,16 @@ export class DataManager{
         if (found) {
           let x = i + Math.floor(arr2.length / 2);
           let y = j + Math.floor(arr2[0].length / 2);
-          return [x, y];
+          for (let k = i; k < i + rows2; k++) {
+            for (let l = j; l < j + cols2; l++) {
+              arr1[k][l] = 0;
+            }
+          }
+          positions.push([x, y]);
         }
       }
     }
 
-    return null;
+    return positions;
   }
 }
