@@ -5,6 +5,8 @@ import { ListView } from "../core/listView";
 import { ScrollView } from "../core/scrollView";
 import MapItem, { MapItemEvent, MapItemType } from "../objects/mapItemUI";
 import { AssetLoader } from "../../../assetLoader/assetLoader";
+import { Button } from "../core/button";
+import { DataManager } from "../../data/dataManager";
 
 export const MapEditorScreenEvent = Object.freeze({
   MapItemSelected: "MapItemSelected",
@@ -15,6 +17,23 @@ export class MapEditorScreen extends UIScreen{
     super(GameConstant.SCREEN_MAP_EDITOR);
     this._initSelectMapPanel();
     this._initSelectMapItemPanel();
+    this._initButtonDownload();
+  }
+
+  _initButtonDownload() {
+    this.buttonDownload = new Button({
+      anchor: new Vec4(1, 1, 1, 1),
+      pivot: new Vec2(1, 1),
+      margin: new Vec4(),
+      width: 100,
+      height: 50,
+    });
+    this.buttonDownload.text.element.fontSize = 20;
+    this.buttonDownload.text.element.text = "Download";
+    this.addChild(this.buttonDownload);
+    this.buttonDownload.button.on("click", () => { 
+      this._downloadFileJson(JSON.stringify(DataManager.mapData), "map.json");
+    });
   }
 
   _initSelectMapPanel() {

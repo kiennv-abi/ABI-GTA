@@ -1,10 +1,9 @@
 import data from "../../../assets/jsons/mapData.json";
-import mapData1 from "../../../assets/jsons/map1Data.json";
 export class DataManager{
   static init() {
-    this.mapData = mapData1.mapData;
-    this.mapUnit = mapData1.unit;
-    this.formatData = mapData1;
+    this.mapData = data.mapData;
+    this.mapUnit = data.unit;
+    this.formatData = data;
     this.carSelected = null;
     this.carColor = null;
   }
@@ -12,8 +11,12 @@ export class DataManager{
     return this.mapData;
   }
 
-  static setMapData(data) { 
+  static setMapData(data) {
     this.mapData = data;
+  }
+
+  static resetMapData() {
+    this.mapData = data.mapData;
   }
 
   static saveMapData() { 

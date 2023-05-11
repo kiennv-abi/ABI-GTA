@@ -6,6 +6,7 @@ import { Spawner } from "../../scripts/spawners/spawner";
 import { Crossing } from "./crossing";
 import { Building } from "./building";
 import { MapItemType } from "../../ui/objects/mapItemUI";
+import { Tween } from "../../../template/systems/tween/tween";
 
 export const MapItemCode = Object.freeze({
   Road: 1,
@@ -33,9 +34,13 @@ export class Map extends Entity{
     this.roads = [];
     this.crossings = [];
     this.buildings = [];
-    this.children.forEach((child) => {
-      child.destroy();
-    });
+    for (let i = this.children.length - 1; i >= 0; i--) { 
+      let child = this.children[i];
+      if (child instanceof Brick || child instanceof Road || child instanceof Crossing || child instanceof Building) { 
+        this.removeChild(child);
+        child.destroy();
+      }
+    }
   }
 
   generate() {
@@ -59,16 +64,22 @@ export class Map extends Entity{
     roadRowData.forEach(data => this.addRoad(data));
     let collRowData = DataManager.getColumnsWithTypes(DataManager.mapData, MapItemCode.Road);
     collRowData.forEach(data => this.addRoad(data));
-    this.addCross();
     let building1Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building1);
+    if (building1Data) {
+      this.addBuilding(MapItemType.BUILDING1, building1Data[0], building1Data[1]);
+    }
     let building2Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building2);
+    if (building2Data) { 
+      this.addBuilding(MapItemType.BUILDING2, building2Data[0], building2Data[1]);
+    }
     let building3Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building3);
-    this.addBuilding(MapItemType.BUILDING1, building1Data[0], building1Data[1]);
-    this.addBuilding(MapItemType.BUILDING2, building2Data[0], building2Data[1]);
-    this.addBuilding(MapItemType.BUILDING3, building3Data[0], building3Data[1]);
+    if (building3Data) {
+      this.addBuilding(MapItemType.BUILDING3, building3Data[0], building3Data[1]);
+    }
+    this.addCross();
   }
 
-  addBuilding(buildingName, col, row) {
+  addBuilding(buildingName, row, col) {
     let buildingSpawner = this.getBuildingSpawner(buildingName);
     let building = buildingSpawner.spawn();
     let dataFormat = building.dataFormat;
@@ -81,7 +92,7 @@ export class Map extends Entity{
     building.col = col;
     building.row = row;
     DataManager.applyMapDataByStartAndEnd(building.rowStart, building.rowEnd, building.colStart, building.colEnd, dataFormat[0][0]);
-    building.setLocalPosition(row * this.gridUnit, 0, col * this.gridUnit);
+    building.setLocalPosition(col * this.gridUnit, 0, row * this.gridUnit);
     this.buildings.push(building);
     this.addChild(building);
   }
@@ -167,34 +178,6 @@ export class Map extends Entity{
       return true;
     }
     return false;
-  }
-
-  findSubarrayIndexes(arr1, arr2) {
-    const row1 = arr1.length;
-    const col1 = arr1[0].length;
-    const row2 = arr2.length;
-    const col2 = arr2[0].length;
-    const indexes = [];
-
-    for (let i = 0; i <= row1 - row2; i++) {
-      for (let j = 0; j <= col1 - col2; j++) {
-        let found = true;
-        for (let k = 0; k < row2; k++) {
-          for (let l = 0; l < col2; l++) {
-            if (arr2[k][l] !== arr1[i + k][j + l]) {
-              found = false;
-              break;
-            }
-          }
-          if (!found) break;
-        }
-        if (found) {
-          indexes.push([i, j]);
-        }
-      }
-    }
-
-    return indexes;
   }
 
   getIntersection(matrix) {

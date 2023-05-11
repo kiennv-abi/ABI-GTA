@@ -8,6 +8,8 @@ import { MapEditorScreen, MapEditorScreenEvent } from "../ui/screens/mapEditorSc
 import { DataManager } from "../data/dataManager";
 import { MapItemType } from "../ui/objects/mapItemUI";
 import { Game } from "../../game";
+import mapData1 from "../../../assets/jsons/map1Data.json";
+import mapData2 from "../../../assets/jsons/map2Data.json";
 
 export class MapEditorScene extends Scene{
   constructor(){
@@ -21,6 +23,7 @@ export class MapEditorScene extends Scene{
     );
     this.mapEditorScreen = this.ui.getScreen(GameConstant.SCREEN_MAP_EDITOR);
     this.mapEditorScreen.on(MapEditorScreenEvent.MapItemSelected, this.onMapItemSelected, this);
+    this.mapEditorScreen.on(MapEditorScreenEvent.MapSelected, this.onMapSelected, this);
     this.ui.setScreenActive(GameConstant.SCREEN_MAP_EDITOR);
     this._initialize();
   }
@@ -274,5 +277,17 @@ export class MapEditorScene extends Scene{
         console.log("Map is full");
       }
     }
+  }
+
+  onMapSelected(type) {
+    let data = null;
+    if (type === MapItemType.Map1) {
+      data = mapData1.mapData;
+    } else if (type === MapItemType.Map2) {
+      data = mapData2.mapData;
+    }
+    DataManager.resetMapData();
+    DataManager.setMapData(JSON.parse(JSON.stringify(data)));
+    this.map.generate();
   }
 }
