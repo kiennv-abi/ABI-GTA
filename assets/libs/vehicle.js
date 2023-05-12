@@ -145,7 +145,7 @@ export function vehicleScript(){
             var q = t.getRotation();
     
             var wheel = this.wheels[i];
-            wheel.setPosition(p.x(), p.y(), p.z());
+            // wheel.setPosition(p.x(), p.y(), p.z());
             wheel.setRotation(q.x(), q.y(), q.z(), q.w());
         }
     };

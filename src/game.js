@@ -13,11 +13,12 @@ import { Time } from "./template/systems/time/time";
 import { Tween } from "./template/systems/tween/tween";
 import { Application, ElementInput, Keyboard, Mouse, TouchDevice, FILLMODE_FILL_WINDOW, RESOLUTION_AUTO, WasmModule } from "playcanvas";
 import "./template/extensions/index";
-import { AssetConfigurator } from "./abi-gta/configtor/assetConfigtor";
 import { Configurator } from "./abi-gta/configtor/configtor";
 import { MapEditorScene } from "./abi-gta/scenes/mapEditorScene";
 import { DataManager } from "./abi-gta/data/dataManager";
 import { SelectCarScreenEvent } from "./abi-gta/ui/screens/selectCarScreen";
+import { MapEditorScreenEvent } from "./abi-gta/ui/screens/mapEditorScreen";
+import { PlayScene } from "./abi-gta/scenes/playScene";
 export class Game {
   
   static init() {
@@ -59,6 +60,8 @@ export class Game {
     Tween.init(this.app);
     Configurator.config(this.app);
     DataManager.init();
+    this.app.start();
+    this.app.on("update", this.update, this);
   }
 
   static create() {
@@ -70,14 +73,18 @@ export class Game {
     SceneManager.init([
       new SelectScene(),
       new MapEditorScene(),
+      new PlayScene(),
     ]);
-    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
+    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_SELECT));
     this.selectCarScene = SceneManager.getScene(GameConstant.SCENE_SELECT);
+    this.mapEditorScene = SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR);
     this.selectCarScene.on(SelectCarScreenEvent.ButtonPlayClicked, () => { 
       SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
     });
-    this.app.start();
-    this.app.on("update", this.update, this);
+    this.mapEditorScene.on(MapEditorScreenEvent.ButtonNextClicked, () => {
+      SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_PLAY));
+    });
+  
   }
 
   static update(dt) {

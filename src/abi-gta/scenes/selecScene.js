@@ -1,11 +1,10 @@
-import { BLEND_NORMAL, Color, Entity, LIGHTTYPE_DIRECTIONAL, StandardMaterial } from "playcanvas";
+import { BLEND_NORMAL, Color, Entity, LIGHTTYPE_DIRECTIONAL, StandardMaterial, Vec3 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { CarViewer } from "../objects/car/carViewer";
 import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarScreen";
 import { CarSpecifics, CarType } from "../objects/car/car";
 import { DataManager } from "../data/dataManager";
-import { SceneManager } from "../../template/scene/sceneManager";
 
 export class SelectScene extends Scene{
   constructor() {
@@ -53,11 +52,19 @@ export class SelectScene extends Scene{
     this.addChild(this.ground);
     this.ground.addComponent("model", { type: "plane" });
     this.ground.setLocalScale(8, 1, 8);
+    // this.ground.setLocalPosition(0, 0, 0);
     let mat = new StandardMaterial();
     mat.blendType = BLEND_NORMAL;
     mat.diffuse = new Color(0.5, 0.5, 0.5);
     mat.opacity = 1;
     this.ground.model.meshInstances[0].material = mat;
+    this.ground.addComponent("rigidbody", {
+      type: "static",
+    });
+    this.ground.addComponent("collision", {
+      type: "box",
+      halfExtents: new Vec3(10, 0.1, 10),
+    });
   }
 
   _initLight() {
@@ -82,9 +89,9 @@ export class SelectScene extends Scene{
     super.update(dt);
     this.currTime += dt;
     this.mainCamera.setLocalPosition(
-      5 * Math.sin(this.currTime * 0.1),
+      10 * Math.sin(this.currTime * 0.1),
       3,
-      5 * Math.cos(this.currTime * 0.1)
+      10 * Math.cos(this.currTime * 0.1)
     );
     this.mainCamera.lookAt(this.carViewer.getPosition());
   }

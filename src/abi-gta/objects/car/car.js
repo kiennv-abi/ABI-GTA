@@ -74,31 +74,81 @@ export const CarSpecifics = Object.freeze({
 });
 
 export class Car extends Entity{
-  constructor(modelCar, modelWheel) {
+  constructor(modelCar) {
     super();
+    this.modelAsset = AssetLoader.getAssetByKey(modelCar);
+    this.wheels = [];
     this.carModel = new Entity();
-    this.carModel.addComponent("model", { asset: AssetLoader.getAssetByKey(modelCar) });
+    this.carModel.addComponent("model", { asset: this.modelAsset });
     this.addChild(this.carModel);
     this.colorCode = 1;
-    this.wheelFl = new Entity();
-    this.wheelFl.addComponent("model", { asset: AssetLoader.getAssetByKey(modelWheel) });
-    this.addChild(this.wheelFl);
-    this.wheelFr = this.wheelFl.clone();
-    this.addChild(this.wheelFr);
-    this.wheelBl = this.wheelFl.clone();
-    this.addChild(this.wheelBl);
-    this.wheelBr = this.wheelFl.clone();
-    this.addChild(this.wheelBr);
+  
+    this.wfl = this.createWheel(true, 180);
+    this.wfr = this.createWheel(true, 0);
+    this.wbl =this.createWheel(false, 180);
+    this.wbr= this.createWheel(false, 0);
 
-    this.wheelFl.setLocalEulerAngles(0, 180, 0);
-    this.wheelBl.setLocalEulerAngles(0, 180, 0);
+    this.addComponent("rigidbody", {
+      mass: 800,
+      type: "dynamic",
+    });
+
+    this.addComponent("collision", {
+      type: "compound",
+    });
+
+    this.addComponent("script");
+    this.script.create("vehicle", {
+      attributes: {
+        wheels: this.wheels,
+      },
+    });
+
+    this.script.create("vehicleControls");
+
+    // Create the car chassis, offset upwards in Y from the compound body
+    this.carModel.addComponent("collision", {
+      type: "box",
+      halfExtents: [1, 0.1, 1],
+    });
+
+    // Create the car chassis, offset upwards in Y from the compound body
+    const cab = new pc.Entity("Cab");
+    cab.addComponent("collision", {
+      type: "box",
+      halfExtents: [1, 0.5, 1],
+    });
+
+    cab.setLocalPosition(0, 0.1, 0);
+    this.carModel.addChild(cab);
+  }
+
+  createWheel(isFront, angle) { 
+    let asset;
+    if (angle > 0) {
+      asset = AssetLoader.getAssetByKey("model_wheelr");
+    } else {
+      asset = AssetLoader.getAssetByKey("model_wheell");
+    }
+    let wheel = new Entity();
+    wheel.addComponent("model", { asset: asset });
+    wheel.addComponent("script");
+    wheel.script.create("vehicleWheel", {
+      attributes: {
+        debugRender: false,
+        isFront: isFront,
+      },
+    });
+    this.wheels.push(wheel);
+    this.carModel.addChild(wheel);
+    return wheel;
   }
 
   configWheel(posFront, posBack, posLeft, posRight, posY) {
-    this.wheelFl.setLocalPosition(posLeft, posY, posFront);
-    this.wheelFr.setLocalPosition(posRight, posY, posFront);
-    this.wheelBl.setLocalPosition(posLeft, posY, posBack);
-    this.wheelBr.setLocalPosition(posRight, posY, posBack);
+    this.wbl.setLocalPosition(posLeft, posY, posFront);
+    this.wbr.setLocalPosition(posRight, posY, posFront);
+    this.wfl.setLocalPosition(posLeft, posY, posBack);
+    this.wfr.setLocalPosition(posRight, posY, posBack);
   }
 
   changeSkin(colorCode) {
@@ -108,4 +158,5 @@ export class Car extends Entity{
     this.carModel.model.meshInstances[3].material = mat;
     this.colorCode = colorCode;
   }
+
 }

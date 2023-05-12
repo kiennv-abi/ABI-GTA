@@ -9,12 +9,12 @@ export class CarViewer extends Entity{
   }
 
   _initCar() {
-    this.policeCar = new Car("model_car_police", "model_car_wheel");
+    this.policeCar = new Car("model_car_police");
     this.addChild(this.policeCar);
-    this.policeCar.configWheel(1.609, -1.262, 0.659, -0.659, 0.384);
-    this.muscleCar = new Car("model_car_muscle", "model_car_wheel");
+    this.policeCar.configWheel(-1.262, 1.609, 0.659, -0.659, 0.3);
+    this.muscleCar = new Car("model_car_muscle");
     this.addChild(this.muscleCar);
-    this.muscleCar.configWheel(-1.373, 1.906, 0.8, -0.8, 0.384);
+    this.muscleCar.configWheel(-1.373, 1.906, 0.8, -0.8, 0.3);
   }
 
   changeColor(type, colorCode) {

@@ -12,6 +12,7 @@ export const MapEditorScreenEvent = Object.freeze({
   MapItemSelected: "MapItemSelected",
   MapSelected: "MapSelected",
   ButtonNewMapClicked: "btnNewMapClicked",
+  ButtonNextClicked: "btnNextClicked",
 });
 export class MapEditorScreen extends UIScreen{
   constructor() {
@@ -49,7 +50,7 @@ export class MapEditorScreen extends UIScreen{
       height: 50,
     });
     this.btnCancel.text.element.fontSize = 20;
-    this.btnCancel.text.element.text = "Cancle";
+    this.btnCancel.text.element.text = "Cancel";
     this.addChild(this.btnCancel);
     this.btnCancel.enabled = false;
     this.btnCancel.button.on("click", () => {
@@ -57,6 +58,21 @@ export class MapEditorScreen extends UIScreen{
       this.buttonDownload.enabled = false;
       this.scrollViewMap.enabled = false;
       this.scrollMap.enabled = true;
+    });
+
+    this.btnNext = new Button({
+      anchor: new Vec4(1, 0, 1, 0),
+      pivot: new Vec2(1, 0),
+      margin: new Vec4(),
+      width: 100,
+      height: 50,
+    });
+    this.btnNext.text.element.fontSize = 20;
+    this.btnNext.text.element.text = "Next";
+    this.addChild(this.btnNext);
+    this.btnNext.enabled = false;
+    this.btnNext.button.on("click", () => {
+      this.fire(MapEditorScreenEvent.ButtonNextClicked);
     });
   }
 
@@ -151,6 +167,7 @@ export class MapEditorScreen extends UIScreen{
     this.listMap.addItem(item);
     item.on(MapItemEvent.Selected, (type) => {
       this.fire(MapEditorScreenEvent.MapSelected, type);
+      this.btnNext.enabled = true;
     });
     return item;
   }
