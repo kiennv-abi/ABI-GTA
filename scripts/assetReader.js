@@ -50,9 +50,10 @@ function read(type) {
   const files = fs.readdirSync(path.resolve(__dirname, "../assets/" + type));
   let data = [];
   files.forEach((file) => {
+    if(file === ".DS_Store") return;
     data.push({
       key: file.split(".")[0],
-      url: `../${type}/${file}`,
+      url: `../../assets/${type}/${file}`,
       type: type.slice(0, -1), // remove 's' from type
     });
   });
