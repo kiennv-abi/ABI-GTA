@@ -64,7 +64,8 @@ export class AssetConfigurator {
     let texEmissive = AssetLoader.getAssetByKey("tex_emissive_01").resource;
     mat.diffuseMap = tex;
     mat.emissiveMap = texEmissive;
-    this.setModelMaterial("model_car_wheel", mat);
+    this.setModelMaterial("model_wheell", mat);
+    this.setModelMaterial("model_wheelr", mat);
   }
 
   static _configMaterialCars() {
