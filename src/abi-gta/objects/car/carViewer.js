@@ -11,9 +11,11 @@ export class CarViewer extends Entity{
   _initCar() {
     this.policeCar = new Car("model_car_police");
     this.addChild(this.policeCar);
+    this.policeCar.setLocalPosition(0, 2, 0);
     this.policeCar.configWheel(WheelConfig.Police);
     this.muscleCar = new Car("model_car_muscle");
     this.addChild(this.muscleCar);
+    this.muscleCar.setLocalPosition(0, 2, 0);
     this.muscleCar.configWheel(WheelConfig.Muscle);
   }
 
