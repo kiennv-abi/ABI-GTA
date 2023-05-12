@@ -1,8 +1,9 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
+import { BLEND_NORMAL, Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
 import { DataManager } from "../data/dataManager";
+import { Car, CarType, WheelConfig } from "../objects/car/car";
 
 export class PlayScene extends Scene {
   constructor() {
@@ -28,17 +29,35 @@ export class PlayScene extends Scene {
     DataManager.mapData = DataManager.map1;
     this.map = new Map();
     this.addChild(this.map);
-
+    this._initCar();
     this._initGround();
+  }
+
+  _initCar() {
+    let carType = DataManager.carSelected;
+    let modelAsset = null;
+    let config = null;
+    if (carType === CarType.MuscleCar) {
+      modelAsset = "model_car_muscle";
+      config = WheelConfig.Muscle;
+    } else {
+      modelAsset = "model_car_police";
+      config = WheelConfig.Police;
+    }
+    this.car = new Car(modelAsset);
+    this.car.configWheel(config);
+    this.car.changeSkin(DataManager.carColor);
+    this.car.setLocalPosition(50, 5, 50);
+    this.addChild(this.car);
   }
 
   _initGround() {
     this.ground = new Entity();
     this.addChild(this.ground);
-    this.ground.addComponent("render", {
+    this.ground.addComponent("model", {
       type: "box"
     });
-    this.rigid = this.ground.addComponent("rigidbody", {
+    this.ground.addComponent("rigidbody", {
       type: "static",
     });
     let sizeCol = (this.map.col + 1) * this.map.gridUnit;
@@ -49,6 +68,10 @@ export class PlayScene extends Scene {
       type: "box",
       halfExtents: new Vec3(sizeRow / 2, 1, sizeCol / 2),
     });
+    let mat = this.ground.model.meshInstances[0].material.clone();
+    mat.blendType = BLEND_NORMAL;
+    mat.opacity = 0;
+    this.ground.model.meshInstances[0].material = mat;
   }
 
   _initCamera() {

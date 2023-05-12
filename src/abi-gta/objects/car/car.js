@@ -13,6 +13,23 @@ export const CarColorCode = Object.freeze({
   Color3: 3,
 });
 
+export const WheelConfig = Object.freeze({
+  Police: {
+    Front: -1.262,
+    Back: 1.609,
+    Left: 0.659,
+    Right: -0.659,
+    Y: 0.3,
+  },
+  Muscle: {
+    Front: -1.373,
+    Back: 1.906,
+    Left: 0.8,
+    Right: -0.8,
+    Y: 0.3,
+  }
+});
+
 export const CarSpecifics = Object.freeze({
   Muscle: {
     Name: "Muscle Car",
@@ -89,7 +106,7 @@ export class Car extends Entity{
     this.wbr= this.createWheel(false, 0);
 
     this.addComponent("rigidbody", {
-      mass: 800,
+      mass: 1000,
       type: "dynamic",
     });
 
@@ -109,17 +126,17 @@ export class Car extends Entity{
     // Create the car chassis, offset upwards in Y from the compound body
     this.carModel.addComponent("collision", {
       type: "box",
-      halfExtents: [1, 0.1, 1],
+      halfExtents: [1, 0.35, 3],
     });
 
     // Create the car chassis, offset upwards in Y from the compound body
     const cab = new pc.Entity("Cab");
     cab.addComponent("collision", {
       type: "box",
-      halfExtents: [1, 0.5, 1],
+      halfExtents: [0.5, 0.2, 1],
     });
 
-    cab.setLocalPosition(0, 0.1, 0);
+    cab.setLocalPosition(0, 0.1, -0.25);
     this.carModel.addChild(cab);
   }
 
@@ -144,11 +161,11 @@ export class Car extends Entity{
     return wheel;
   }
 
-  configWheel(posFront, posBack, posLeft, posRight, posY) {
-    this.wbl.setLocalPosition(posLeft, posY, posFront);
-    this.wbr.setLocalPosition(posRight, posY, posFront);
-    this.wfl.setLocalPosition(posLeft, posY, posBack);
-    this.wfr.setLocalPosition(posRight, posY, posBack);
+  configWheel(config) {
+    this.wbl.setLocalPosition(config.Left, config.Y, config.Front);
+    this.wbr.setLocalPosition(config.Right, config.Y, config.Front);
+    this.wfl.setLocalPosition(config.Left, config.Y, config.Back);
+    this.wfr.setLocalPosition(config.Right, config.Y, config.Back);
   }
 
   changeSkin(colorCode) {
@@ -158,5 +175,4 @@ export class Car extends Entity{
     this.carModel.model.meshInstances[3].material = mat;
     this.colorCode = colorCode;
   }
-
 }

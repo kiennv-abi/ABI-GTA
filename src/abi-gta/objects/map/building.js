@@ -16,6 +16,13 @@ export class Building extends Entity{
     this.addComponent("model", {
       asset: AssetLoader.getAssetByKey(modelAsset),
     });
+    this.addComponent("collision", {
+      type: "mesh",
+      asset: AssetLoader.getAssetByKey(modelAsset),
+    });
+    this.addComponent("rigidbody", {
+      type: "static",
+    });
   }
 
   _initCastBox(size) {
