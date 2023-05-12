@@ -4,6 +4,7 @@ import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
 import { DataManager } from "../data/dataManager";
 import { Car, CarType, WheelConfig } from "../objects/car/car";
+import { Follow } from "../scripts/components/follow";
 
 export class PlayScene extends Scene {
   constructor() {
@@ -23,6 +24,7 @@ export class PlayScene extends Scene {
     this._initCamera();
     this._initLight();
     this._initMap();
+    this._initCameraFollow();
   }
 
   _initMap() {
@@ -51,6 +53,15 @@ export class PlayScene extends Scene {
     this.addChild(this.car);
   }
 
+  _initCameraFollow(){
+    this.mainCamera.addScript(Follow, {
+      target: this.car,
+      speed: 3,
+      defaultY: 10,
+      offset: new Vec3(0, 0, -10)
+    });
+  }
+
   _initGround() {
     this.ground = new Entity();
     this.addChild(this.ground);
@@ -66,7 +77,7 @@ export class PlayScene extends Scene {
     this.ground.setLocalPosition(this.map.row * this.map.gridUnit / 2, 0, this.map.col * this.map.gridUnit / 2);
     this.ground.addComponent("collision", {
       type: "box",
-      halfExtents: new Vec3(sizeRow / 2, 1, sizeCol / 2),
+      halfExtents: new Vec3(sizeRow / 2, 0.1, sizeCol / 2),
     });
     let mat = this.ground.model.meshInstances[0].material.clone();
     mat.blendType = BLEND_NORMAL;
@@ -83,7 +94,7 @@ export class PlayScene extends Scene {
       fov: 45,
       nearClip: 0.1,
     });
-    this.mainCamera.setLocalPosition(50, 80, 170);
+    this.mainCamera.setLocalPosition(0, 10, 10);
     this.mainCamera.setLocalEulerAngles(-40, 0, 0);
   }
 
