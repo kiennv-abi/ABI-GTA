@@ -11,7 +11,7 @@ import { InputManager } from "./template/systems/input/inputManager";
 import { GameState, GameStateManager } from "./template/gameStateManager";
 import { Time } from "./template/systems/time/time";
 import { Tween } from "./template/systems/tween/tween";
-import { Application, ElementInput, Keyboard, Mouse, TouchDevice, FILLMODE_FILL_WINDOW, RESOLUTION_AUTO, WasmModule } from "playcanvas";
+import { Application, ElementInput, Keyboard, Mouse, TouchDevice, FILLMODE_FILL_WINDOW, RESOLUTION_AUTO, WasmModule, EVENT_KEYDOWN, KEY_R } from "playcanvas";
 import "./template/extensions/index";
 import { Configurator } from "./abi-gta/configtor/configtor";
 import { MapEditorScene } from "./abi-gta/scenes/mapEditorScene";
@@ -45,6 +45,11 @@ export class Game {
     RenderPhysics();
     TrackingCamera();
     ActionPhysicsReset();
+    this.app.keyboard.on(EVENT_KEYDOWN, (e) => {
+      if (e.key === KEY_R) {
+        this.app.fire("reset");
+      };
+    });
     WasmModule.getInstance("Ammo", () => {
       AssetLoader.loadAssets(this.app, () => {
         this.load();

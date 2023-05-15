@@ -138,6 +138,12 @@ export class Car extends Entity{
 
     cab.setLocalPosition(0, 0.1, -0.25);
     this.carModel.addChild(cab);
+
+    this.script.create("actionPhysicsReset", {
+      attributes: {
+        event: "reset",
+      },
+    });
   }
 
   createWheel(isFront, angle) { 

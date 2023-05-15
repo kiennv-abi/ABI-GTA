@@ -10,6 +10,11 @@ export class Building extends Entity{
     this._initModel(modelAsset);
     this._initCastBox(castBoxSize);
     this._initShadow(shadowConfig);
+    this.script.create("actionPhysicsReset", {
+      attributes: {
+        event: "reset",
+      },
+    });
   }
 
   _initModel(modelAsset) {
