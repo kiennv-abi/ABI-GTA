@@ -53,7 +53,7 @@ function read(type) {
     if(file === ".DS_Store") return;
     data.push({
       key: file.split(".")[0],
-      url: `../../assets/${type}/${file}`,
+      url: `assets/${type}/${file}`,
       type: type.slice(0, -1), // remove 's' from type
     });
   });

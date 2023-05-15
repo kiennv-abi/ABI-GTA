@@ -36,9 +36,8 @@ export class Game {
     window.addEventListener("resize", () => this.app.resizeCanvas);
 
     WasmModule.setConfig("Ammo", {
-      glueUrl: "../assets/libs/ammo.wasm.js",
-      wasmUrl: "../assets/libs/ammo.wasm.wasm",
-      fallbackUrl: "../assets/libs/ammo.js",
+      wasmUrl: "assets/libs/ammo.wasm.wasm",
+      fallbackUrl: "assets/libs/ammo.js",
     });
     loadObitCameraPlugin();
     vehicleScript();
