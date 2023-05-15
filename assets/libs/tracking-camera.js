@@ -1,0 +1,1 @@
+export function TrackingCamera(){var t=pc.createScript("trackingCamera");t.attributes.add("target",{type:"entity"}),t.prototype.postUpdate=function(t){if(this.target){var a=this.target.getPosition();this.entity.lookAt(a)}}}
