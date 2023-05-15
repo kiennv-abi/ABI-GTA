@@ -8,6 +8,10 @@
     "webpack-cli": "^5.1.1",
     "webpack-dev-server": "^4.15.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiennv-abi/ABI-GTA.git"
+  },
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
@@ -16,11 +20,12 @@
   },
   "name": "abi-gta",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "game.js",
   "scripts": {
     "data": "node ./scripts/assetReader.js",
     "start": "webpack serve --env env=dev --open",
     "build": "webpack --env env=preview",
+    "clean-gh-pages-cached": "node node_modules/gh-pages/bin/gh-pages-clean",
     "deploy": "gh-pages -d dist"
   },
   "author": "Kien Nguyen",
