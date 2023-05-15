@@ -126,14 +126,14 @@ export class Car extends Entity{
     // Create the car chassis, offset upwards in Y from the compound body
     this.carModel.addComponent("collision", {
       type: "box",
-      halfExtents: [1, 0.35, 3],
+      halfExtents: [1, 0.3, 3],
     });
 
     // Create the car chassis, offset upwards in Y from the compound body
     const cab = new pc.Entity("Cab");
     cab.addComponent("collision", {
       type: "box",
-      halfExtents: [0.5, 0.2, 1],
+      halfExtents: [0.5, 0.1, 1],
     });
 
     cab.setLocalPosition(0, 0.1, -0.25);
