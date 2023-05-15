@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const WebpackCopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
 module.exports = {
@@ -47,5 +48,10 @@ module.exports = {
       inlineSource: ".(js|css)$",
     }),
     new HtmlInlineScriptPlugin(),
+    new WebpackCopyPlugin({
+      patterns: [
+        { from: "assets", to: "assets" },
+      ],
+    }),
   ],
 };
