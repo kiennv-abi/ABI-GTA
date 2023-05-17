@@ -24,7 +24,7 @@ export const Follow = Script.createScript({
     this._targetPos.add2(this.target.getPosition(), this.offset);
     this._targetPos.set(this._targetPos.x, this.defaultY, this._targetPos.z);
     this._tmpPos.lerp(this.entity.getPosition(), this._targetPos, this.speed * Time.dt);
-    this.entity.setPosition(this._tmpPos);
+    this.entity.setPosition(this._targetPos);
     this.entity.lookAt(this.target.getPosition());
   },
 });

@@ -5,6 +5,7 @@ import { Map } from "../objects/map/map";
 import { DataManager } from "../data/dataManager";
 import { Car, CarType, WheelConfig } from "../objects/car/car";
 import { Follow } from "../scripts/components/follow";
+import { PlayScreen } from "../ui/screens/playScreen";
 
 export class PlayScene extends Scene {
   constructor() {
@@ -13,6 +14,11 @@ export class PlayScene extends Scene {
 
   create() {
     super.create();
+    this.ui.addScreens(
+      new PlayScreen()
+    );
+    this.screenplay = this.ui.getScreen(GameConstant.SCREEN_PLAY);
+    this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
     this._initialize();
   }
 
@@ -21,9 +27,9 @@ export class PlayScene extends Scene {
   }
 
   _initialize() {
-    this._initCamera();
     this._initLight();
     this._initMap();
+    this._initCamera();
     this._initCameraFollow();
   }
 
@@ -51,6 +57,12 @@ export class PlayScene extends Scene {
     this.car.changeSkin(DataManager.carColor);
     this.car.setLocalPosition(50, 5, 50);
     this.addChild(this.car);
+
+    this.car.vehicleControl.leftButton = this.screenplay.leftButton;
+    this.car.vehicleControl.rightButton = this.screenplay.rightButton;
+    this.car.vehicleControl.forwardButton = this.screenplay.forwardButton;
+    this.car.vehicleControl.reverseButton = this.screenplay.reverseButton;
+    this.car.vehicleControl.initialize();
   }
 
   _initCameraFollow(){
@@ -91,9 +103,11 @@ export class PlayScene extends Scene {
     this.mainCamera.addComponent("camera", {
       clearColor: new Color(0, 0, 0),
       farClip: 1000,
-      fov: 45,
+      fov: 60,
       nearClip: 0.1,
     });
+    // this.mainCamera.setLocalPosition(5, 10, -10);
+    // this.mainCamera.setLocalEulerAngles(-30, 180, 0);
     this.mainCamera.setLocalPosition(0, 10, 10);
     this.mainCamera.setLocalEulerAngles(-40, 0, 0);
   }

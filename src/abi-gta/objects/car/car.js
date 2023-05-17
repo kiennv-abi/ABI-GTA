@@ -106,7 +106,7 @@ export class Car extends Entity{
     this.wbr= this.createWheel(false, 0);
 
     this.addComponent("rigidbody", {
-      mass: 1000,
+      mass: 3000,
       type: "dynamic",
     });
 
@@ -121,7 +121,7 @@ export class Car extends Entity{
       },
     });
 
-    this.script.create("vehicleControls");
+    this.vehicleControl = this.script.create("vehicleControls");
 
     // Create the car chassis, offset upwards in Y from the compound body
     this.carModel.addComponent("collision", {
