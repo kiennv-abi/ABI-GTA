@@ -19,6 +19,7 @@ import { DataManager } from "./abi-gta/data/dataManager";
 import { SelectCarScreenEvent } from "./abi-gta/ui/screens/selectCarScreen";
 import { MapEditorScreenEvent } from "./abi-gta/ui/screens/mapEditorScreen";
 import { PlayScene } from "./abi-gta/scenes/playScene";
+import { TestScene } from "./abi-gta/scenes/testScene";
 export class Game {
   
   static init() {
@@ -79,8 +80,9 @@ export class Game {
       new SelectScene(),
       new MapEditorScene(),
       new PlayScene(),
+      new TestScene(),
     ]);
-    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_SELECT));
+    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_TEST));
     this.selectCarScene = SceneManager.getScene(GameConstant.SCENE_SELECT);
     this.mapEditorScene = SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR);
     this.selectCarScene.on(SelectCarScreenEvent.ButtonPlayClicked, () => { 
