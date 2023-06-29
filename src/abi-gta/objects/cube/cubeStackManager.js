@@ -1,4 +1,4 @@
-import { Entity } from "playcanvas";
+import { Entity, Vec3 } from "playcanvas";
 import { Spawner } from "../../scripts/spawners/spawner";
 import { Cube } from "./cube";
 import { Time } from "../../../template/systems/time/time";

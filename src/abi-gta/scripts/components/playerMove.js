@@ -30,14 +30,18 @@ export const PlayerMovement = Script.createScript({
     var direction = this.currPos.clone().sub(this.startPos).normalize();
     var xMovement = direction.x * this.speed * Time.dt;
     var zMovement = direction.y * this.speed * Time.dt;
-    let rot = this.entity.getRotation();
-    let angle = Math.atan2(direction.x, direction.y);
-    angle = angle * 180 / Math.PI;
-    this.entity.setEulerAngles(rot.x, angle, rot.z);
+    this.rotate(direction);
     this._tmpPos.copy(this.entity.getPosition());
     this._tmpPos.x += xMovement;
     this._tmpPos.z += zMovement;
     this.entity.setPosition(this._tmpPos);
+  },
+
+  rotate(direction) {
+    let rot = this.entity.getRotation();
+    let angle = Math.atan2(direction.x, direction.y);
+    angle = angle * 180 / Math.PI;
+    this.entity.setEulerAngles(rot.x, angle, rot.z);
   },
 
   onPointerDown(event) {
