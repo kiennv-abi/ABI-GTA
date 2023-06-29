@@ -30,12 +30,21 @@ export class CubeStackManager extends Entity {
     });
   }
 
+  stopMove() {
+    this.cubes.forEach(cube => {
+      cube.activeMove(false);
+    });
+  }
+
+  startMove() {
+    this.cubes.forEach(cube => {
+      cube.activeMove(true);
+    });
+  }
+
   spawnCubes(amount) {
-    let delay = 0;
     for (let i = 0; i < amount; i++) {
-      let cube = this.spawnCube();
-      delay = Math.abs((cube.getPosition().z - this.player.getPosition().z) * 3 / GameConstant.PLAYER_SPEED);
-      // cube.setLocalScale(0, 0, 0);
+      this.spawnCube();
     }
   }
 
@@ -50,11 +59,12 @@ export class CubeStackManager extends Entity {
     }
     let spawnPos = cubeAhead.getPosition();
     spawnPos.z += this.stackSpace;
-    let ball = this.spawner.spawnTo(spawnPos, this);
-    this.cubes.push(ball);
-    let delayTime = isFirstCube ? 0.2 : cubeAhead.mover.delayTime + 0.2;
-    delayTime = Math.max(delayTime, 0.2);
-    ball.reset(delayTime);
-    return ball;
+    let cube = this.spawner.spawnTo(spawnPos, this);
+    this.cubes.push(cube);
+    cube.setEulerAngles(cubeAhead.getEulerAngles());
+    let delayTime = isFirstCube ? 0.3 : cubeAhead.mover.delayTime + 0.3;
+    delayTime = Math.max(delayTime, 0.3);
+    cube.reset(delayTime);
+    return cube;
   }
 }

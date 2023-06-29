@@ -6,6 +6,7 @@ import { Cube } from "../objects/cube/cube";
 import { Player } from "../objects/cube/player";
 import { DetectPositionChanged } from "../scripts/components/detectPositionChanged";
 import { CubeStackManager } from "../objects/cube/cubeStackManager";
+import { Tween } from "../../template/systems/tween/tween";
 
 export class TestScene extends Scene{
   constructor() {
@@ -47,20 +48,27 @@ export class TestScene extends Scene{
   _initPlayer() {
     this.player = new Player();
     this.addChild(this.player);
-
-    this.cubeStack = new CubeStackManager(this.player, 1);
+    this.player.setLocalScale(1, 1, 1);
+    this.cubeStack = new CubeStackManager(this.player, 0.5);
     this.addChild(this.cubeStack);
 
-    this.player.addScript(DetectPositionChanged, {
+    this.detectPositionChange = this.player.addScript(DetectPositionChanged, {
       onPositionChanged: this.cubeStack.enqueuePosition.bind(this.cubeStack),
-      delta: 0.1,
+      delta: 0.05,
     });
 
-    this.cubeStack.spawnCubes(2);
+    Tween.createCountTween({
+      duration: 2,
+      loop: true,
+      onRepeat: () => {
+        this.cubeStack.spawnCubes(1);
+      },
+    }).start();
   }
 
   _onPointerDown(e) {
     this.player.playerMove.onPointerDown(e);
+    this.cubeStack.startMove();
   }
 
   _onPointerMove(e){
@@ -69,6 +77,7 @@ export class TestScene extends Scene{
 
   _onPointerUp(e) {
     this.player.playerMove.onPointerUp(e);
+    this.cubeStack.stopMove();
   }
 
   _initCamera() {

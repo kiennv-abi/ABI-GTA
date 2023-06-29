@@ -8,16 +8,25 @@ export class Cube extends Entity{
     this.addComponent("model", {
       type: "box",
     });
+
+    this.mover = this.addScript(MoveWithPath, {
+      speed: GameConstant.PLAYER_SPEED,
+    });
+    this.activeMove(false);
+    this.setLocalScale(0.5, 0.5, 0.5);
   }
 
   reset(delayTime) {
-    if (!this.mover) {
-      this.mover = this.addScript(MoveWithPath, {
-        speed: GameConstant.PLAYER_SPEED,
-      });
-    }
-    this.mover.enabled = true;
+    this.activeMove(true);
     this.mover.reset(delayTime);
-    this.setLocalScale(0.5, 0.5, 0.5);
+  }
+
+  set z(z) {
+    let pos = this.getPosition();
+    this.setPosition(pos.x, pos.y, z);
+  }
+
+  activeMove(active) {
+    this.mover.enabled = active;
   }
 }
