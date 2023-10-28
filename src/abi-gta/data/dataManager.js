@@ -1,7 +1,6 @@
 import data from "../../../assets/jsons/mapData.json";
 import map1 from "../../../assets/jsons/map1Data.json";
 import map2 from "../../../assets/jsons/map2Data.json";
-import { CarColorCode, CarType } from "../objects/car/car";
 export class DataManager{
   static init() {
     this.mapData = data.mapData;
@@ -9,8 +8,8 @@ export class DataManager{
     this.map2 = map2.mapData;
     this.mapUnit = data.unit;
     this.formatData = data;
-    this.carSelected = CarType.MuscleCar;
-    this.carColor = CarColorCode.Color1;
+    // this.carSelected = CarType.MuscleCar;
+    // this.carColor = CarColorCode.Color1;
   }
   static getMapData() { 
     return this.mapData;

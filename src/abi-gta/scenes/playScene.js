@@ -1,5 +1,7 @@
+import { Color, Entity } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
+import { Car } from "../objects/car/car";
 
 export class PlayScene extends Scene {
   constructor() {
@@ -10,11 +12,5 @@ export class PlayScene extends Scene {
     super.create();
   }
 
-  update(dt) {
-    super.update(dt);
-  }
-
-  _initialize() {
-   
-  }
+  
 }
