@@ -3,7 +3,9 @@ import { app, Color, Entity, StandardMaterial } from "playcanvas";
 export class Car extends Entity{
   constructor(type, color) {
     super();
+    this.color = color;
     this._init(type, color);
+    
   }
   _init(type, color) {
     let assetCar = app.assets.find(type)
@@ -13,18 +15,20 @@ export class Car extends Entity{
       asset : assetCar,
     });
     this.addChild(this.car);
+    this.car.setLocalPosition(2.5, 0, 2.2);
+    this.car.setEulerAngles(0.5, -50, 0)
 
     let tex_mat = app.assets.find("tex_car_police_01").resource;
-    let materialCar = new StandardMaterial();
-    materialCar.diffuseMap = tex_mat;
-    materialCar.emissiveMap = tex_mat;
-    materialCar.diffuseTint = true;
-    materialCar.diffuse = color;
-    materialCar.emissive = new Color(0, 0, 0);
-    materialCar.emissiveIntensity = 0.1;
+    this.materialCar = new StandardMaterial();
+    this.materialCar.diffuseMap = tex_mat;
+    this.materialCar.emissiveMap = tex_mat;
+    this.materialCar.diffuseTint = true;
+    this.materialCar.diffuse = color;
+    this.materialCar.emissive = new Color(1, 1, 1);
+    this.materialCar.emissiveIntensity = 0.1;
 
     this.car.model.meshInstances.forEach((mesh) => {
-      mesh.material = materialCar;
+      mesh.material = this.materialCar;
     });
   }
 }

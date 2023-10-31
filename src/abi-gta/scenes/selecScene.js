@@ -1,7 +1,8 @@
-import { Color, Entity } from "playcanvas";
+import { Color, Entity, Vec4 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Car } from "../objects/car/car";
+import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarScreen";
 
 export class SelectScene extends Scene {
   constructor() {
@@ -10,6 +11,12 @@ export class SelectScene extends Scene {
 
   create() {
     super.create();
+    this.ui.addScreens(
+      new SelectCarScreen()
+    );
+    this.ui.setScreenActive(GameConstant.SCREEN_SELECT_CAR, true);
+    this.selectCarScreen = this.ui.getScreen(GameConstant.SCREEN_SELECT_CAR);
+
     this._init();
   }
 
@@ -29,8 +36,8 @@ export class SelectScene extends Scene {
 
     })
     this.addChild(this.camera);
-    this.camera.setLocalPosition(8, 8, 7);
-    this.camera.setLocalEulerAngles(-30, 45, 0);
+    this.camera.setLocalPosition(12, 7, 11);
+    this.camera.setLocalEulerAngles(-33, 45, -4);
   }
 
   _initLight() {
@@ -48,34 +55,39 @@ export class SelectScene extends Scene {
       type: "plane",
     })
     this.addChild(this.plane);
-    this.plane.setLocalScale(10, 1, 10);
+    this.plane.setLocalScale(15, 1, 15);
   }
 
   _initCar() {
-    let whiteColor = new Color(GameConstant.WHITE_COLOR);
-    let blueColor = new Color(GameConstant.BLUE_COLOR);
-    let orangeColor = new Color(GameConstant.ORANGE_COLOR);
-    this.policeCar = new Car("model_car_police", blueColor);
+    this.redColor = new Color(GameConstant.RED_COLOR);
+    this.blueColor = new Color(GameConstant.BLUE_COLOR);
+    this.yellowColor = new Color(GameConstant.YELLOW_COLOR);
+    this.policeCar = new Car("model_car_police",this.blueColor);
     this.addChild(this.policeCar);
     this.policeCar.enabled = true;
 
-    this.muscleCar = new Car("model_car_muscle", blueColor);
+    this.muscleCar = new Car("model_car_muscle", this.blueColor);
     this.addChild(this.muscleCar);
     this.muscleCar.enabled = false;
   }
 
   changeCar() {
-    document.addEventListener("keydown", (e) => {
-      if(e.key === "1") {
-        this.policeCar.enabled = true;
-        this.muscleCar.enabled = false;
+    this.selectCarScreen.on(SelectCarScreenEvent.ButtonColorClicked, (type) => {
+      if(type === "blue") {
+        this.policeCar.materialCar.diffuse = this.blueColor;
+        this.policeCar.materialCar.update();
       }
-      else if(e.key === "2") {
-        this.policeCar.enabled = false;
-        this.muscleCar.enabled = true;
+      else if(type === "red") {
+        this.policeCar.materialCar.diffuse = this.redColor;
+        this.policeCar.materialCar.update();
+      }
+      else if(type === "yellow") {
+        this.policeCar.materialCar.diffuse = this.yellowColor;
+        this.policeCar.materialCar.update();
       }
     })
   }
+  
 
   update(dt) {
     super.update(dt);

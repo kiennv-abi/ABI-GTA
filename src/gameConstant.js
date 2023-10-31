@@ -19,6 +19,6 @@ export const GameConstant = Object.freeze({
   PLAYER_SPEED: 2,
 
   BLUE_COLOR : [0, 212/255, 1],
-  WHITE_COLOR: [1, 1, 1],
-  ORANGE_COLOR: [1, 120/255, 0]
+  RED_COLOR: [1, 23/255, 81/255],
+  YELLOW_COLOR: [233/255, 1, 0]
 });
