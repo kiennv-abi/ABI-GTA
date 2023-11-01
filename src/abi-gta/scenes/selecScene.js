@@ -7,6 +7,7 @@ import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarSc
 export class SelectScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_SELECT);
+    this.speedRotate = 0;
   }
 
   create() {
@@ -25,6 +26,7 @@ export class SelectScene extends Scene {
     this._initLight();
     this._initPlane();
     this._initCar();
+    this.changeColorCar();
     this.changeCar();
   }
 
@@ -55,44 +57,70 @@ export class SelectScene extends Scene {
       type: "plane",
     })
     this.addChild(this.plane);
-    this.plane.setLocalScale(15, 1, 15);
+    this.plane.setLocalScale(7, 1, 7);
   }
 
   _initCar() {
+    this.whiteColor = new Color(1, 1, 1)
     this.redColor = new Color(GameConstant.RED_COLOR);
     this.blueColor = new Color(GameConstant.BLUE_COLOR);
     this.yellowColor = new Color(GameConstant.YELLOW_COLOR);
-    this.policeCar = new Car("model_car_police",this.blueColor);
+    this.policeCar = new Car("model_car_police",this.whiteColor);
     this.addChild(this.policeCar);
-    this.policeCar.enabled = true;
+    this.policeCar.enabled = false;
 
-    this.muscleCar = new Car("model_car_muscle", this.blueColor);
+    this.muscleCar = new Car("model_car_muscle", this.whiteColor);
     this.addChild(this.muscleCar);
-    this.muscleCar.enabled = false;
+    this.muscleCar.enabled = true;
   }
 
-  changeCar() {
+  changeColorCar() {
     this.selectCarScreen.on(SelectCarScreenEvent.ButtonColorClicked, (type) => {
       if(type === "blue") {
         this.policeCar.materialCar.diffuse = this.blueColor;
+        this.muscleCar.materialCar.diffuse = this.blueColor
         this.policeCar.materialCar.update();
+        this.muscleCar.materialCar.update();
       }
       else if(type === "red") {
         this.policeCar.materialCar.diffuse = this.redColor;
+        this.muscleCar.materialCar.diffuse = this.redColor;
         this.policeCar.materialCar.update();
+        this.muscleCar.materialCar.update();
       }
       else if(type === "yellow") {
         this.policeCar.materialCar.diffuse = this.yellowColor;
+        this.muscleCar.materialCar.diffuse = this.yellowColor;
         this.policeCar.materialCar.update();
+        this.muscleCar.materialCar.update();
       }
     })
+  }
+
+  changeCar(){
+    this.selectCarScreen.on(SelectCarScreenEvent.ButtonCarClicked, (type) => {
+      if(type === "CarPolice") {
+        this.policeCar.enabled = true;
+        this.muscleCar.enabled = false;
+      }
+      if(type === "CarMuscle") {
+        this.policeCar.enabled = false;
+        this.muscleCar.enabled = true;
+      }
+    })
+  }
+
+  rotateCar(dt) {
+    // this.speedRotate += 0.5;
+    this.muscleCar.rotateLocal(0, 10 * dt, 0)
+    // this.policeCar.setEulerAngles(this.policeCar.getLocalEulerAngles().x, this.speedRotate, this.policeCar.getEulerAngles().z)
   }
   
 
   update(dt) {
     super.update(dt);
+    this.rotateCar(dt);
   }
-
   _initialize() {
    
   }

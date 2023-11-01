@@ -13,10 +13,12 @@ export class Car extends Entity{
     this.car.addComponent("model", {
       type: "asset",
       asset : assetCar,
+      pivot : [0.5, 0.5],
     });
     this.addChild(this.car);
-    this.car.setLocalPosition(2.5, 0, 2.2);
+    this.car.setLocalPosition(1, 0, 1);
     this.car.setEulerAngles(0.5, -50, 0)
+  
 
     let tex_mat = app.assets.find("tex_car_police_01").resource;
     this.materialCar = new StandardMaterial();
