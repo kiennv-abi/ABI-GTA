@@ -4,7 +4,6 @@ import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Tween } from "../../template/systems/tween/tween";
 import { Car } from "../objects/car/car";
-import { InforCar } from "../objects/car/inforCar";
 import { Wheel } from "../objects/car/wheel";
 import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarScreen";
 
@@ -27,7 +26,7 @@ export class SelectScene extends Scene {
   _init (){
     this._initCamera();
     this._initLight();
-    this._initPlane();
+    this._initCapsule()
     this._initCar();
     this._changeColorCar();
     this._changeCar();
@@ -42,8 +41,8 @@ export class SelectScene extends Scene {
 
     })
     this.addChild(this.camera);
-    this.camera.setLocalPosition(9, 5, 7);
-    this.camera.setLocalEulerAngles(-20, 48, -0.9);
+    this.camera.setLocalPosition(6, 3, 6);
+    this.camera.setLocalEulerAngles(-17, 40, -0.9);
     
   }
 
@@ -56,21 +55,22 @@ export class SelectScene extends Scene {
 
   }
 
-  _initPlane() {
-    this.plane = new Entity("Plane");
-    this.plane.addComponent("model", {
-      type: "plane",
+  _initCapsule() {
+    this.capsule = new Entity("capsule");
+    this.capsule.addComponent("model", {
+      type: "capsule",
     })
-    this.addChild(this.plane);
-    this.plane.setLocalScale(8, 7, 7);
-    this.plane.rotate(0, 46, 0);
+    this.addChild(this.capsule);
+    this.capsule.setLocalScale(7, 1, 7);
+    this.capsule.setLocalPosition(-1, -1.8, -1.3)
+    this.capsule.rotate(0, 30, 0)
   }
 
   _initCar() {
     this.whiteColor = new Color(1, 1, 1)
     this.redColor = new Color(GameConstant.RED_COLOR);
     this.blueColor = new Color(GameConstant.BLUE_COLOR);
-    this.yellowColor = new Color(GameConstant.YELLOW_COLOR);
+    this.orangeColor = new Color(GameConstant.ORANGE_COLOR);
     this.policeCar = new Car("model_car_police",this.whiteColor, 50);
     this.addChild(this.policeCar);
     this.policeCar.enabled = true;
@@ -100,9 +100,9 @@ export class SelectScene extends Scene {
         this.policeCar.materialCar.update();
         this.muscleCar.materialCar.update();
       }
-      else if(type === "yellow") {
-        this.policeCar.materialCar.diffuse = this.yellowColor;
-        this.muscleCar.materialCar.diffuse = this.yellowColor;
+      else if(type === "orange") {
+        this.policeCar.materialCar.diffuse = this.orangeColor;
+        this.muscleCar.materialCar.diffuse = this.orangeColor;
         this.policeCar.materialCar.update();
         this.muscleCar.materialCar.update();
       }
@@ -122,7 +122,7 @@ export class SelectScene extends Scene {
       if(type === "CarPolice") {
         this.policeCar.enabled = true;
         this.muscleCar.enabled = false;
-        this.selectCarScreen.changeInfor(80, 50)
+        this.selectCarScreen.changeInfor(100, 50)
         
       }
       else if(type === "CarMuscle") {

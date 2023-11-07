@@ -15,6 +15,6 @@ export class Configurator {
     this.scene.ambientLight = Util.createColor(255, 255, 255);
     this.scene.gammaCorrection = pc.GAMMA_SRGB;
     this.scene.envAtlas = AssetLoader.getAssetByKey("helipad-env-atlas").resource;
-    this.scene.skyboxMip = 3;
+    // this.scene.skyboxMip = 3;
   }
 }
