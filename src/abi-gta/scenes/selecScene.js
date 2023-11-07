@@ -63,7 +63,7 @@ export class SelectScene extends Scene {
     })
     this.addChild(this.plane);
     this.plane.setLocalScale(8, 7, 7);
-    this.plane.rotate(0 , 46, 0);
+    this.plane.rotate(0, 46, 0);
   }
 
   _initCar() {
@@ -122,13 +122,13 @@ export class SelectScene extends Scene {
       if(type === "CarPolice") {
         this.policeCar.enabled = true;
         this.muscleCar.enabled = false;
-        this.selectCarScreen.changeInfor(50, 10)
+        this.selectCarScreen.changeInfor(80, 50)
         
       }
       else if(type === "CarMuscle") {
         this.policeCar.enabled = false;
         this.muscleCar.enabled = true;
-        this.selectCarScreen.changeInfor(30, 20)
+        this.selectCarScreen.changeInfor(120, 70)
         
       }
     })

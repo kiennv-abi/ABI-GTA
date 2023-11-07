@@ -32,13 +32,13 @@ export class SelectCarScreen extends UIScreen{
   }
   
   changeInfor(speed, handle) {
-    this.speed.element.text = `Speed ${speed}`;
-    this.handle.element.text = `Handle ${handle}`;
+    this.speed.element.text = `Speed : ${speed}`;
+    this.handle.element.text = `Handle : ${handle}`;
   }
 
   _initInfor() {
-    this.speed = this._createInfor("Speed", new Vec4(0.05, 0.8, 0.05, 0.8));
-    this.handle = this._createInfor("Handle", new Vec4(0.05, 0.7, 0.05, 0.7));
+    this.speed = this._createInfor("Speed : 80", new Vec4(0.05, 0.8, 0.05, 0.8));
+    this.handle = this._createInfor("Handle : 50", new Vec4(0.05, 0.7, 0.05, 0.7));
   }
 
   _createInfor(text, anchor) {
