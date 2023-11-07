@@ -7,10 +7,8 @@ export class PlayScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_PLAY);
   }
-
   create() {
     super.create();
   }
 
-  
 }
