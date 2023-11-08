@@ -15,10 +15,10 @@ export class SelectCarScreen extends UIScreen{
     super(GameConstant.SCREEN_SELECT_CAR);
     this._initButtonSelectColor();
     this._initButtonSelectCar();
-    this._createBackGroundInforCar();
-    this._createSelectCar()
-    this._initInfor();
-    
+    this._initSprInfor()
+    this._initProgressBar();
+    this._createSelectCar();
+    this._initTextInfor(); 
   }
 
   _initButtonSelectColor() {
@@ -33,80 +33,82 @@ export class SelectCarScreen extends UIScreen{
     this.butonSelectCarMuscle = this._createButtonSelectCar("carMuscar", [0.9, 0.5, 0.9, 0.5], "CarMuscle");
   }
   
-  changeInfor(speed, handle) {
-    this.speed.element.text = `Speed : ${speed}`;
-    this.handle.element.text = `Handle : ${handle}`;
+  changeProgressBar(speed, handle) {
+    this.speed.element.width = speed;
+    this.handle.element.width = handle;
   }
 
-  _initInfor() {
-    this.speed = this._createInfor("Speed : 100", new Vec4(0.1, 0.85, 0.1, 0.85));
-    this.handle = this._createInfor("Handle : 50", new Vec4(0.1, 0.75, 0.1, 0.75));
+  _initProgressBar() {
+    this.speed = this._createProgressBar(120, new Vec4(0.05, 0.86, 0.05, 0.86));
+    this.handle = this._createProgressBar(80, new Vec4(0.05, 0.76, 0.05, 0.76));
+  }
+  
+  _initTextInfor() {
+    this.textInfor = this._createTextInforCar("INFOR CAR", new Vec4(0.08, 0.95, 0.08, 0.95), 25);
+    this.textSpeed = this._createTextInforCar("Speed", new Vec4(0.06, 0.873, 0.06, 0.873), 15);
+    this.textHandle = this._createTextInforCar("Handle", new Vec4(0.06, 0.774, 0.06, 0.774), 15)
   }
 
-  _createInfor(text, anchor) {
-    let font = AssetLoader.getAssetByKey("CanvasFont");
-    let infor = new Entity();
-    infor.addComponent("element", {
-      pivot: new Vec2(0.5, 0.5),
-      anchor: anchor,
-      fontAsset: font,
-      text: text,
-      fontSize: 20,
-      type: ELEMENTTYPE_TEXT,
-      alignment : new Vec2(0.5, 0.5),
-      color: new Color( 0, 0, 0),
-      enabled: true
+  _initSprInfor() {
+    this.bgInfor = this._createSprInforCar([0.092, 0.867, 0.092, 0.867],"backGroundInforCar", 200, 200);
+    this.sprSpeed = this._createSprInforCar([0.03, 0.873, 0.03, 0.873],"spr_speed", 35, 35);
+    this.sprHandle = this._createSprInforCar([0.03, 0.774, 0.03, 0.774],"spr_handle", 35, 35)
+  }
+  
+  _createSelectCar() {
+    this.selectCar = new Entity();
+    this.selectCar.addComponent("element", {
+      anchor: [0.5, 0.93, 0.5, 0.93],
+      pivot: [0.5, 0.5],
+      width: 700,
+      height: 100,
+      type: ELEMENTTYPE_IMAGE,
+      spriteAsset: app.assets.find("spr_selectCar")
     })
-    this.addChild(infor);
-    return infor;
+    this.addChild(this.selectCar)
+   }
+
+  _createProgressBar(width, anchor) {
+    let progressBar = new Entity();
+    progressBar.addComponent("element", {
+      // pivot: [0.5, 0.5],
+      anchor: anchor,
+      type: ELEMENTTYPE_IMAGE,
+      enabled: true,
+      width: width,
+      height: 20,
+      spriteAsset: app.assets.find("spr_ progressBar")
+    })
+    this.addChild(progressBar);
+    return progressBar;
   }
 
-  _createBackGroundInforCar(){
-    this.bgInforcar = new Entity();
-    this.bgInforcar.addComponent("element", {
-      anchor: [0.092, 0.867, 0.092, 0.867],
+  _createSprInforCar(anchor, spriteAsset, width, height){
+    this.sprInforcar = new Entity();
+    this.sprInforcar.addComponent("element", {
+      anchor: anchor,
       pivot: [0.5, 0.5],
       type: ELEMENTTYPE_IMAGE,
-      width: 200,
-      height: 200,
-      spriteAsset: app.assets.find("backGroundInforCar")
+      width: width,
+      height: height,
+      spriteAsset: app.assets.find(spriteAsset)
     })
-    this.addChild(this.bgInforcar);
+    this.addChild(this.sprInforcar);
+  }
 
+  _createTextInforCar(text, anchor, size) {
     this.textInforCar = new Entity();
     let font = AssetLoader.getAssetByKey("CanvasFont")
     this.textInforCar.addComponent("element", {
-      anchor: new Vec4(0.08, 0.95, 0.08, 0.95),
+      anchor: anchor,
       pivot: new Vec2(0.5, 0.5),
       fontAsset: font,
-      text: "INFOR CAR",
+      text: text,
       type: ELEMENTTYPE_TEXT,
-      fontSize: 25,
+      fontSize: size,
       color: new Color(0, 0, 0)
     }) 
     this.addChild(this.textInforCar)
-
-    this.sprSpeed = new Entity();
-    this.sprSpeed.addComponent("element", {
-      anchor: [0.03, 0.867, 0.03, 0.867],
-      pivot: [0.5, 0.5],
-      type: ELEMENTTYPE_IMAGE,
-      spriteAsset: app.assets.find("spr_speed"),
-      width: 35,
-      height: 35
-    })
-    this.addChild(this.sprSpeed);
-
-    this.sprHandle = new Entity();
-    this.sprHandle.addComponent("element", {
-      anchor: [0.03, 0.769, 0.03, 0.769],
-      pivot: [0.5, 0.5],
-      type: ELEMENTTYPE_IMAGE,
-      spriteAsset: app.assets.find("spr_handle"),
-      width: 35,
-      height: 35
-    })
-    this.addChild(this.sprHandle);
    }
  
   _createButtonSelectColor(spriteAsset, anchor, type) {
@@ -127,6 +129,7 @@ export class SelectCarScreen extends UIScreen{
     });
     return butonSelectColor;
   } 
+
   _createButtonSelectCar(spriteAsset, anchor, type) {
     let butonSelectCar = new Entity();
     butonSelectCar.addComponent("element", {
@@ -145,17 +148,5 @@ export class SelectCarScreen extends UIScreen{
     return butonSelectCar;
    }
 
-  _createSelectCar() {
-    this.selectCar = new Entity();
-    this.selectCar.addComponent("element", {
-      anchor: [0.5, 0.93, 0.5, 0.93],
-      pivot: [0.5, 0.5],
-      width: 700,
-      height: 100,
-      type: ELEMENTTYPE_IMAGE,
-      spriteAsset: app.assets.find("spr_selectCar")
-    })
-    this.addChild(this.selectCar)
-   }
    
 }

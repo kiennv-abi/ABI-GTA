@@ -116,19 +116,18 @@ export class SelectScene extends Scene {
     })
   }
 
-  
   _changeCar(){
     this.selectCarScreen.on(SelectCarScreenEvent.ButtonCarClicked, (type) => {
       if(type === "CarPolice") {
         this.policeCar.enabled = true;
         this.muscleCar.enabled = false;
-        this.selectCarScreen.changeInfor(100, 50)
+        this.selectCarScreen.changeProgressBar(120, 80);
         
       }
       else if(type === "CarMuscle") {
         this.policeCar.enabled = false;
         this.muscleCar.enabled = true;
-        this.selectCarScreen.changeInfor(120, 70)
+        this.selectCarScreen.changeProgressBar(140, 100);
         
       }
     })
@@ -143,7 +142,7 @@ export class SelectScene extends Scene {
 
   update(dt) {
     super.update(dt);
-    this.rotateCar(dt);
+    // this.rotateCar(dt);
   }
   _initialize() {
    
