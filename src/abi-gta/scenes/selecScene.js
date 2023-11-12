@@ -41,16 +41,35 @@ export class SelectScene extends Scene {
 
     })
     this.addChild(this.camera);
-    this.camera.setLocalPosition(6, 3, 6);
+     this.camera.setLocalPosition(6, 3, 6);
     this.camera.setLocalEulerAngles(-17, 40, -0.9);
-    
+    // this.camera.addComponent("script");
+    // this.camera.setLocalPosition(60, 170, 100);
+    // this.camera.setLocalEulerAngles(-80, 0, 0);
+    // this.camera.script.create("orbitCamera", {
+    //   attributes: {
+    //     inertiaFactor: 0.3
+    //   }
+    // });
+    // this.camera.script.create("orbitCameraInputMouse");
+    // this.camera.script.create("orbitCameraInputTouch");
+
   }
 
   _initLight() {
     this.light = new Entity("Light");
     this.light.addComponent("light", {
-      type: "directional"
+      type: "directional",
+      color: new pc.Color(1, 1, 1),
+      castShadows: true,
+      shadowDistance: 300,
+      shadowResolution: 2048,
+      shadowBias: 1,
+      normalOffsetBias: 1,
+      intensity: 1,
     })
+    this.light.setLocalPosition(0, 30, 0);
+    this.light.setLocalEulerAngles(0, 0, 0);
     this.addChild(this.light);
 
   }
@@ -62,7 +81,7 @@ export class SelectScene extends Scene {
     })
     this.addChild(this.capsule);
     this.capsule.setLocalScale(7, 1, 7);
-    this.capsule.setLocalPosition(-1, -1.8, -1.3)
+    this.capsule.setLocalPosition(-0.5, -0.82, -0.72)
     this.capsule.rotate(0, 30, 0)
   }
 
@@ -142,7 +161,7 @@ export class SelectScene extends Scene {
 
   update(dt) {
     super.update(dt);
-    // this.rotateCar(dt);
+    this.rotateCar(dt);
   }
   _initialize() {
    

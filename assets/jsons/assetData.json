@@ -5,7 +5,6 @@
 {"key":"butonYellow","url":"assets/sprites/butonYellow.png","type":"sprite"},
 {"key":"carMuscar","url":"assets/sprites/carMuscar.png","type":"sprite"},
 {"key":"carPolice","url":"assets/sprites/carPolice.png","type":"sprite"},
-{"key":"spr_ progressBar","url":"assets/sprites/spr_ progressBar.png","type":"sprite"},
 {"key":"spr_building_1","url":"assets/sprites/spr_building_1.png","type":"sprite"},
 {"key":"spr_building_2","url":"assets/sprites/spr_building_2.png","type":"sprite"},
 {"key":"spr_building_3","url":"assets/sprites/spr_building_3.png","type":"sprite"},

@@ -22,10 +22,10 @@ export class SelectCarScreen extends UIScreen{
   }
 
   _initButtonSelectColor() {
-    this.btnBlue = this._createButtonSelectColor("butonBlue", [0.55, 0.1, 0.55, 0.1], "blue")
-    this.btnYellow = this._createButtonSelectColor("butonYellow", [0.48, 0.15, 0.48, 0.15], "orange");
-    this.btnRed = this._createButtonSelectColor("butonRed", [0.4, 0.1, 0.4, 0.1], "red");
-    this.btnWhite = this._createButtonSelectColor("butonWhite", [0.48, 0.05, 0.48, 0.05],"white");
+    this.btnBlue = this._createButtonSelectColor("butonBlue", [0.55, 0.1, 0.55, 0.1], "blue", 55, 55)
+    this.btnYellow = this._createButtonSelectColor("butonYellow", [0.48, 0.15, 0.48, 0.15], "orange", 55, 55);
+    this.btnRed = this._createButtonSelectColor("butonRed", [0.4, 0.1, 0.4, 0.1], "red", 55, 55);
+    this.btnWhite = this._createButtonSelectColor("butonWhite", [0.48, 0.05, 0.48, 0.05],"white", 50, 50);
   }
 
   _initButtonSelectCar() {
@@ -54,7 +54,7 @@ export class SelectCarScreen extends UIScreen{
     this.sprSpeed = this._createSprInforCar([0.03, 0.873, 0.03, 0.873],"spr_speed", 35, 35);
     this.sprHandle = this._createSprInforCar([0.03, 0.774, 0.03, 0.774],"spr_handle", 35, 35)
   }
-  
+
   _createSelectCar() {
     this.selectCar = new Entity();
     this.selectCar.addComponent("element", {
@@ -111,15 +111,15 @@ export class SelectCarScreen extends UIScreen{
     this.addChild(this.textInforCar)
    }
  
-  _createButtonSelectColor(spriteAsset, anchor, type) {
+  _createButtonSelectColor(spriteAsset, anchor, type, width, height) {
     let butonSelectColor = new Entity();
     butonSelectColor.type = type;
     butonSelectColor.addComponent("element", {
         anchor: anchor,
-        height: 55,
+        height: height,
         pivot: [0.5, 0.5],
         type: ELEMENTTYPE_IMAGE,
-        width: 55,
+        width: width,
         useInput: true,
         spriteAsset : app.assets.find(spriteAsset)
     });
