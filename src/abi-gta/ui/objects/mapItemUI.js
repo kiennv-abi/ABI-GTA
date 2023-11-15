@@ -1,6 +1,15 @@
 import { BUTTON_TRANSITION_MODE_TINT, ELEMENTTYPE_IMAGE, Entity, Vec2 } from "playcanvas";
 import { ListViewItem, ListViewItemEvent } from "../../scripts/ui/listViewItem";
 import { Util } from "../../../helpers/util";
+export const MapItemType = Object.freeze({
+  ROAD: "road",
+  BUILDING: "building"
+})
+
+export const MapItemEvent = Object.freeze({
+  Selected: "Selected",
+  Deselected: "Deselected" 
+})
 
 export default class MapItem extends Entity{
   constructor(data = {}) {
@@ -31,11 +40,11 @@ export default class MapItem extends Entity{
     this.listViewItem.deselect();
   }
 
-  // onSelect() {
-  //   this.fire(MapItemEvent.Selected, this.type)
-  // }
+  onSelect() {
+    this.fire(MapItemEvent.Selected, this.type)
+  }
 
-  // onDeselect() { 
-  //   this.fire(MapItemEvent.DeSelected, this.type)
-  // }
+  onDeselect() { 
+    this.fire(MapItemEvent.DeSelected, this.type)
+  }
 }

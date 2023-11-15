@@ -1,12 +1,16 @@
 import { Entity } from "playcanvas";
 import { AssetLoader } from "../../../assetLoader/assetLoader";
+import { DataManager } from "../../data/dataManager";
 import { Brick } from "./brick";
 import mapData from "/assets/jsons/mapData.json"
 export class Grid extends Entity{
   constructor() {
     super("grid");
-    this.data = mapData.mapData;
-    this.col = 
+    DataManager.init();
+    this.col = DataManager.mapData.length - 1;
+    this.row = DataManager.mapData[0].length - 1;
+    this.gridUnit = DataManager.mapUnit;
+    this.bricks = [];
     this.generateGrid();
   }
 

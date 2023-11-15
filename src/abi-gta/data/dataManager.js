@@ -5,10 +5,10 @@ export class DataManager{
   static init() {
     this.mapData = data.mapData;
     this.mapUnit = data.unit;
-    // this.map1 = map1.mapData;
-    // this.map2 = map2.mapData;
-    // this.mapUnit = data.unit;
-    // this.formatData = data;
+    this.map1 = map1.mapData;
+    this.map2 = map2.mapData;
+    this.mapUnit = data.unit;
+    this.formatData = data;
     // this.carSelected = CarType.MuscleCar;
     // this.carColor = CarColorCode.Color1;
   }
