@@ -1,3 +1,4 @@
+
 import { Entity, Vec3 } from "playcanvas";
 import { Script } from "../../../template/systems/script/script";
 import { ObjectFactory } from "../../../template/objects/objectFactory";

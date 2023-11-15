@@ -2,28 +2,15 @@ import { BUTTON_TRANSITION_MODE_TINT, ELEMENTTYPE_IMAGE, Entity, Vec2 } from "pl
 import { ListViewItem, ListViewItemEvent } from "../../scripts/ui/listViewItem";
 import { Util } from "../../../helpers/util";
 
-export const MapItemType = Object.freeze({
-  ROAD: "road",
-  BUILDING1: "building_1",
-  BUILDING2: "building_2",
-  BUILDING3: "building_3",
-  Map1: "map_1",
-  Map2: "map_2",
-});
-export const MapItemEvent = Object.freeze({
-  Selected: "Selected",
-  DeSelected: "DeSelected",
-});
 export default class MapItem extends Entity{
   constructor(data = {}) {
     super("mapItem");
-    
-    this.type = data.type || MapItemType.ROAD;
     this.spriteAsset = data.spriteAsset;
+    
     this.addComponent("element", {
       type: ELEMENTTYPE_IMAGE,
-      width: 70,
-      height: 70,
+      width: 100,
+      height: 100,
       useInput: true,
       pivot: new Vec2(0.5, 0.5),
       spriteAsset: this.spriteAsset,
@@ -44,11 +31,11 @@ export default class MapItem extends Entity{
     this.listViewItem.deselect();
   }
 
-  onSelect() {
-    this.fire(MapItemEvent.Selected, this.type)
-  }
+  // onSelect() {
+  //   this.fire(MapItemEvent.Selected, this.type)
+  // }
 
-  onDeselect() { 
-    this.fire(MapItemEvent.DeSelected, this.type)
-  }
+  // onDeselect() { 
+  //   this.fire(MapItemEvent.DeSelected, this.type)
+  // }
 }

@@ -6,6 +6,7 @@ export class Grid extends Entity{
   constructor() {
     super("grid");
     this.data = mapData.mapData;
+    this.col = 
     this.generateGrid();
   }
 

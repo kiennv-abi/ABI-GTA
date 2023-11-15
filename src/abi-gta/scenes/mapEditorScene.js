@@ -16,6 +16,11 @@ export class MapEditorScene extends Scene{
   
   create() {
     super.create()
+    this.ui.addScreens(
+      new MapEditorScreen()
+    );
+    this.mapEditorScreen = this.ui.getScreen(GameConstant.SCREEN_MAP_EDITOR);
+    this.ui.setScreenActive(GameConstant.SCREEN_MAP_EDITOR);
     this._initialize();
   }
 
@@ -24,8 +29,6 @@ export class MapEditorScene extends Scene{
     this._initCamera();
     this._initMap();
   }
-
-
   _initMap() {
     this.map = new Map();
     this.addChild(this.map);
@@ -74,4 +77,5 @@ export class MapEditorScene extends Scene{
     this.directionalLight.setLocalPosition(0, 30, 0);
     this.directionalLight.setLocalEulerAngles(0, 0, 0);
   }
+
 }

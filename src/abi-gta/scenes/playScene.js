@@ -9,6 +9,7 @@ export class PlayScene extends Scene {
   }
   create() {
     super.create();
+    console.log(1);
   }
 
 }
