@@ -1,16 +1,15 @@
-import { data, Entity, Vec3 } from "playcanvas";
+import { Entity } from "playcanvas";
 import { DataManager } from "../../data/dataManager";
-import { Spawner } from "../../scripts/spawners/spawner";
 import { Brick } from "./brick";
-import { Crossing } from "./crossing";
 import { Road } from "./road";
+import { Spawner } from "../../scripts/spawners/spawner";
+import { Crossing } from "./crossing";
 
 export const MapItemCode = Object.freeze({
   Road: 1,
   Crossing: 2,
   Brick: 0,
 });
-
 export class Map extends Entity{
   constructor() {
     super();
@@ -20,7 +19,7 @@ export class Map extends Entity{
     this.gridUnit = DataManager.mapUnit;
     this.bricks = [];
     this.roads = [];
-    this.generate();
+    this._initSpawners();
   }
 
   generate() {
@@ -28,8 +27,8 @@ export class Map extends Entity{
       let row = DataManager.mapData[i];
       for (let j = 0; j < row.length; j++) {
         let tile = row[j];
-        if (tile === 0) {
-          let brick = new Brick();
+        if (tile === MapItemCode.Brick) {
+          let brick = this.brickSpawner.spawn();
           brick.row = j;
           brick.col = i;
           brick.setLocalPosition(i * this.gridUnit, -0.5, j * this.gridUnit);
@@ -40,8 +39,8 @@ export class Map extends Entity{
     }
   }
 
-  addRoad(newData) { 
-    DataManager.applyMapDatas(newData, 1)
+  addRoad(newData) {
+    DataManager.applyMapDatas(newData, 1);
     newData.forEach((data) => { 
       let road = this.roadSpawner.spawn();
       road.row = data.row;
@@ -50,45 +49,41 @@ export class Map extends Entity{
       this.addChild(road);
       this.roads.push(road);
       let isHorizontal = this.detectRoadHorizontal(newData);
-      if (isHorizontal) {
+      if (isHorizontal) { 
         road.setLocalEulerAngles(0, 0, 0);
-      }
-      else{
+      } else {
         road.setLocalEulerAngles(0, 90, 0);
       }
     });
-    let intersection = this.getIntersection(DataManager.mapData)
-    this.relaceCrossRoad(intersection);
+    let intersection = this.getIntersection(DataManager.mapData);
+    this.replaceCrossRoad(intersection);
   }
-  
-  relaceCrossRoad(intersection) {
+
+  replaceCrossRoad(intersection) { 
     intersection.forEach(data => {
       let road = this.findRoadByRowAndCol(data.top.row, data.top.col);
-      if (road) {
+      if (road) { 
         this.removeRoad(road);
         this.addCrossRoad(data.top, 90);
       }
-
       road = this.findRoadByRowAndCol(data.bottom.row, data.bottom.col);
-      if(road) {
+      if (road) { 
         this.removeRoad(road);
         this.addCrossRoad(data.bottom, -90);
       }
-
       road = this.findRoadByRowAndCol(data.left.row, data.left.col);
-      if(road) {
+      if (road) { 
         this.removeRoad(road);
         this.addCrossRoad(data.left, 0);
       }
-
       road = this.findRoadByRowAndCol(data.right.row, data.right.col);
-      if(road) {
+      if (road) { 
         this.removeRoad(road);
-        this.addCrossRoad(data.right, 0)
+        this.addCrossRoad(data.right, 0);
       }
-    })
+    });
   }
-
+  
   addCrossRoad(data, direction) { 
     let crossing = this.crossingSpawner.spawn();
     crossing.row = data.row;
@@ -100,17 +95,16 @@ export class Map extends Entity{
     console.log(DataManager.mapData);
   }
 
-
   removeRoad(road) {
     road.destroy();
     this.roads.splice(this.roads.indexOf(road), 1);
-    DataManager.applyMapData(road.row, road.col, MapItemCode.brick)
+    DataManager.applyMapData(road.row, road.col, MapItemCode.Brick);
   }
 
-  detectRoadHorizontal(data) {
+  detectRoadHorizontal(data) { 
     let start = data[0];
-    let end = data[data.length-1];
-    if(start.row == end.row) {
+    let end = data[data.length - 1];
+    if(start.row === end.row) {
       return true;
     }
     return false;
@@ -118,18 +112,17 @@ export class Map extends Entity{
 
   getIntersection(matrix) {
     let result = [];
-    for (let i = 0; i < matrix.length; i++){
-      for(let j = 0; j < matrix[i].length; j++ ){
-        if(matrix[i][j] === MapItemCode.Road){
-          if(matrix[i][j+1] === MapItemCode.Road && matrix[i][j-1] === MapItemCode.Road 
-            && matrix[i+1][j] === MapItemCode.Road && matrix[i-1] === MapItemCode.Road){
-              let intersection = {};
-              intersection.top = {row: i - 1, col: j};
-              intersection.bottom = {row: i + 1, col: j};
-              intersection.left = {row: i, col: j - 1};
-              intersection.right = {row: i, col: j + 1};
-              result.push(intersection)
-            }
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        if (matrix[i][j] === MapItemCode.Road) {
+          if (matrix[i][j + 1] === MapItemCode.Road && matrix[i][j - 1] === MapItemCode.Road && matrix[i + 1][j] === MapItemCode.Road && matrix[i - 1][j] === MapItemCode.Road) {
+            let intersection = {};
+            intersection.top = { row: i - 1, col: j };
+            intersection.bottom = { row: i + 1, col: j };
+            intersection.left = { row: i, col: j - 1 };
+            intersection.right = { row: i, col: j + 1 };
+            result.push(intersection);
+          }
         }
       }
     }
@@ -137,25 +130,25 @@ export class Map extends Entity{
   }
 
   findRoadByRowAndCol(row, col) {
-    for(let i = 0; i < this.roads.length; i++){
+    for (let i = 0; i < this.roads.length; i++) {
       let road = this.roads[i];
-      if(road.row === row && road.col ===  col){
-        return road
+      if (road.row === row && road.col === col) {
+        return road;
       }
     }
     return null;
   }
 
   _initSpawners() {
-    let roadSpawnerEntity = new Entity("road-Spawner")
+    let roadSpawnerEntity = new Entity("road-spawner");
     this.addChild(roadSpawnerEntity);
 
     this.roadSpawner = roadSpawnerEntity.addScript(Spawner, {
       class: Road,
-      poolSize: 10
-    })
+      poolSize: 10,
+    });
 
-    let brickSpawnerEntity = new Entity("brick-Spawner");
+    let brickSpawnerEntity = new Entity("brick-spawner");
     this.addChild(brickSpawnerEntity);
 
     this.brickSpawner = brickSpawnerEntity.addScript(Spawner, {
@@ -164,15 +157,14 @@ export class Map extends Entity{
       callback: () => {
         this.generate();
       }
-    })
+    });
 
-    let crossingSpawnerEntity = new Entity("cross-Spawner")
-    this.addChild(crossingSpawnerEntity)
+    let crossingSpawnerEntity = new Entity("brick-spawner");
+    this.addChild(crossingSpawnerEntity);
 
     this.crossingSpawner = crossingSpawnerEntity.addScript(Spawner, {
       class: Crossing,
-      poolSize: 10
-    })
-
+      poolSize: 10,
+    });
   }
 }
