@@ -33,7 +33,6 @@ export class MapEditorScene extends Scene{
     this._initCamera();
     this._initMap();
     this._initRaycast();
-    this._initSpawners();
   }
 
   _initMap() {
@@ -154,21 +153,5 @@ export class MapEditorScene extends Scene{
   
   onMapItemSelected(type) {
     this.mapItemSelected = type;
-    let item = null;
-    switch (type) { 
-      case MapItemType.ROAD:
-        item = this.roadSpawner.spawn();
-    }
-    console.log(type);
-  }
-
-  _initSpawners() {
-    let roadSpawnerEntity = new Entity("road-spawner");
-    this.addChild(roadSpawnerEntity);
-
-    this.roadSpawner = roadSpawnerEntity.addScript(Spawner, {
-      class: Road,
-      poolSize: 10,
-    });
   }
 }

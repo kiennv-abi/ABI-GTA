@@ -16,10 +16,14 @@ export class DataManager{
 
   }
 
-  static applyMapData(newData, value) { 
+  static applyMapDatas(newData, value) { 
     newData.forEach((data) => {
-      this.mapData[data.row][data.col] = value;
+      this.applyMapData(data.row, data.col, value)
     });
+  }
+
+  static applyMapData(row, col, value) { 
+    this.mapData[row][col] = value;
   }
 
   static findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd) { 
