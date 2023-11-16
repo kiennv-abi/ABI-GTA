@@ -1,41 +1,38 @@
-import data from "../../../assets/jsons/mapData.json";
-import map1 from "../../../assets/jsons/map1Data.json";
-import map2 from "../../../assets/jsons/map2Data.json";
+import mapData from "../../../assets/jsons/mapData.json";
 export class DataManager{
   static init() {
-    this.mapData = data.mapData;
-    this.mapUnit = data.unit;
-    this.map1 = map1.mapData;
-    this.map2 = map2.mapData;
-    this.mapUnit = data.unit;
-    this.formatData = data;
-    // this.carSelected = CarType.MuscleCar;
-    // this.carColor = CarColorCode.Color1;
+    this.mapData = mapData.mapData;
+    this.mapUnit = mapData.unit;
+  }
+  static getMapData() { 
+    return this.mapData;
   }
 
-  static setMapData(data) {
+  static setMapData(data) { 
     this.mapData = data;
   }
 
-  static applyMapdata(newData, value) {
+  static saveMapData() { 
+
+  }
+
+  static applyMapData(newData, value) { 
     newData.forEach((data) => {
-      this.mapData[data.row][data.col] = value
+      this.mapData[data.row][data.col] = value;
     });
   }
 
-  static findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd){
+  static findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd) { 
     let result = [];
     for (let i = rowStart; i <= rowEnd; i++) {
       let row = this.mapData[i];
-      for (let j = colStart; j <= colEnd; j++ ){
+      for (let j = colStart; j <= colEnd; j++) {
         let tile = row[j];
-        if(tile === 0){
-          result.push({row: i, col: j})
+        if (tile === 0) {
+          result.push({ row: i, col: j });
         }
       }
     }
     return result;
   }
-
-
 }

@@ -1,12 +1,9 @@
 import { Entity } from "playcanvas";
-import { AssetLoader } from "../../../assetLoader/assetLoader";
-import { DataManager } from "../../data/dataManager";
 import { Brick } from "./brick";
-import mapData from "/assets/jsons/mapData.json"
+import { DataManager } from "../../data/dataManager";
 export class Grid extends Entity{
   constructor() {
     super("grid");
-    DataManager.init();
     this.col = DataManager.mapData.length - 1;
     this.row = DataManager.mapData[0].length - 1;
     this.gridUnit = DataManager.mapUnit;
@@ -15,17 +12,17 @@ export class Grid extends Entity{
   }
 
   generateGrid() { 
-    for(let i = 0; i < this.data.length; i++){
-      let row = this.data[i];
-      for(let j = 0; j < row.length; j++){
+    for (let i = 0; i < DataManager.mapData.length; i++) {
+      let row = DataManager.mapData[i];
+      for (let j = 0; j < row.length; j++) {
         let tile = row[j];
-        if(tile === 0){
-          let tileEntity = new Entity();
-          tileEntity.addComponent( "model", {
-            asset : AssetLoader.getAssetByKey("model_sidewalk")
-          })
-          tileEntity.setLocalPosition(i * mapData.unit, 0, j * mapData.unit);
-          this.addChild(tileEntity);
+        if (tile === 0) {
+          let brick = new Brick();
+          brick.row = j;
+          brick.col = i;
+          brick.setLocalPosition(i * this.gridUnit, 0, j * this.gridUnit);
+          this.addChild(brick);
+          this.bricks.push(brick);
         }
       }
     }

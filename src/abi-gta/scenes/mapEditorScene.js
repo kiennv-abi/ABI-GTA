@@ -1,15 +1,15 @@
-import { Color, Entity, KEY_R, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
+import { Color, Entity, LIGHTTYPE_DIRECTIONAL, log } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
 import { Raycast, RaycastEvent } from "../scripts/raycast/raycast";
 import { InputHandler, InputHandlerEvent } from "../scripts/input/inputHandler";
 import { MapEditorScreen, MapEditorScreenEvent } from "../ui/screens/mapEditorScreen";
-import { DataManager } from "../data/dataManager";
-import { MapItemType } from "../ui/objects/mapItemUI";
-import { Game } from "../../game";
 import { Spawner } from "../scripts/spawners/spawner";
 import { Road } from "../objects/map/road";
+import { MapItemType } from "../ui/objects/mapItemUI";
+import { SpawningEvent } from "../scripts/spawners/spawningEvent";
+import { DataManager } from "../data/dataManager";
 
 export class MapEditorScene extends Scene{
   constructor(){
@@ -27,15 +27,15 @@ export class MapEditorScene extends Scene{
     this._initialize();
   }
 
-
   _initialize() {
+    this._initInputHandler();
     this._initLight();
     this._initCamera();
     this._initMap();
-    this._initInputHandler()
     this._initRaycast();
     this._initSpawners();
   }
+
   _initMap() {
     this.map = new Map();
     this.addChild(this.map);
@@ -67,28 +67,29 @@ export class MapEditorScene extends Scene{
     }
   }
 
+
   _initLight() {
     this.directionalLight = new Entity("light-directional");
     this.addChild(this.directionalLight);
 
     this.directionalLight.addComponent("light", {
       type: LIGHTTYPE_DIRECTIONAL,
-      color: new pc.Color(1, 1, 1),
-      castShadows: true,
-      shadowDistance: 300,
-      shadowResolution: 2048,
-      shadowBias: 1,
-      normalOffsetBias: 1,
-      intensity: 1,
+      color: new Color(1, 1, 1),
+      castShadows: false,
+      shadowDistance: 30,
+      shadowResolution: 1024,
+      shadowBias: 0.2,
+      normalOffsetBias: 0.05,
+      intensity: 0.85,
     });
-    this.directionalLight.setLocalPosition(0, 30, 0);
-    this.directionalLight.setLocalEulerAngles(0, 0, 0);
+    this.directionalLight.setLocalPosition(2, 30, -2);
+    this.directionalLight.setLocalEulerAngles(45, 135, 0);
   }
 
-  _initInputHandler(){
+  _initInputHandler() {
     let inputHandlerEntity = new Entity("input");
     this.inputHandler = inputHandlerEntity.addScript(InputHandler);
-    this.addChild(inputHandlerEntity)
+    this.addChild(inputHandlerEntity);
   }
 
   _initRaycast() {
@@ -108,17 +109,19 @@ export class MapEditorScene extends Scene{
     this.raycast.on(RaycastEvent.CastUp, this.onCastUp, this);
   }
 
-
-  onCastDow(ray) {
+  onCastDown(ray) {
+    if (!this.mapItemSelected) {
+      return;
+    }
     let bricks = this.map.bricks;
     for (let i = 0; i < bricks.length; i++) {
-      let brick = bricks[i]
+      let brick = bricks[i];
       let castBox = brick.castBox;
-      if(castBox.checkIntersects(ray)){
+      if (castBox.checkIntersects(ray)) {
         this.startBrick = brick;
         break;
       }
-    } 
+    }
   }
 
   onCastUp(ray) {
@@ -145,7 +148,10 @@ export class MapEditorScene extends Scene{
     }
   }
 
-
+  onCastMove(ray) {
+    
+  }
+  
   onMapItemSelected(type) {
     this.mapItemSelected = type;
     let item = null;
@@ -153,8 +159,8 @@ export class MapEditorScene extends Scene{
       case MapItemType.ROAD:
         item = this.roadSpawner.spawn();
     }
+    console.log(type);
   }
-
 
   _initSpawners() {
     let roadSpawnerEntity = new Entity("road-spawner");
@@ -165,7 +171,4 @@ export class MapEditorScene extends Scene{
       poolSize: 10,
     });
   }
-
-
-
 }

@@ -16,13 +16,15 @@ export class Map extends Entity{
   }
 
   generate() {
-    for(let i = 0; i < DataManager.mapData.length; i++ ) {
+    for (let i = 0; i < DataManager.mapData.length; i++) {
       let row = DataManager.mapData[i];
-      for(let j = 0; j < row.length; j++){
+      for (let j = 0; j < row.length; j++) {
         let tile = row[j];
-        if( tile === 0){
-          let brick = new Brick()
-          brick.setLocalPosition(i * this.gridUnit, 0 , j * this.gridUnit)
+        if (tile === 0) {
+          let brick = new Brick();
+          brick.row = j;
+          brick.col = i;
+          brick.setLocalPosition(i * this.gridUnit, -0.5, j * this.gridUnit);
           this.addChild(brick);
           this.bricks.push(brick);
         }
@@ -30,14 +32,14 @@ export class Map extends Entity{
     }
   }
 
-  addRoad(newData) {
-    newData.forEach((data) => {
+  addRoad(newData) { 
+    newData.forEach((data) => { 
       let road = new Road();
       road.row = data.row;
       road.col = data.col;
-      road.setLocalPosition(data.col * this.gridUnit, 0, data.row * this.gridUnit)
+      road.setLocalPosition(data.col * this.gridUnit, 0, data.row * this.gridUnit);
       this.addChild(road);
-      this.roads.push(road);     
+      this.roads.push(road);
     });
   }
 }
