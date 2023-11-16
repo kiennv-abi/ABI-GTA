@@ -5,11 +5,8 @@ import { Map } from "../objects/map/map";
 import { Raycast, RaycastEvent } from "../scripts/raycast/raycast";
 import { InputHandler, InputHandlerEvent } from "../scripts/input/inputHandler";
 import { MapEditorScreen, MapEditorScreenEvent } from "../ui/screens/mapEditorScreen";
-import { Spawner } from "../scripts/spawners/spawner";
-import { Road } from "../objects/map/road";
-import { MapItemType } from "../ui/objects/mapItemUI";
-import { SpawningEvent } from "../scripts/spawners/spawningEvent";
 import { DataManager } from "../data/dataManager";
+import { MapItemType } from "../ui/objects/mapItemUI";
 
 export class MapEditorScene extends Scene{
   constructor(){
@@ -108,17 +105,21 @@ export class MapEditorScene extends Scene{
     this.raycast.on(RaycastEvent.CastUp, this.onCastUp, this);
   }
 
+
   onCastDown(ray) {
     if (!this.mapItemSelected) {
       return;
     }
-    let bricks = this.map.bricks;
+    if(this.mapItemSelected === MapItemType.ROAD){
+      let bricks = this.map.bricks;
     for (let i = 0; i < bricks.length; i++) {
       let brick = bricks[i];
       let castBox = brick.castBox;
       if (castBox.checkIntersects(ray)) {
         this.startBrick = brick;
+        console.log(MapItemType.ROAD);
         break;
+        }
       }
     }
   }
@@ -139,18 +140,13 @@ export class MapEditorScene extends Scene{
         let rowEnd = this.endBrick.row;
         let data = DataManager.findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd);
         this.map.addRoad(data);
-        console.log(DataManager.mapData);
-        DataManager.applyMapData(data, 1);
+        this.startBrick = null;
+        this.endBrick = null;
         this.mapItemSelected = null;
         break;
       }
     }
   }
-
-  onCastMove(ray) {
-    
-  }
-  
   onMapItemSelected(type) {
     this.mapItemSelected = type;
   }

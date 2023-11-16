@@ -1,4 +1,4 @@
-import { Vec2, Vec4 } from "playcanvas";
+import { type, Vec2, Vec4 } from "playcanvas";
 import { GameConstant } from "../../../gameConstant";
 import { UIScreen } from "../../../template/ui/uiScreen";
 import { ListView } from "../core/listView";
@@ -34,6 +34,21 @@ export class MapEditorScreen extends UIScreen{
       type: MapItemType.ROAD,
       spriteAsset: AssetLoader.getAssetByKey("spr_road_item"),
     });
+
+    this.addMapItem({
+      type: MapItemType.BUILDING1,
+      spriteAsset: AssetLoader.getAssetByKey("spr_building_1"),
+    })
+
+    this.addMapItem({
+      type: MapItemType.BUILDING2,
+      spriteAsset: AssetLoader.getAssetByKey("spr_building_2")
+    })
+
+    this.addMapItem({
+      type: MapItemType.BUILDING3,
+      spriteAsset: AssetLoader.getAssetByKey("spr_building_3")
+    })
   }
 
   addMapItem(data) { 
@@ -41,6 +56,7 @@ export class MapEditorScreen extends UIScreen{
     this.listMapItem.addItem(item);
     item.on(MapItemEvent.Selected, (type) => { 
     this.fire(MapEditorScreenEvent.MapItemSelected, type);
+    console.log(type);
     });
     return item;
   }
