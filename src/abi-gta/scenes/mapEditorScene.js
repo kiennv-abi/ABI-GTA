@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, log } from "playcanvas";
+import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3, log } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
@@ -70,21 +70,22 @@ export class MapEditorScene extends Scene{
 
     this.directionalLight.addComponent("light", {
       type: LIGHTTYPE_DIRECTIONAL,
-      color: new Color(1, 1, 1),
-      castShadows: false,
-      shadowDistance: 30,
-      shadowResolution: 1024,
-      shadowBias: 0.2,
-      normalOffsetBias: 0.05,
-      intensity: 0.85,
+      color: new pc.Color(1, 1, 1),
+      castShadows: true,
+      shadowDistance: 300,
+      shadowResolution: 2048,
+      shadowBias: 1,
+      normalOffsetBias: 1,
+      intensity: 1,
     });
-    this.directionalLight.setLocalPosition(2, 30, -2);
-    this.directionalLight.setLocalEulerAngles(45, 135, 0);
+    this.directionalLight.setLocalPosition(0, 30, 0);
+    this.directionalLight.setLocalEulerAngles(0, 0, 0);
   }
 
   _initInputHandler() {
     let inputHandlerEntity = new Entity("input");
     this.inputHandler = inputHandlerEntity.addScript(InputHandler);
+    // this.inputHandler.enabled = false;
     this.addChild(inputHandlerEntity);
   }
 
@@ -105,29 +106,75 @@ export class MapEditorScene extends Scene{
     this.raycast.on(RaycastEvent.CastUp, this.onCastUp, this);
   }
 
-
   onCastDown(ray) {
     if (!this.mapItemSelected) {
       return;
     }
-    if(this.mapItemSelected === MapItemType.ROAD){
+
+    if (this.mapItemSelected === MapItemType.ROAD) {
       let bricks = this.map.bricks;
-    for (let i = 0; i < bricks.length; i++) {
-      let brick = bricks[i];
-      let castBox = brick.castBox;
-      if (castBox.checkIntersects(ray)) {
-        this.startBrick = brick;
-        console.log(MapItemType.ROAD);
-        break;
+      for (let i = 0; i < bricks.length; i++) {
+        let brick = bricks[i];
+        let castBox = brick.castBox;
+        if (castBox.checkIntersects(ray)) {
+          this.startBrick = brick;
+          break;
+        }
+      }
+    } else {
+      let buildings = this.map.buildings;
+      for (let i = 0; i < buildings.length; i++) { 
+        let building = buildings[i];
+        let castBox = building.castBox;
+        if (castBox.checkIntersects(ray)) {
+          this.buildingSelected = building;
+          this.buildingPlace(this.buildingSelected, 0);
+          let tmpPos = this.buildingSelected.getLocalPosition();
+          tmpPos.y += 1;
+          this.buildingSelected.setLocalPosition(tmpPos);
+          break;
         }
       }
     }
+    
   }
 
   onCastUp(ray) {
     if (!this.mapItemSelected) {
       return;
     }
+    if (this.mapItemSelected === MapItemType.ROAD) { 
+      this.buildRoad(ray);
+    } else {
+      this.onBuildingStopMove();
+    }
+  }
+
+  onBuildingStopMove() {
+    if (this.buildingSelected) {
+      let tmpPos = this.buildingSelected.getLocalPosition();
+      tmpPos.y = 0;
+      this.buildingSelected.updateOpacity(1);
+      this.buildingSelected.activeShadow(false);
+      this.buildingSelected.setLocalPosition(tmpPos);
+      let dataFormat = this.buildingSelected.dataFormat;
+      this.buildingPlace(this.buildingSelected, dataFormat[0][0]);
+    }
+    this.buildingSelected = false;
+  }
+
+  buildingPlace(building, dataValue) {
+    if (building) {
+      let colStart = building.colStart;
+      let rowStart = building.rowStart;
+      let colEnd = building.colEnd;
+      let rowEnd = building.rowEnd;
+      DataManager.applyMapDataByStartAndEnd(rowStart, rowEnd, colStart, colEnd, dataValue);
+      console.log(DataManager.mapData);
+    }
+  }
+
+  buildRoad(ray) {
     let bricks = this.map.bricks;
     for (let i = 0; i < bricks.length; i++) {
       let brick = bricks[i];
@@ -140,14 +187,54 @@ export class MapEditorScene extends Scene{
         let rowEnd = this.endBrick.row;
         let data = DataManager.findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd);
         this.map.addRoad(data);
+        this.mapItemSelected = null;
         this.startBrick = null;
         this.endBrick = null;
-        this.mapItemSelected = null;
         break;
       }
     }
   }
+
+  onCastMove(ray) {
+    let bricks = this.map.bricks;
+    for (let i = 0; i < bricks.length; i++) {
+      let brick = bricks[i];
+      let castBox = brick.castBox;
+      if (castBox.checkIntersects(ray) && this.buildingSelected) {
+        let brickPos = brick.getLocalPosition();
+        let tmpPos = this.buildingSelected.getLocalPosition();
+        this.onBuildingMove(new Vec3(brickPos.x, tmpPos.y, brickPos.z));
+        this.validateBuilding(brick);
+        break;
+      }
+    }
+  }
+
+  onBuildingMove(pos) {
+    this.buildingSelected.activeShadow(true);
+    this.buildingSelected.setLocalPosition(pos);
+    this.buildingSelected.updateOpacity(0.5);
+  }
+
+  validateBuilding(brick) { 
+    let formatData = this.buildingSelected.dataFormat;
+    let colStart = Math.ceil(brick.col - formatData[0].length / 2);
+    let rowStart = Math.ceil(brick.row - formatData.length / 2);
+    let colEnd = Math.ceil(brick.col + formatData[0].length / 2);
+    let rowEnd = Math.ceil(brick.row + formatData.length / 2);
+    this.buildingSelected.rowStart = rowStart;
+    this.buildingSelected.colStart = colStart;
+    this.buildingSelected.rowEnd = rowEnd;
+    this.buildingSelected.colEnd = colEnd;
+    let length = formatData.length * formatData[0].length;
+    let result = DataManager.checkMapDataIsValid(rowStart, rowEnd, colStart, colEnd, length);
+    this.buildingSelected.updateShadow(result);
+  }
+  
   onMapItemSelected(type) {
     this.mapItemSelected = type;
+    if (this.mapItemSelected !== MapItemType.ROAD) {
+      this.map.addBuilding(this.mapItemSelected);
+    }
   }
 }

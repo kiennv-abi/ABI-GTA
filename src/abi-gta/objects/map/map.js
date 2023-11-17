@@ -1,9 +1,11 @@
-import { Entity } from "playcanvas";
+import { Entity, Vec3 } from "playcanvas";
 import { DataManager } from "../../data/dataManager";
 import { Brick } from "./brick";
 import { Road } from "./road";
 import { Spawner } from "../../scripts/spawners/spawner";
 import { Crossing } from "./crossing";
+import { Building } from "./building";
+import { MapItemType } from "../../ui/objects/mapItemUI";
 
 export const MapItemCode = Object.freeze({
   Road: 1,
@@ -19,6 +21,7 @@ export class Map extends Entity{
     this.gridUnit = DataManager.mapUnit;
     this.bricks = [];
     this.roads = [];
+    this.buildings = [];
     this._initSpawners();
   }
 
@@ -31,11 +34,29 @@ export class Map extends Entity{
           let brick = this.brickSpawner.spawn();
           brick.row = j;
           brick.col = i;
-          brick.setLocalPosition(i * this.gridUnit, -0.5, j * this.gridUnit);
+          brick.setLocalPosition(i * this.gridUnit, -0.1, j * this.gridUnit);
           this.addChild(brick);
           this.bricks.push(brick);
         }
       }
+    }
+  }
+
+  addBuilding(buildingName) {
+    let buildingSpawner = this.getBuildingSpawner(buildingName);
+    let building = buildingSpawner.spawn();
+    building.setLocalPosition(50, 0, 50);
+    this.buildings.push(building);
+    this.addChild(building);
+  }
+
+  getBuildingSpawner(buildingName) { 
+    if (buildingName === MapItemType.BUILDING1) { 
+      return this.building1Spawner;
+    } else if (buildingName === MapItemType.BUILDING2) { 
+      return this.building2Spawner;
+    } else if (buildingName === MapItemType.BUILDING3) { 
+      return this.building3Spawner;
     }
   }
 
@@ -92,7 +113,6 @@ export class Map extends Entity{
     this.addChild(crossing);
     crossing.setLocalEulerAngles(0, direction, 0);
     DataManager.applyMapData(data.row, data.col, MapItemCode.Crossing);
-    console.log(DataManager.mapData);
   }
 
   removeRoad(road) {
@@ -108,6 +128,34 @@ export class Map extends Entity{
       return true;
     }
     return false;
+  }
+
+  findSubarrayIndexes(arr1, arr2) {
+    const row1 = arr1.length;
+    const col1 = arr1[0].length;
+    const row2 = arr2.length;
+    const col2 = arr2[0].length;
+    const indexes = [];
+
+    for (let i = 0; i <= row1 - row2; i++) {
+      for (let j = 0; j <= col1 - col2; j++) {
+        let found = true;
+        for (let k = 0; k < row2; k++) {
+          for (let l = 0; l < col2; l++) {
+            if (arr2[k][l] !== arr1[i + k][j + l]) {
+              found = false;
+              break;
+            }
+          }
+          if (!found) break;
+        }
+        if (found) {
+          indexes.push([i, j]);
+        }
+      }
+    }
+
+    return indexes;
   }
 
   getIntersection(matrix) {
@@ -165,6 +213,45 @@ export class Map extends Entity{
     this.crossingSpawner = crossingSpawnerEntity.addScript(Spawner, {
       class: Crossing,
       poolSize: 10,
+    });
+
+    let building1Entity = new Entity("brick-spawner");
+    this.addChild(building1Entity);
+
+    this.building1Spawner = building1Entity.addScript(Spawner, {
+      class: Building,
+      poolSize: 10,
+      args: ["model_building_1", new Vec3(17, 40, 17), DataManager.formatData.building1, {
+        type: "plane",
+        size: new Vec3(16, 1, 16),
+        pos: new Vec3(0, -0.1, 0),
+      }],
+    });
+
+    let building2Entity = new Entity("brick-spawner");
+    this.addChild(building2Entity);
+
+    this.building2Spawner = building2Entity.addScript(Spawner, {
+      class: Building,
+      poolSize: 10,
+      args: ["model_building_2", new Vec3(8, 10, 8), DataManager.formatData.building2, {
+        type: "plane",
+        size: new Vec3(8, 1, 8),
+        pos: new Vec3(0, -0.1, 0),
+      }],
+    });
+
+    let building3Entity = new Entity("brick-spawner");
+    this.addChild(building3Entity);
+
+    this.building3Spawner = building3Entity.addScript(Spawner, {
+      class: Building,
+      poolSize: 10,
+      args: ["model_building_3", new Vec3(17, 45, 17), DataManager.formatData.building3, {
+        type: "sphere",
+        size: new Vec3(22, 1, 22),
+        pos: new Vec3(0, -0.1, 0),
+      }],
     });
   }
 }

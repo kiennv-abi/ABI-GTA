@@ -10,23 +10,11 @@ export class Building extends Entity{
     this._initModel(modelAsset);
     this._initCastBox(castBoxSize);
     this._initShadow(shadowConfig);
-    this.script.create("actionPhysicsReset", {
-      attributes: {
-        event: "reset",
-      },
-    });
   }
 
   _initModel(modelAsset) {
     this.addComponent("model", {
       asset: AssetLoader.getAssetByKey(modelAsset),
-    });
-    this.addComponent("collision", {
-      type: "mesh",
-      asset: AssetLoader.getAssetByKey(modelAsset),
-    });
-    this.addComponent("rigidbody", {
-      type: "static",
     });
   }
 
