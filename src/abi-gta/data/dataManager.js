@@ -1,9 +1,10 @@
 import data from "../../../assets/jsons/mapData.json";
+import map1 from "/assets/jsons/map1Data.json"
 export class DataManager{
   static init() {
-    this.mapData = data.mapData;
-    this.mapUnit = data.unit;
-    this.formatData = data;
+    this.mapData = map1.mapData;
+    this.mapUnit = map1.unit;
+    this.formatData = map1;
   }
   static getMapData() { 
     return this.mapData;
@@ -19,7 +20,7 @@ export class DataManager{
 
   static applyMapDatas(newData, value) { 
     newData.forEach((data) => {
-      this.applyMapData(data.row, data.col, value)
+      this.applyMapData(data[0], data[1], value)
     });
   }
 
@@ -45,7 +46,7 @@ export class DataManager{
         j = j < 0 ? 0 : j;
         let tile = row[j];
         if (tile === 0) {
-          result.push({ row: i, col: j });
+          result.push([i,j]);
         }
       }
     }

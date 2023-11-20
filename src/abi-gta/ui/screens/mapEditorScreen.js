@@ -13,10 +13,11 @@ export class MapEditorScreen extends UIScreen{
   constructor() {
     super(GameConstant.SCREEN_MAP_EDITOR);
 
-    this._initScrollList()
+    // this._initSeclectMapItem()
+    this._initSeclectMap();
   }
 
-  _initScrollList() {
+  _initSeclectMapItem() {
     this.listMapItem = new ListView({
       anchor: new Vec4(0.5, 0.5, 0.5, 0.5),
       pivot: new Vec2(0.5, 0.5),
@@ -50,6 +51,32 @@ export class MapEditorScreen extends UIScreen{
       spriteAsset: AssetLoader.getAssetByKey("spr_building_3")
     })
   }
+  
+  _initSeclectMap() {
+    this.lisMap = new ListView({
+      anchor: new Vec4(0.5, 0.5, 0.5, 0.5),
+      pivot: new Vec2(0.5, 0.5),
+      margin: new Vec4(),
+    })
+    this.scrollViewMap = new ScrollView(this.lisMap, {
+      anchor: new Vec4(0, 0, 1, 0.15),
+      pivot: new Vec2(0.5, 0.5),
+      margin: new Vec4(100, 0, 100, 0),
+    });
+    this.addChild(this.scrollViewMap)
+
+    this.addMap({
+      type: MapItemType.MAP1,
+      spriteAsset: AssetLoader.getAssetByKey("spr_map_1")
+    })
+
+    this.addMap({
+      type: MapItemType.MAP2,
+      spriteAsset: AssetLoader.getAssetByKey("spr_map_2")
+    })
+
+
+  }
 
   addMapItem(data) { 
     let item = new MapItem(data);
@@ -57,6 +84,14 @@ export class MapEditorScreen extends UIScreen{
     item.on(MapItemEvent.Selected, (type) => { 
     this.fire(MapEditorScreenEvent.MapItemSelected, type);
     console.log(type);
+    });
+    return item;
+  }
+  addMap(data) {
+    let item = new MapItem(data);
+    this.lisMap.addChild(item);
+    item.on(MapItemEvent.Selected, (type) =>{
+      this.fire(MapEditorScreenEvent.MapItemSelected, type)
     });
     return item;
   }
