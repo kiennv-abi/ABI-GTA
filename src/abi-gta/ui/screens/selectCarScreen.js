@@ -18,7 +18,8 @@ export class SelectCarScreen extends UIScreen{
     this._initSprInfor()
     this._initProgressBar();
     this._createSelectCar();
-    this._initTextInfor(); 
+    this._initTextInfor();
+    this._createButtonPlay();
   }
 
   _initButtonSelectColor() {
@@ -147,6 +148,21 @@ export class SelectCarScreen extends UIScreen{
     });
     return butonSelectCar;
    }
+   _createButtonPlay() {
+    let buttonPlay = new Entity();
+    buttonPlay.addComponent("element", {
+      anchor: [0.85, 0.1, 0.85, 0.1],
+      height: 400,
+      pivot: [0.5, 0.5],
+      width: 400,
+      type: ELEMENTTYPE_IMAGE,
+      useInput: true,
+      spriteAsset: app.assets.find("butonPlay")
+    });
+    this.addChild(buttonPlay);
 
-   
+    buttonPlay.element.on("click", () => {
+      this.fire(SelectCarScreenEvent.ButtonPlayClicked)
+    })
+   }
 }

@@ -1,4 +1,4 @@
-import { Entity, Vec3 } from "playcanvas";
+import { Entity, math, Vec3 } from "playcanvas";
 import { DataManager } from "../../data/dataManager";
 import { Brick } from "./brick";
 import { Road } from "./road";
@@ -42,12 +42,22 @@ export class Map extends Entity{
     }
   }
 
-  addBuilding(buildingName) {
+  addBuilding(buildingName, row, col) {
     let buildingSpawner = this.getBuildingSpawner(buildingName);
     let building = buildingSpawner.spawn();
-    building.setLocalPosition(50, 0, 50);
+    let dataFormat = building.dataFormat;
+    let haftCol = Math.floor(dataFormat[0].length / 2);
+    let haftRow = Math.floor(dataFormat.length / 2);
+    building.rowStar = row - haftRow;
+    building.rowEnd = row + haftRow;
+    building.colStart = col - haftCol;
+    building.colEnd = col + haftCol;
+    building.col = col;
+    building.row = row;
+    DataManager.applyMapDataByStartAndEnd(building.rowStar, building.rowEnd, building.colStart, building.colEnd, dataFormat[0][0]);
+    building.setLocalPosition(row * this.gridUnit, 0, col * this.gridUnit);
     this.buildings.push(building);
-    this.addChild(building);
+    this.addChild(building)
   }
 
   getBuildingSpawner(buildingName) { 

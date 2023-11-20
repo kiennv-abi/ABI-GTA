@@ -80,18 +80,14 @@ export class Game {
       new SelectScene(),
       new MapEditorScene(),
       new PlayScene(),
-      new TestScene(),
     ]);
-    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
+    SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_SELECT));
     this.selectCarScene = SceneManager.getScene(GameConstant.SCENE_SELECT);
     this.mapEditorScene = SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR);
-    // this.selectCarScene.on(SelectCarScreenEvent.ButtonPlayClicked, () => { 
-    //   SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
-    // });
-    // this.mapEditorScene.on(MapEditorScreenEvent.ButtonNextClicked, () => {
-    //   SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_PLAY));
-    // });
-  
+    this.selectCarScene.on(SelectCarScreenEvent.ButtonPlayClicked, () => { 
+      SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
+      console.log(1);
+    });
   }
 
   static update(dt) {

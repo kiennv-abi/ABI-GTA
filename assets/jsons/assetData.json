@@ -1,5 +1,6 @@
 [{"key":"backGroundInforCar","url":"assets/sprites/backGroundInforCar.png","type":"sprite"},
 {"key":"butonBlue","url":"assets/sprites/butonBlue.png","type":"sprite"},
+{"key":"butonPlay","url":"assets/sprites/butonPlay.png","type":"sprite"},
 {"key":"butonRed","url":"assets/sprites/butonRed.png","type":"sprite"},
 {"key":"butonWhite","url":"assets/sprites/butonWhite.png","type":"sprite"},
 {"key":"butonYellow","url":"assets/sprites/butonYellow.png","type":"sprite"},

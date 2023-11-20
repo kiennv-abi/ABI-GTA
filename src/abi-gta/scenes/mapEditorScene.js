@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3, log } from "playcanvas";
+import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
@@ -127,11 +127,7 @@ export class MapEditorScene extends Scene{
         let building = buildings[i];
         let castBox = building.castBox;
         if (castBox.checkIntersects(ray)) {
-          this.buildingSelected = building;
-          this.buildingPlace(this.buildingSelected, 0);
-          let tmpPos = this.buildingSelected.getLocalPosition();
-          tmpPos.y += 1;
-          this.buildingSelected.setLocalPosition(tmpPos);
+          this.onBuildingPicked(building);
           break;
         }
       }
@@ -156,11 +152,23 @@ export class MapEditorScene extends Scene{
       tmpPos.y = 0;
       this.buildingSelected.updateOpacity(1);
       this.buildingSelected.activeShadow(false);
-      this.buildingSelected.setLocalPosition(tmpPos);
       let dataFormat = this.buildingSelected.dataFormat;
+      if (this.buildingSelected.isValid) {
+      } else {
+        let row = this.buildingSelected.row;
+        let col = this.buildingSelected.col;
+        let haftCol = Math.floor(dataFormat[0].length / 2);
+        let haftRow = Math.floor(dataFormat.length / 2);
+        this.buildingSelected.colStart = col - haftCol;
+        this.buildingSelected.rowStart = row - haftRow;
+        this.buildingSelected.colEnd = col + haftCol;
+        this.buildingSelected.rowEnd = row + haftRow;
+        tmpPos = new Vec3(this.buildingSelected.row * this.map.gridUnit, 0, this.buildingSelected.col * this.map.gridUnit);
+      }
       this.buildingPlace(this.buildingSelected, dataFormat[0][0]);
+      this.moveBuilding(tmpPos);
     }
-    this.buildingSelected = false;
+    this.buildingSelected = null;
   }
 
   buildingPlace(building, dataValue) {
@@ -169,8 +177,9 @@ export class MapEditorScene extends Scene{
       let rowStart = building.rowStart;
       let colEnd = building.colEnd;
       let rowEnd = building.rowEnd;
+      building.row = Math.floor((rowStart + rowEnd) / 2);
+      building.col = Math.floor((colStart + colEnd) / 2);
       DataManager.applyMapDataByStartAndEnd(rowStart, rowEnd, colStart, colEnd, dataValue);
-      console.log(DataManager.mapData);
     }
   }
 
@@ -201,27 +210,38 @@ export class MapEditorScene extends Scene{
       let brick = bricks[i];
       let castBox = brick.castBox;
       if (castBox.checkIntersects(ray) && this.buildingSelected) {
-        let brickPos = brick.getLocalPosition();
-        let tmpPos = this.buildingSelected.getLocalPosition();
-        this.onBuildingMove(new Vec3(brickPos.x, tmpPos.y, brickPos.z));
         this.validateBuilding(brick);
+        let pos = brick.getLocalPosition();
+        let tmpPos = this.buildingSelected.getLocalPosition();
+        this.moveBuilding(new Vec3(pos.x, tmpPos.y, pos.z));
         break;
       }
     }
   }
 
-  onBuildingMove(pos) {
-    this.buildingSelected.activeShadow(true);
+  moveBuilding(pos) { 
     this.buildingSelected.setLocalPosition(pos);
+  }
+
+  onBuildingPicked(building) {
+    this.buildingSelected = building;
+    this.buildingPlace(this.buildingSelected, 0);
+    let tmpPos = this.buildingSelected.getLocalPosition();
+    tmpPos.y += 1;
+    this.moveBuilding(tmpPos);
+    this.validateBuilding(this.buildingSelected);
+    this.buildingSelected.activeShadow(true);
     this.buildingSelected.updateOpacity(0.5);
   }
 
   validateBuilding(brick) { 
     let formatData = this.buildingSelected.dataFormat;
-    let colStart = Math.ceil(brick.col - formatData[0].length / 2);
-    let rowStart = Math.ceil(brick.row - formatData.length / 2);
-    let colEnd = Math.ceil(brick.col + formatData[0].length / 2);
-    let rowEnd = Math.ceil(brick.row + formatData.length / 2);
+    let haftCol = Math.floor(formatData[0].length / 2);
+    let haftRow = Math.floor(formatData.length / 2);
+    let colStart = brick.col - haftCol;
+    let rowStart = brick.row - haftRow;
+    let colEnd = brick.col + haftCol;
+    let rowEnd = brick.row + haftRow;
     this.buildingSelected.rowStart = rowStart;
     this.buildingSelected.colStart = colStart;
     this.buildingSelected.rowEnd = rowEnd;
@@ -229,12 +249,15 @@ export class MapEditorScene extends Scene{
     let length = formatData.length * formatData[0].length;
     let result = DataManager.checkMapDataIsValid(rowStart, rowEnd, colStart, colEnd, length);
     this.buildingSelected.updateShadow(result);
+    this.buildingSelected.isValid = result;
   }
   
   onMapItemSelected(type) {
     this.mapItemSelected = type;
     if (this.mapItemSelected !== MapItemType.ROAD) {
-      this.map.addBuilding(this.mapItemSelected);
+      let data = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+      let index = DataManager.findPosition(DataManager.mapData, data);
+      this.map.addBuilding(this.mapItemSelected, index[0], index[1]);
     }
   }
 }

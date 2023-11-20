@@ -20,6 +20,9 @@ export class SelectScene extends Scene {
     );
     this.ui.setScreenActive(GameConstant.SCREEN_SELECT_CAR, true);
     this.selectCarScreen = this.ui.getScreen(GameConstant.SCREEN_SELECT_CAR);
+    this.selectCarScreen.on(SelectCarScreenEvent.ButtonPlayClicked, () => {
+      this.fire(SelectCarScreenEvent.ButtonPlayClicked);
+    })
     this._init();
   }
 
@@ -101,8 +104,6 @@ export class SelectScene extends Scene {
     this.muscleCar.enabled = false;
     this.muscleCar.rotate(176, 45, 176);
     this.muscleCar.setLocalPosition(1, 0, 0.7);
-
-    
   }
 
   _changeColorCar() {
@@ -130,7 +131,6 @@ export class SelectScene extends Scene {
         this.muscleCar.materialCar.diffuse = this.whiteColor;
         this.policeCar.materialCar.update();
         this.muscleCar.materialCar.update();
-
       }
     })
   }
@@ -140,8 +140,7 @@ export class SelectScene extends Scene {
       if(type === "CarPolice") {
         this.policeCar.enabled = true;
         this.muscleCar.enabled = false;
-        this.selectCarScreen.changeProgressBar(120, 80);
-        
+        this.selectCarScreen.changeProgressBar(120, 80);  
       }
       else if(type === "CarMuscle") {
         this.policeCar.enabled = false;
@@ -158,7 +157,6 @@ export class SelectScene extends Scene {
     this.muscleCar.setEulerAngles(0, this.speedRotate, 0);
   }
   
-
   update(dt) {
     super.update(dt);
     this.rotateCar(dt);
