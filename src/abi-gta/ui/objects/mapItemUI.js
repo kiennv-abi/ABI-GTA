@@ -4,11 +4,11 @@ import { Util } from "../../../helpers/util";
 
 export const MapItemType = Object.freeze({
   ROAD: "road",
-  BUILDING1: "building1",
-  BUILDING2: "building2",
-  BUILDING3: "building3",
-  MAP1: "map_1",
-  MAP2: "map_2",
+  BUILDING1: "building_1",
+  BUILDING2: "building_2",
+  BUILDING3: "building_3",
+  Map1: "map_1",
+  Map2: "map_2",
 });
 export const MapItemEvent = Object.freeze({
   Selected: "Selected",
@@ -22,8 +22,8 @@ export default class MapItem extends Entity{
     this.spriteAsset = data.spriteAsset;
     this.addComponent("element", {
       type: ELEMENTTYPE_IMAGE,
-      width: 100,
-      height: 100,
+      width: 70,
+      height: 70,
       useInput: true,
       pivot: new Vec2(0.5, 0.5),
       spriteAsset: this.spriteAsset,

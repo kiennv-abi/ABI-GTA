@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
+import { Color, Entity, KEY_R, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
@@ -7,6 +7,9 @@ import { InputHandler, InputHandlerEvent } from "../scripts/input/inputHandler";
 import { MapEditorScreen, MapEditorScreenEvent } from "../ui/screens/mapEditorScreen";
 import { DataManager } from "../data/dataManager";
 import { MapItemType } from "../ui/objects/mapItemUI";
+import { Game } from "../../game";
+import mapData1 from "../../../assets/jsons/map1Data.json";
+import mapData2 from "../../../assets/jsons/map2Data.json";
 
 export class MapEditorScene extends Scene{
   constructor(){
@@ -20,16 +23,28 @@ export class MapEditorScene extends Scene{
     );
     this.mapEditorScreen = this.ui.getScreen(GameConstant.SCREEN_MAP_EDITOR);
     this.mapEditorScreen.on(MapEditorScreenEvent.MapItemSelected, this.onMapItemSelected, this);
+    this.mapEditorScreen.on(MapEditorScreenEvent.MapSelected, this.onMapSelected, this);
     this.ui.setScreenActive(GameConstant.SCREEN_MAP_EDITOR);
     this._initialize();
   }
 
   _initialize() {
+    this._registerKeyboardEvent();
     this._initInputHandler();
     this._initLight();
     this._initCamera();
     this._initMap();
     this._initRaycast();
+  }
+
+  _registerKeyboardEvent() { 
+    Game.app.keyboard.on(pc.EVENT_KEYDOWN, (e) => {
+      if (e.key === KEY_R) {
+        if (this.buildingSelected) {
+          this.buildingSelected.setLocalEulerAngles(0, this.buildingSelected.getLocalEulerAngles().y + 45, 0);
+        }
+      }
+    });
   }
 
   _initMap() {
@@ -62,7 +77,6 @@ export class MapEditorScene extends Scene{
       this.mainCamera.script.create("orbitCameraInputTouch");
     }
   }
-
 
   _initLight() {
     this.directionalLight = new Entity("light-directional");
@@ -132,7 +146,6 @@ export class MapEditorScene extends Scene{
         }
       }
     }
-    
   }
 
   onCastUp(ray) {
@@ -196,6 +209,7 @@ export class MapEditorScene extends Scene{
         let rowEnd = this.endBrick.row;
         let data = DataManager.findMapItemByStartAndEnd(rowStart, rowEnd, colStart, colEnd);
         this.map.addRoad(data);
+        this.map.addCross();
         this.mapItemSelected = null;
         this.startBrick = null;
         this.endBrick = null;
@@ -257,7 +271,23 @@ export class MapEditorScene extends Scene{
     if (this.mapItemSelected !== MapItemType.ROAD) {
       let data = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
       let index = DataManager.findPosition(DataManager.mapData, data);
-      this.map.addBuilding(this.mapItemSelected, index[0], index[1]);
+      if (index.length > 0) {
+        this.map.addBuilding(this.mapItemSelected, index[0], index[1]);
+      } else {
+        console.log("Map is full");
+      }
     }
+  }
+
+  onMapSelected(type) {
+    let data = null;
+    if (type === MapItemType.Map1) {
+      data = mapData1.mapData;
+    } else if (type === MapItemType.Map2) {
+      data = mapData2.mapData;
+    }
+    DataManager.resetMapData();
+    DataManager.setMapData(JSON.parse(JSON.stringify(data)));
+    this.map.generate();
   }
 }

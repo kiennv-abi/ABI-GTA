@@ -1,4 +1,4 @@
-import { Entity, math, Vec3 } from "playcanvas";
+import { Entity, Vec3 } from "playcanvas";
 import { DataManager } from "../../data/dataManager";
 import { Brick } from "./brick";
 import { Road } from "./road";
@@ -6,40 +6,77 @@ import { Spawner } from "../../scripts/spawners/spawner";
 import { Crossing } from "./crossing";
 import { Building } from "./building";
 import { MapItemType } from "../../ui/objects/mapItemUI";
+import { Tween } from "../../../template/systems/tween/tween";
 
 export const MapItemCode = Object.freeze({
   Road: 1,
   Crossing: 2,
   Brick: 0,
+  Building1: 3,
+  Building2: 4,
+  Building3: 5,
 });
 export class Map extends Entity{
   constructor() {
     super();
-    DataManager.init();
     this.col = DataManager.mapData.length - 1;
     this.row = DataManager.mapData[0].length - 1;
     this.gridUnit = DataManager.mapUnit;
     this.bricks = [];
     this.roads = [];
     this.buildings = [];
+    this.crossings = [];
     this._initSpawners();
   }
 
+  resetMap() {
+    this.bricks = [];
+    this.roads = [];
+    this.crossings = [];
+    this.buildings = [];
+    for (let i = this.children.length - 1; i >= 0; i--) { 
+      let child = this.children[i];
+      if (child instanceof Brick || child instanceof Road || child instanceof Crossing || child instanceof Building) { 
+        this.removeChild(child);
+        child.destroy();
+      }
+    }
+  }
+
   generate() {
+    this.resetMap();
     for (let i = 0; i < DataManager.mapData.length; i++) {
       let row = DataManager.mapData[i];
       for (let j = 0; j < row.length; j++) {
         let tile = row[j];
+        let obj = null;
         if (tile === MapItemCode.Brick) {
-          let brick = this.brickSpawner.spawn();
-          brick.row = j;
-          brick.col = i;
-          brick.setLocalPosition(i * this.gridUnit, -0.1, j * this.gridUnit);
-          this.addChild(brick);
-          this.bricks.push(brick);
+          obj = this.brickSpawner.spawn();
+          this.bricks.push(obj);
+          obj.row = j;
+          obj.col = i;
+          obj.setLocalPosition(j * this.gridUnit, -0.1, i * this.gridUnit);
+          this.addChild(obj);
         }
       }
     }
+    let roadRowData = DataManager.getRowsWithTypes(DataManager.mapData, MapItemCode.Road);
+    roadRowData.forEach(data => this.addRoad(data));
+    let collRowData = DataManager.getColumnsWithTypes(DataManager.mapData, MapItemCode.Road);
+    collRowData.forEach(data => this.addRoad(data));
+    let building1Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building1);
+    if (building1Data) {
+      this.addBuilding(MapItemType.BUILDING1, building1Data[0], building1Data[1]);
+    }
+    let building2Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building2);
+    if (building2Data) { 
+      this.addBuilding(MapItemType.BUILDING2, building2Data[0], building2Data[1]);
+    }
+    let building3Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building3);
+    if (building3Data) {
+      this.addBuilding(MapItemType.BUILDING3, building3Data[0], building3Data[1]);
+    }
+    this.addCross();
   }
 
   addBuilding(buildingName, row, col) {
@@ -48,16 +85,16 @@ export class Map extends Entity{
     let dataFormat = building.dataFormat;
     let haftCol = Math.floor(dataFormat[0].length / 2);
     let haftRow = Math.floor(dataFormat.length / 2);
-    building.rowStar = row - haftRow;
-    building.rowEnd = row + haftRow;
+    building.rowStart = row - haftRow;
     building.colStart = col - haftCol;
+    building.rowEnd = row + haftRow;
     building.colEnd = col + haftCol;
     building.col = col;
     building.row = row;
-    DataManager.applyMapDataByStartAndEnd(building.rowStar, building.rowEnd, building.colStart, building.colEnd, dataFormat[0][0]);
-    building.setLocalPosition(row * this.gridUnit, 0, col * this.gridUnit);
+    DataManager.applyMapDataByStartAndEnd(building.rowStart, building.rowEnd, building.colStart, building.colEnd, dataFormat[0][0]);
+    building.setLocalPosition(col * this.gridUnit, 0, row * this.gridUnit);
     this.buildings.push(building);
-    this.addChild(building)
+    this.addChild(building);
   }
 
   getBuildingSpawner(buildingName) { 
@@ -74,9 +111,9 @@ export class Map extends Entity{
     DataManager.applyMapDatas(newData, 1);
     newData.forEach((data) => { 
       let road = this.roadSpawner.spawn();
-      road.row = data.row;
-      road.col = data.col;
-      road.setLocalPosition(data.col * this.gridUnit, 0, data.row * this.gridUnit);
+      road.row = data[0];
+      road.col = data[1];
+      road.setLocalPosition(data[1] * this.gridUnit, 0, data[0]* this.gridUnit);
       this.addChild(road);
       this.roads.push(road);
       let isHorizontal = this.detectRoadHorizontal(newData);
@@ -86,6 +123,9 @@ export class Map extends Entity{
         road.setLocalEulerAngles(0, 90, 0);
       }
     });
+  }
+
+  addCross() {
     let intersection = this.getIntersection(DataManager.mapData);
     this.replaceCrossRoad(intersection);
   }
@@ -131,41 +171,13 @@ export class Map extends Entity{
     DataManager.applyMapData(road.row, road.col, MapItemCode.Brick);
   }
 
-  detectRoadHorizontal(data) { 
+  detectRoadHorizontal(data) {
     let start = data[0];
     let end = data[data.length - 1];
-    if(start.row === end.row) {
+    if(start[0] === end[0]) {
       return true;
     }
     return false;
-  }
-
-  findSubarrayIndexes(arr1, arr2) {
-    const row1 = arr1.length;
-    const col1 = arr1[0].length;
-    const row2 = arr2.length;
-    const col2 = arr2[0].length;
-    const indexes = [];
-
-    for (let i = 0; i <= row1 - row2; i++) {
-      for (let j = 0; j <= col1 - col2; j++) {
-        let found = true;
-        for (let k = 0; k < row2; k++) {
-          for (let l = 0; l < col2; l++) {
-            if (arr2[k][l] !== arr1[i + k][j + l]) {
-              found = false;
-              break;
-            }
-          }
-          if (!found) break;
-        }
-        if (found) {
-          indexes.push([i, j]);
-        }
-      }
-    }
-
-    return indexes;
   }
 
   getIntersection(matrix) {
@@ -259,7 +271,7 @@ export class Map extends Entity{
       poolSize: 10,
       args: ["model_building_3", new Vec3(17, 45, 17), DataManager.formatData.building3, {
         type: "sphere",
-        size: new Vec3(22, 1, 22),
+        size: new Vec3(16, 1, 16),
         pos: new Vec3(0, -0.1, 0),
       }],
     });

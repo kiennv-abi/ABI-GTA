@@ -1,17 +1,22 @@
 import data from "../../../assets/jsons/mapData.json";
-import map1 from "/assets/jsons/map1Data.json"
 export class DataManager{
   static init() {
-    this.mapData = map1.mapData;
-    this.mapUnit = map1.unit;
-    this.formatData = map1;
+    this.mapData = data.mapData;
+    this.mapUnit = data.unit;
+    this.formatData = data;
+    this.carSelected = null;
+    this.carColor = null;
   }
   static getMapData() { 
     return this.mapData;
   }
 
-  static setMapData(data) { 
+  static setMapData(data) {
     this.mapData = data;
+  }
+
+  static resetMapData() {
+    this.mapData = data.mapData;
   }
 
   static saveMapData() { 
@@ -20,7 +25,7 @@ export class DataManager{
 
   static applyMapDatas(newData, value) { 
     newData.forEach((data) => {
-      this.applyMapData(data[0], data[1], value)
+      this.applyMapData(data[0], data[1], value);
     });
   }
 
@@ -53,6 +58,100 @@ export class DataManager{
     return result;
   }
 
+  static getRowsWithTypes(arr, type) {
+    const rowsWithOnes = [];
+    for (let i = 0; i < arr.length; i++) {
+      const row = arr[i];
+      let startIndex = -1;
+      let count = 0;
+      for (let j = 0; j < row.length; j++) {
+        if (row[j] === type) {
+          if (startIndex === -1) {
+            startIndex = j;
+          }
+          count += 1;
+        } else {
+          if (count >= 2) {
+            let indexes = [];
+            for (let k = startIndex; k < j; k++) { 
+              indexes.push([i, k]);
+            }
+            rowsWithOnes.push(indexes);
+          }
+          startIndex = -1;
+          count = 0;
+        }
+      }
+      if (count >= 2) {
+        let indexes = [];
+        for (let k = startIndex; k < j; k++) {
+          indexes.push([i, k]);
+        }
+        rowsWithOnes.push(indexes);
+      }
+    }
+    return rowsWithOnes;
+  }
+
+  static getColumnsWithTypes(arr, type) {
+    const columnsWithOnes = [];
+    for (let j = 0; j < arr[0].length; j++) {
+      let startIndex = -1;
+      let count = 0;
+      for (let i = 0; i < arr.length; i++) {
+        const row = arr[i];
+        if (row[j] === type) {
+          if (startIndex === -1) {
+            startIndex = i;
+          }
+          count += 1;
+        } else {
+          if (count >= 2) {
+            const column = [];
+            for (let k = startIndex; k < i; k++) {
+              const row = arr[k];
+              column.push(row[j]);
+            }
+            let indexes = [];
+            for (let k = startIndex; k < i; k++) {
+              indexes.push([k, j]);
+            }
+            columnsWithOnes.push(indexes);
+          }
+          startIndex = -1;
+          count = 0;
+        }
+      }
+      if (count >= 2) {
+        const column = [];
+        for (let k = startIndex; k < arr.length; k++) {
+          const row = arr[k];
+          column.push(row[j]);
+        }
+        let indexes = [];
+        for (let k = startIndex; k < i; k++) {
+          indexes.push([k, j]);
+        }
+        columnsWithOnes.push(indexes);
+      }
+    }
+    return columnsWithOnes;
+  }
+
+  static getAllMapItemByType(type) {
+    let result = [];
+    for (let i = 0; i < this.mapData.length; i++) {
+      let row = this.mapData[i];
+      for (let j = 0; j < row.length; j++) {
+        let tile = row[j];
+        if (tile === type) {
+          result.push([i,j]);
+        }
+      }
+    }
+    return result;
+  }
+
   static checkMapDataIsValid(rowStart, rowEnd, colStart, colEnd, length) {
     let result = false;
     let count = 0;
@@ -75,7 +174,6 @@ export class DataManager{
 
   static findPosition(data1, data2) {
     // Loop through each element in data1
-    console.log(DataManager.mapData);
     for (let i = 0; i < data1.length; i++) {
       for (let j = 0; j < data1[0].length; j++) {
         // Check if the current position can accommodate the size of data2
@@ -88,6 +186,7 @@ export class DataManager{
                 allZeroes = false;
                 break;
               }
+              console.log(data1[k][l]);
             }
             if (!allZeroes) {
               break;
@@ -101,6 +200,35 @@ export class DataManager{
         }
       }
     }
+    return null;
+  }
+
+  static findPositionArrayInArray(arr1, arr2) {
+    const rows1 = arr1.length;
+    const cols1 = arr1[0].length;
+    const rows2 = arr2.length;
+    const cols2 = arr2[0].length;
+
+    for (let i = 0; i <= rows1 - rows2; i++) {
+      for (let j = 0; j <= cols1 - cols2; j++) {
+        let found = true;
+        for (let k = 0; k < rows2; k++) {
+          for (let l = 0; l < cols2; l++) {
+            if (arr2[k][l] !== arr1[i + k][j + l]) {
+              found = false;
+              break;
+            }
+          }
+          if (!found) break;
+        }
+        if (found) {
+          let x = i + Math.floor(arr2.length / 2);
+          let y = j + Math.floor(arr2[0].length / 2);
+          return [x, y];
+        }
+      }
+    }
+
     return null;
   }
 }
