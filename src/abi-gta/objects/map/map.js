@@ -6,7 +6,6 @@ import { Spawner } from "../../scripts/spawners/spawner";
 import { Crossing } from "./crossing";
 import { Building } from "./building";
 import { MapItemType } from "../../ui/objects/mapItemUI";
-import { Tween } from "../../../template/systems/tween/tween";
 
 export const MapItemCode = Object.freeze({
   Road: 1,
@@ -48,33 +47,37 @@ export class Map extends Entity{
     for (let i = 0; i < DataManager.mapData.length; i++) {
       let row = DataManager.mapData[i];
       for (let j = 0; j < row.length; j++) {
-        let tile = row[j];
         let obj = null;
-        if (tile === MapItemCode.Brick) {
-          obj = this.brickSpawner.spawn();
-          this.bricks.push(obj);
-          obj.row = j;
-          obj.col = i;
-          obj.setLocalPosition(j * this.gridUnit, -0.1, i * this.gridUnit);
-          this.addChild(obj);
-        }
+        obj = this.brickSpawner.spawn();
+        this.bricks.push(obj);
+        obj.row = i;
+        obj.col = j;
+        obj.setLocalPosition(j * this.gridUnit, -0.1, i * this.gridUnit);
+        this.addChild(obj);
       }
     }
+    DataManager.replaceValue(MapItemCode.Crossing, MapItemCode.Road);
     let roadRowData = DataManager.getRowsWithTypes(DataManager.mapData, MapItemCode.Road);
     roadRowData.forEach(data => this.addRoad(data));
     let collRowData = DataManager.getColumnsWithTypes(DataManager.mapData, MapItemCode.Road);
     collRowData.forEach(data => this.addRoad(data));
     let building1Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building1);
-    if (building1Data) {
-      this.addBuilding(MapItemType.BUILDING1, building1Data[0], building1Data[1]);
+    if (building1Data.length > 0) {
+      building1Data.forEach(data => {
+        this.addBuilding(MapItemType.BUILDING1, data[0], data[1]);
+      });
     }
     let building2Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building2);
-    if (building2Data) { 
-      this.addBuilding(MapItemType.BUILDING2, building2Data[0], building2Data[1]);
+    if (building2Data.length > 0) {
+      building2Data.forEach(data => {
+        this.addBuilding(MapItemType.BUILDING2, data[0], data[1]);
+      });
     }
     let building3Data = DataManager.findPositionArrayInArray(DataManager.mapData, DataManager.formatData.building3);
-    if (building3Data) {
-      this.addBuilding(MapItemType.BUILDING3, building3Data[0], building3Data[1]);
+    if (building3Data.length > 0) {
+      building3Data.forEach(data => {
+        this.addBuilding(MapItemType.BUILDING3, data[0], data[1]);
+      });
     }
     this.addCross();
   }

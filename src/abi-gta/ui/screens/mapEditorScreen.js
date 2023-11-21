@@ -11,29 +11,54 @@ import { DataManager } from "../../data/dataManager";
 export const MapEditorScreenEvent = Object.freeze({
   MapItemSelected: "MapItemSelected",
   MapSelected: "MapSelected",
+  ButtonNewMapClicked: "btnNewMapClicked",
+  ButtonNextClicked: "btnNextClicked",
 });
+
 export class MapEditorScreen extends UIScreen{
   constructor() {
     super(GameConstant.SCREEN_MAP_EDITOR);
     this._initSelectMapPanel();
     this._initSelectMapItemPanel();
-    this._initButtonDownload();
+    this._initButtonNewMap();
+    this._initButtonCancel();
+
   }
 
-  _initButtonDownload() {
-    this.buttonDownload = new Button({
-      anchor: new Vec4(1, 1, 1, 1),
-      pivot: new Vec2(1, 1),
+  _initButtonNewMap() {
+    this.buttonNewMap = new Button({
+      anchor: new Vec4(0, 1, 0, 1),
+      pivot: new Vec2(0, 1),
       margin: new Vec4(),
       width: 100,
       height: 50,
     });
-    this.buttonDownload.text.element.fontSize = 20;
-    this.buttonDownload.text.element.text = "Download";
-    this.addChild(this.buttonDownload);
-    this.buttonDownload.button.on("click", () => { 
-      this._downloadFileJson(JSON.stringify(DataManager.mapData), "map.json");
+    this.buttonNewMap.text.element.fontSize = 20;
+    this.buttonNewMap.text.element.text = "New Map";
+    this.addChild(this.buttonNewMap);
+    this.buttonNewMap.button.on("click", () => { 
+      this.fire(MapEditorScreenEvent.ButtonNewMapClicked);
+      this.scrollViewMap.enabled = true;
+      this.listMap.enabled = false;
+      this.btnCancel.enabled = true;
     });
+  }
+
+  _initButtonCancel() {
+    this.bthCancel = new Button({
+      anchor: new Vec4(0.92, 0, 0.92, 0 ),
+      width: 100,
+      height: 50,
+    })
+    // this.bthCancel.enabled = false;
+    this.addChild(this.bthCancel);
+    this.bthCancel.text.element.text = "Cancel";
+    this.bthCancel.button.on("click", () => {
+     this.listMapItem.enabled = false;
+     this.scrollViewMap = false;
+     this.listMap.enabled = true;
+    //  this.bthCancel.enabled = false;
+    })
   }
 
   _initSelectMapPanel() {
@@ -114,11 +139,4 @@ export class MapEditorScreen extends UIScreen{
     return item;
   }
 
-  _downloadFileJson(content, fileName) {
-    const a = document.createElement("a");
-    const file = new Blob([content], { type: "text/plain" });
-    a.href = URL.createObjectURL(file);
-    a.download = fileName;
-    a.click();
-  }
 }

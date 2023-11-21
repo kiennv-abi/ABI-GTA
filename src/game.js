@@ -86,7 +86,6 @@ export class Game {
     this.mapEditorScene = SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR);
     this.selectCarScene.on(SelectCarScreenEvent.ButtonPlayClicked, () => { 
       SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
-      console.log(1);
     });
   }
 
