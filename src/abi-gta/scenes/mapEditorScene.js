@@ -8,8 +8,7 @@ import { MapEditorScreen, MapEditorScreenEvent } from "../ui/screens/mapEditorSc
 import { DataManager } from "../data/dataManager";
 import { MapItemType } from "../ui/objects/mapItemUI";
 import { Game } from "../../game";
-import mapData1 from "../../../assets/jsons/map1Data.json";
-import mapData2 from "../../../assets/jsons/map2Data.json";
+
 
 export class MapEditorScene extends Scene{
   constructor(){
@@ -24,6 +23,9 @@ export class MapEditorScene extends Scene{
     this.mapEditorScreen = this.ui.getScreen(GameConstant.SCREEN_MAP_EDITOR);
     this.mapEditorScreen.on(MapEditorScreenEvent.MapItemSelected, this.onMapItemSelected, this);
     this.mapEditorScreen.on(MapEditorScreenEvent.MapSelected, this.onMapSelected, this);
+    this.mapEditorScreen.on(MapEditorScreenEvent.ButtonStartClicked, () => {
+      this.fire(MapEditorScreenEvent.ButtonStartClicked)
+    });
     this.ui.setScreenActive(GameConstant.SCREEN_MAP_EDITOR);
     this._initialize();
   }
@@ -282,9 +284,9 @@ export class MapEditorScene extends Scene{
   onMapSelected(type) {
     let data = null;
     if (type === MapItemType.Map1) {
-      data = mapData1.mapData;
+      data = DataManager.map1;
     } else if (type === MapItemType.Map2) {
-      data = mapData2.mapData;
+      data = DataManager.map2;
     }
     DataManager.resetMapData();
     DataManager.setMapData(JSON.parse(JSON.stringify(data)));

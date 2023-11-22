@@ -12,7 +12,7 @@ export const MapEditorScreenEvent = Object.freeze({
   MapItemSelected: "MapItemSelected",
   MapSelected: "MapSelected",
   ButtonNewMapClicked: "btnNewMapClicked",
-  ButtonNextClicked: "btnNextClicked",
+  ButtonStartClicked: "btnStartClicked",
 });
 
 export class MapEditorScreen extends UIScreen{
@@ -22,7 +22,7 @@ export class MapEditorScreen extends UIScreen{
     this._initSelectMapItemPanel();
     this._initButtonNewMap();
     this._initButtonCancel();
-
+    this._initButonStart();
   }
 
   _initButtonNewMap() {
@@ -46,7 +46,9 @@ export class MapEditorScreen extends UIScreen{
 
   _initButtonCancel() {
     this.bthCancel = new Button({
-      anchor: new Vec4(0.92, 0, 0.92, 0 ),
+      anchor: new Vec4(1, 1, 1, 1 ),
+      pivot: new Vec2(1, 1),
+      margin: new Vec4(),
       width: 100,
       height: 50,
     })
@@ -58,6 +60,20 @@ export class MapEditorScreen extends UIScreen{
      this.scrollViewMap = false;
      this.listMap.enabled = true;
     //  this.bthCancel.enabled = false;
+    })
+  }
+
+  _initButonStart() {
+    this.buttonStart = new Button({
+      anchor: new Vec4(1, 0, 1, 0),
+      pivot: new Vec2(1, 0),
+      width: 100,
+      height: 50
+    })
+    this.addChild(this.buttonStart);
+    this.buttonStart.text.element.text = "Start";
+    this.buttonStart.button.on("click", () => {
+      this.fire(MapEditorScreenEvent.ButtonStartClicked);
     })
   }
 
