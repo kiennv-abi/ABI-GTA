@@ -3,6 +3,7 @@ import { app, Entity } from "playcanvas";
 export class Wheel extends Entity{
     constructor(type){
         super();
+        this.wheels = []
         this._init(type);
     }
     _init(type) {
@@ -12,7 +13,9 @@ export class Wheel extends Entity{
             type: "asset",
             asset: assetWheel,
         })
-        this.addChild(this.wheel)
+        this.addChild(this.wheel);
+        this.wheels.push(this.wheel)
+        console.log(this.wheels);
     }
 }
 

@@ -1,10 +1,9 @@
 import tween from "@tweenjs/tween.js";
-import { Color, Entity, Vec4 } from "playcanvas";
+import { BLEND_NORMAL, Color, Entity, StandardMaterial, Vec3, Vec4 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Tween } from "../../template/systems/tween/tween";
-import { Car } from "../objects/car/car";
-import { Wheel } from "../objects/car/wheel";
+import { Car, WheelConfig } from "../objects/car/car";
 import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarScreen";
 
 export class SelectScene extends Scene {
@@ -29,8 +28,8 @@ export class SelectScene extends Scene {
   _init (){
     this._initCamera();
     this._initLight();
-    this._initCapsule()
     this._initCar();
+    this._initGround();
     this._changeColorCar();
     this._changeCar();
   }
@@ -77,40 +76,56 @@ export class SelectScene extends Scene {
 
   }
 
-  _initCapsule() {
-    this.capsule = new Entity("capsule");
-    this.capsule.addComponent("model", {
-      type: "capsule",
-    })
-    this.addChild(this.capsule);
-    this.capsule.setLocalScale(7, 1, 7);
-    this.capsule.setLocalPosition(-0.5, -0.82, -0.72)
-    this.capsule.rotate(0, 30, 0)
+  _initCarViewer() {
+    this.carViewer = new CarViewer();
+    this.addChild(this.carViewer);
   }
+
+  _initGround() {
+    this.ground = new Entity();
+    this.addChild(this.ground);
+    this.ground.addComponent("model", { type: "plane" });
+    this.ground.setLocalScale(8, 1, 8);
+    // this.ground.setLocalPosition(0, 0, 0);
+    let mat = new StandardMaterial();
+    mat.blendType = BLEND_NORMAL;
+    mat.diffuse = new Color(0.5, 0.5, 0.5);
+    mat.opacity = 1;
+    this.ground.model.meshInstances[0].material = mat;
+    this.ground.addComponent("rigidbody", {
+      type: "static",
+    });
+    this.ground.addComponent("collision", {
+      type: "box",
+      halfExtents: new Vec3(10, 0.1, 10),
+    });
+  }
+
 
   _initCar() {
     this.whiteColor = new Color(1, 1, 1)
-    this.redColor = new Color(GameConstant.RED_COLOR);
     this.blueColor = new Color(GameConstant.BLUE_COLOR);
     this.orangeColor = new Color(GameConstant.ORANGE_COLOR);
-    this.policeCar = new Car("model_car_police",this.whiteColor, 50);
+    this.policeCar = new Car("model_car_police",this.whiteColor);
     this.addChild(this.policeCar);
     this.policeCar.enabled = true;
     this.policeCar.rotate(176, 45, 176);
     this.policeCar.setLocalPosition(1, 0, 0.7);
+    this.policeCar.configWheel(WheelConfig.Police)
 
     this.muscleCar = new Car("model_car_muscle", this.whiteColor);
     this.addChild(this.muscleCar);
     this.muscleCar.enabled = false;
     this.muscleCar.rotate(176, 45, 176);
     this.muscleCar.setLocalPosition(1, 0, 0.7);
+    this.muscleCar.configWheel(WheelConfig.Muscle)
   }
 
   _changeColorCar() {
     this.selectCarScreen.on(SelectCarScreenEvent.ButtonColorClicked, (type) => {
       if(type === "blue") {
         this.policeCar.materialCar.diffuse = this.blueColor;
-        this.muscleCar.materialCar.diffuse = this.blueColor
+        this.muscleCar.materialCar.diffuse = this.blueColor;
         this.policeCar.materialCar.update();
         this.muscleCar.materialCar.update();
       }
@@ -152,7 +167,7 @@ export class SelectScene extends Scene {
   }
   
   rotateCar(dt) {
-    this.speedRotate += 0.4;
+    this.speedRotate += 0.3;
     this.policeCar.setEulerAngles(0, this.speedRotate, 0);
     this.muscleCar.setEulerAngles(0, this.speedRotate, 0);
   }

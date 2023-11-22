@@ -1,8 +1,10 @@
-import { Color, Entity } from "playcanvas";
+import { Color, Entity, Vec3 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { DataManager } from "../data/dataManager";
+import { Car } from "../objects/car/car";
 import { Map } from "../objects/map/map";
+
 
 
 
@@ -18,6 +20,7 @@ export class PlayScene extends Scene {
     this._initCamera()
     this._initLight();
     this._initMap();
+    this._initCar()
   }
   update(dt) {
     super.update(dt);
@@ -27,11 +30,35 @@ export class PlayScene extends Scene {
     DataManager.mapData = DataManager.map1
     this.map = new Map();
     this.addChild(this.map)
+    this._initGround
   }
 
   _initCar() {
-
+    this.redColor = new Color(GameConstant.RED_COLOR);
+    this.car = new Car("model_car_police",this.redColor);
+    this.addChild(this.car)
+    this.car.setLocalPosition(46, 5, 45)
   }
+
+  _initGround() {
+    this.ground = new Entity();
+    this.addChild(this.ground);
+    this.ground.addComponent("render", {
+      type: "box"
+    });
+    this.rigid = this.ground.addComponent("rigidbody", {
+      type: "static",
+    });
+    let sizeCol = (this.map.col + 1) * this.map.gridUnit;
+    let sizeRow = (this.map.row + 1) * this.map.gridUnit;
+    this.ground.setLocalScale(sizeRow, 1, sizeCol);
+    this.ground.setLocalPosition(this.map.row * this.map.gridUnit / 2, 0, this.map.col * this.map.gridUnit / 2);
+    this.ground.addComponent("collision", {
+      type: "box",
+      halfExtents: new Vec3(sizeRow / 2, 1, sizeCol / 2),
+    });
+  }
+
   
 
   _initCamera() {
