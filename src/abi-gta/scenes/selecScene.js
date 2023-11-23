@@ -1,5 +1,5 @@
 import tween from "@tweenjs/tween.js";
-import { BLEND_NORMAL, Color, Entity, StandardMaterial, Vec3, Vec4 } from "playcanvas";
+import { BLEND_NORMAL, Color, Entity, LIGHTTYPE_DIRECTIONAL, StandardMaterial, Vec3, Vec4 } from "playcanvas";
 import { GameConstant } from "../../gameConstant";
 import { Scene } from "../../template/scene/scene";
 import { Tween } from "../../template/systems/tween/tween";
@@ -9,7 +9,7 @@ import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarSc
 export class SelectScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_SELECT);
-    this.speedRotate = 0;
+    this.currTime = 0;
   }
 
   create() {
@@ -26,62 +26,56 @@ export class SelectScene extends Scene {
   }
 
   _init (){
-    this._initCamera();
     this._initLight();
+    this._initCamera();
+    this.__initGround();
     this._initCar();
-    this._initGround();
     this._changeColorCar();
     this._changeCar();
   }
 
   _initCamera() {
-    this.camera = new Entity("Camera");
-    this.camera.addComponent("camera", {
-      nearClip: 0.1,
+    this.mainCamera = new Entity();
+    this.addChild(this.mainCamera);
+    this.mainCamera.addComponent("camera", {
+      clearColor: new pc.Color(0, 0, 0),
       farClip: 1000,
-      fov: 80,
-
-    })
-    this.addChild(this.camera);
-     this.camera.setLocalPosition(6, 3, 6);
-    this.camera.setLocalEulerAngles(-17, 40, -0.9);
-    // this.camera.addComponent("script");
-    // this.camera.setLocalPosition(60, 170, 100);
-    // this.camera.setLocalEulerAngles(-80, 0, 0);
-    // this.camera.script.create("orbitCamera", {
-    //   attributes: {
-    //     inertiaFactor: 0.3
-    //   }
-    // });
-    // this.camera.script.create("orbitCameraInputMouse");
-    // this.camera.script.create("orbitCameraInputTouch");
-
+      fov: 45,
+      nearClip: 0.1,
+    });
+    this.mainCamera.addComponent("script");
+    this.mainCamera.script.create("orbitCamera", {
+      attributes: {
+        inertiaFactor: 0.3, // Override default of 0 (no inertia)
+      },
+    });
+    
+    this.mainCamera.script.create("orbitCameraInputMouse");
+    this.mainCamera.script.create("orbitCameraInputTouch");
+    this.mainCamera.setLocalPosition(11.56, 15, 0);
+    this.mainCamera.setLocalEulerAngles(-44.2, 90, 0);
   }
 
   _initLight() {
-    this.light = new Entity("Light");
-    this.light.addComponent("light", {
-      type: "directional",
-      color: new pc.Color(1, 1, 1),
-      castShadows: true,
-      shadowDistance: 300,
-      shadowResolution: 2048,
-      shadowBias: 1,
-      normalOffsetBias: 1,
-      intensity: 1,
-    })
-    this.light.setLocalPosition(0, 30, 0);
-    this.light.setLocalEulerAngles(0, 0, 0);
-    this.addChild(this.light);
+    this.directionalLight = new Entity("light-directional");
+    this.addChild(this.directionalLight);
 
+    this.directionalLight.addComponent("light", {
+      type: LIGHTTYPE_DIRECTIONAL,
+      color: new Color(0, 0, 0),
+      castShadows: false,
+      shadowDistance: 30,
+      shadowResolution: 1024,
+      shadowBias: 0.2,
+      normalOffsetBias: 0.05,
+      intensity: 0.85,
+    });
+    this.directionalLight.setLocalPosition(2, 30, -2);
+    this.directionalLight.setLocalEulerAngles(45, 135, 0);
   }
 
-  _initCarViewer() {
-    this.carViewer = new CarViewer();
-    this.addChild(this.carViewer);
-  }
 
-  _initGround() {
+  __initGround() {
     this.ground = new Entity();
     this.addChild(this.ground);
     this.ground.addComponent("model", { type: "plane" });
@@ -101,23 +95,19 @@ export class SelectScene extends Scene {
     });
   }
 
-
   _initCar() {
-    this.whiteColor = new Color(1, 1, 1)
+    this.whiteColor = new Color(GameConstant.WHITE_COLOR)
     this.blueColor = new Color(GameConstant.BLUE_COLOR);
     this.orangeColor = new Color(GameConstant.ORANGE_COLOR);
+    this.redColor = new Color(GameConstant.RED_COLOR)
     this.policeCar = new Car("model_car_police",this.whiteColor);
     this.addChild(this.policeCar);
     this.policeCar.enabled = true;
-    this.policeCar.rotate(176, 45, 176);
-    this.policeCar.setLocalPosition(1, 0, 0.7);
     this.policeCar.configWheel(WheelConfig.Police)
 
     this.muscleCar = new Car("model_car_muscle", this.whiteColor);
     this.addChild(this.muscleCar);
     this.muscleCar.enabled = false;
-    this.muscleCar.rotate(176, 45, 176);
-    this.muscleCar.setLocalPosition(1, 0, 0.7);
     this.muscleCar.configWheel(WheelConfig.Muscle)
   }
 
@@ -174,7 +164,13 @@ export class SelectScene extends Scene {
   
   update(dt) {
     super.update(dt);
-    this.rotateCar(dt);
+    this.currTime += dt;
+    this.mainCamera.setLocalPosition(
+      10 * Math.sin(this.currTime * 0.1),
+      3,
+      10 * Math.cos(this.currTime * 0.1)
+    );
+    this.mainCamera.lookAt(this.getPosition());
   }
   _initialize() {
    

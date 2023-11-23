@@ -34,9 +34,10 @@ export class Car extends Entity{
   
 
     let tex_mat = app.assets.find("tex_car_police_01").resource;
+    let tex_mat2 = app.assets.find("tex_emissive_01").resource;
     this.materialCar = new StandardMaterial();
     this.materialCar.diffuseMap = tex_mat;
-    this.materialCar.emissiveMap = tex_mat;
+    this.materialCar.emissiveMap = tex_mat2;
     this.materialCar.diffuseTint = true;
     this.materialCar.diffuse = color;
     this.materialCar.emissive = new Color(1, 1, 1);
@@ -50,11 +51,6 @@ export class Car extends Entity{
     this.wfr = this.createWheel(true, 0);
     this.wbl =this.createWheel(false, 180);
     this.wbr= this.createWheel(false, 0);
-
-    this.addComponent("rigidbody", {
-      mass: 3000,
-      type: "dynamic",
-    });
 
     this.addComponent("rigidbody", {
       mass: 3000,
@@ -90,19 +86,20 @@ export class Car extends Entity{
     cab.setLocalPosition(0, 0.1, -0.25);
     this.carModel.addChild(cab);
 
-    // this.script.create("actionPhysicsReset", {
-    //   attributes: {
-    //     event: "reset",
-    //   },
-    // });
+    this.script.create("actionPhysicsReset", {
+      attributes: {
+        event: "reset",
+      },
+    });
   }
+
 
   createWheel(isFront, angle) { 
     let asset;
     if (angle > 0) {
-      asset = AssetLoader.getAssetByKey("model_wheell");
-    } else {
       asset = AssetLoader.getAssetByKey("model_wheelr");
+    } else {
+      asset = AssetLoader.getAssetByKey("model_wheell");
     }
     let wheel = new Entity();
     wheel.addComponent("model", { asset: asset });
@@ -118,7 +115,6 @@ export class Car extends Entity{
     return wheel;
   }
 
-  
   configWheel(config) {
     this.wbl.setLocalPosition(config.Left, config.Y, config.Front);
     this.wbr.setLocalPosition(config.Right, config.Y, config.Front);
