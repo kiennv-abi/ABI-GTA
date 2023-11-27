@@ -8,6 +8,7 @@ export const Follow = Script.createScript({
   attributes: {
     target   : {},
     speed    : { default: 1 },
+    defaultY : {},
     offset   : { default: new Vec3() },
   },
 
@@ -21,8 +22,9 @@ export const Follow = Script.createScript({
 
   update() {
     this._targetPos.add2(this.target.getPosition(), this.offset);
-    this._targetPos.set(this._targetPos.x, 0, this._targetPos.z);
-    // this._tmpPos.lerp(this.entity.getPosition(), this._targetPos, this.speed * Time.dt);
-    this.entity.setPosition(this._targetPos);
+    this._targetPos.set(this._targetPos.x, this.defaultY, this._targetPos.z);
+    this._tmpPos.lerp(this.entity.getPosition(), this._targetPos, this.speed * Time.dt);
+    this.entity.setPosition(this._tmpPos);
+    this.entity.lookAt(this.target.getPosition());
   },
 });

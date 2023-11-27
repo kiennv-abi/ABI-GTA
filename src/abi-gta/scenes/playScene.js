@@ -4,6 +4,7 @@ import { Scene } from "../../template/scene/scene";
 import { Map } from "../objects/map/map";
 import { DataManager } from "../data/dataManager";
 import { Car, CarType, WheelConfig } from "../objects/car/car";
+import { Follow } from "../scripts/components/follow";
 
 export class PlayScene extends Scene {
   constructor() {
@@ -19,9 +20,9 @@ export class PlayScene extends Scene {
   _initialize() {
     this._initCamera()
     this._initLight();
-    this._initCar(this.carModel,this.color)
+    this._initCar(this.carModel,this.color);
     this._initMap();
-    // this._initCameraFollow();
+    this._initCameraFollow();
   }
 
   update(dt) {
@@ -36,23 +37,22 @@ export class PlayScene extends Scene {
   }
 
   _initCar(carModel, color) {
-    this.blue = new Color(GameConstant.BLUE_COLOR);
     this.car = new Car(carModel, color);
     if (carModel === "model_car_muscle") {
       this.car.configWheel(WheelConfig.Muscle)
     } else {
       this.car.configWheel(WheelConfig.Police)
     }
-    this.car.setLocalPosition(45, 5, 45);
+    this.car.setLocalPosition(45, 1, 45);
     this.addChild(this.car);
   }
 
   _initCameraFollow(){
     this.mainCamera.addScript(Follow, {
-      target: this.policeCar,
+      target: this.car,
       speed: 3,
       defaultY: 10,
-      offset: new Vec3(0, 0, -10)
+      offset: new Vec3(0, 0, -20)
     });
   }
 
@@ -80,17 +80,18 @@ export class PlayScene extends Scene {
   }
 
   _initCamera() {
-    this.camera = new Entity();
-    this.camera.addComponent("camera", {
+    this.mainCamera = new Entity();
+    this.addChild(this.mainCamera);
+    this.mainCamera.addComponent("camera", {
       clearColor: new Color(0, 0, 0),
       farClip: 1000,
       fov: 45,
       nearClip: 0.1,
-    })
-    this.addChild(this.camera);
-    this.camera.setLocalPosition(60, 90, 170);
-    this.camera.setLocalEulerAngles(-40, 0, 0);
+    });
+    this.mainCamera.setLocalPosition(0, 10, 10);
+    this.mainCamera.setLocalEulerAngles(-40, 0, 0);
   }
+
 
   _initLight() {
     this.directionalLight = new Entity("light-directional");
