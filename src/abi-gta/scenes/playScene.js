@@ -8,7 +8,7 @@ import { Car, CarType, WheelConfig } from "../objects/car/car";
 export class PlayScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_PLAY);
-    this.carModel = "model_car_police";
+    this.carModel = "model_car_muscle";
     this.color = new Color(GameConstant.WHITE_COLOR); 
   }
   create() {
