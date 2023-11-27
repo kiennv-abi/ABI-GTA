@@ -6,10 +6,19 @@ import { Tween } from "../../template/systems/tween/tween";
 import { Car, WheelConfig } from "../objects/car/car";
 import { SelectCarScreen, SelectCarScreenEvent } from "../ui/screens/selectCarScreen";
 
+export const SelectCarSceneEvent = Object.freeze({
+  ChangeColor : "SelectCarScene:ChangeColor",
+  ChangeCar : "SelectCarScene:ChangeCar"
+})
+
 export class SelectScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_SELECT);
     this.currTime = 0;
+    this.whiteColor = new Color(GameConstant.WHITE_COLOR)
+    this.blueColor = new Color(GameConstant.BLUE_COLOR);
+    this.orangeColor = new Color(GameConstant.ORANGE_COLOR);
+    this.redColor = new Color(GameConstant.RED_COLOR)
   }
 
   create() {
@@ -28,7 +37,7 @@ export class SelectScene extends Scene {
   _init (){
     this._initLight();
     this._initCamera();
-    this.__initGround();
+    this._initGround();
     this._initCar();
     this._changeColorCar();
     this._changeCar();
@@ -75,7 +84,7 @@ export class SelectScene extends Scene {
   }
 
 
-  __initGround() {
+  _initGround() {
     this.ground = new Entity();
     this.addChild(this.ground);
     this.ground.addComponent("model", { type: "plane" });
@@ -96,19 +105,15 @@ export class SelectScene extends Scene {
   }
 
   _initCar() {
-    this.whiteColor = new Color(GameConstant.WHITE_COLOR)
-    this.blueColor = new Color(GameConstant.BLUE_COLOR);
-    this.orangeColor = new Color(GameConstant.ORANGE_COLOR);
-    this.redColor = new Color(GameConstant.RED_COLOR)
     this.policeCar = new Car("model_car_police",this.whiteColor);
     this.addChild(this.policeCar);
-    this.policeCar.enabled = true;
-    this.policeCar.configWheel(WheelConfig.Police)
+    this.policeCar.configWheel(WheelConfig.Police);
+    this.policeCar.enabled = false
 
     this.muscleCar = new Car("model_car_muscle", this.whiteColor);
     this.addChild(this.muscleCar);
-    this.muscleCar.enabled = false;
-    this.muscleCar.configWheel(WheelConfig.Muscle)
+    this.muscleCar.configWheel(WheelConfig.Muscle);
+    this.muscleCar.enabled = true;
   }
 
   _changeColorCar() {
@@ -118,24 +123,28 @@ export class SelectScene extends Scene {
         this.muscleCar.materialCar.diffuse = this.blueColor;
         this.policeCar.materialCar.update();
         this.muscleCar.materialCar.update();
+        this.fire(SelectCarSceneEvent.ChangeColor, type);
       }
       else if(type === "red") {
         this.policeCar.materialCar.diffuse = this.redColor;
         this.muscleCar.materialCar.diffuse = this.redColor;
         this.policeCar.materialCar.update();
         this.muscleCar.materialCar.update();
+        this.fire(SelectCarSceneEvent.ChangeColor, type);
       }
       else if(type === "orange") {
         this.policeCar.materialCar.diffuse = this.orangeColor;
         this.muscleCar.materialCar.diffuse = this.orangeColor;
         this.policeCar.materialCar.update();
         this.muscleCar.materialCar.update();
+        this.fire(SelectCarSceneEvent.ChangeColor, type);
       }
       else if(type ==="white"){
         this.policeCar.materialCar.diffuse = this.whiteColor;
         this.muscleCar.materialCar.diffuse = this.whiteColor;
         this.policeCar.materialCar.update();
         this.muscleCar.materialCar.update();
+        this.fire(SelectCarSceneEvent.ChangeColor, type);
       }
     })
   }
@@ -146,12 +155,13 @@ export class SelectScene extends Scene {
         this.policeCar.enabled = true;
         this.muscleCar.enabled = false;
         this.selectCarScreen.changeProgressBar(120, 80);  
+        this.fire(SelectCarSceneEvent.ChangeCar, type)
       }
       else if(type === "CarMuscle") {
         this.policeCar.enabled = false;
         this.muscleCar.enabled = true;
         this.selectCarScreen.changeProgressBar(140, 100);
-        
+        this.fire(SelectCarSceneEvent.ChangeCar, type)
       }
     })
   }

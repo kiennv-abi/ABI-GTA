@@ -5,13 +5,13 @@ import { vehicleScript } from "../assets/libs/vehicle";
 import { loadObitCameraPlugin } from  "../src/orbit-camera";
 import { AssetLoader } from "./assetLoader/assetLoader";
 import { SceneManager } from "./template/scene/sceneManager";
-import { SelectScene } from "./abi-gta/scenes/selecScene";
+import { SelectCarSceneEvent, SelectScene } from "./abi-gta/scenes/selecScene";
 import { GameConstant } from "./gameConstant";
 import { InputManager } from "./template/systems/input/inputManager";
 import { GameState, GameStateManager } from "./template/gameStateManager";
 import { Time } from "./template/systems/time/time";
 import { Tween } from "./template/systems/tween/tween";
-import { Application, ElementInput, Keyboard, Mouse, TouchDevice, FILLMODE_FILL_WINDOW, RESOLUTION_AUTO, WasmModule, EVENT_KEYDOWN, KEY_R } from "playcanvas";
+import { Application, ElementInput, Keyboard, Mouse, TouchDevice, FILLMODE_FILL_WINDOW, RESOLUTION_AUTO, WasmModule, EVENT_KEYDOWN, KEY_R, type, Color } from "playcanvas";
 import "./template/extensions/index";
 import { Configurator } from "./abi-gta/configtor/configtor";
 import { MapEditorScene } from "./abi-gta/scenes/mapEditorScene";
@@ -84,12 +84,40 @@ export class Game {
     SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_SELECT));
     this.selectCarScene = SceneManager.getScene(GameConstant.SCENE_SELECT);
     this.mapEditorScene = SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR);
+    this.playScene = SceneManager.getScene(GameConstant.SCENE_PLAY);
     this.selectCarScene.on(SelectCarScreenEvent.ButtonPlayClicked, () => { 
       SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_MAP_EDITOR));
     });
+    
+    this.selectCarScene.on(SelectCarSceneEvent.ChangeCar, (carModel) => {
+      if (carModel === "CarMuscle") {
+        this.playScene.carModel = "model_car_muscle";
+      } else if(carModel === "CarPolice") {
+        this.playScene.carModel = "model_car_police"
+      }
+    });
+
+    this.selectCarScene.on(SelectCarSceneEvent.ChangeColor, (color) => {
+      if (color === "blue") {
+        this.playScene.color = new Color(GameConstant.BLUE_COLOR);
+      } else if (color === "orange") {
+        this.playScene.color = new Color(GameConstant.ORANGE_COLOR);
+      } else if ( color === "red") {
+        this.playScene.color = new Color(GameConstant.RED_COLOR);
+      } else if (color === "white") {
+        this.playScene.color = new Color(GameConstant.WHITE_COLOR);
+      }
+
+  
+    });
+
+
     this.mapEditorScene.on(MapEditorScreenEvent.ButtonStartClicked, () => {
       SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_PLAY));
+      // this.playScene._initCar(this.playScene.carModel, this.playScene.color);
+      // this.playScene._initMap();
     })
+
   }
 
   static update(dt) {

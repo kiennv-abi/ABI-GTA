@@ -8,17 +8,22 @@ import { Car, CarType, WheelConfig } from "../objects/car/car";
 export class PlayScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_PLAY);
+    this.carModel = "model_car_police";
+    this.color = new Color(GameConstant.WHITE_COLOR); 
   }
   create() {
     super.create();
     this._initialize();
   }
+
   _initialize() {
     this._initCamera()
     this._initLight();
+    this._initCar(this.carModel,this.color)
     this._initMap();
     // this._initCameraFollow();
   }
+
   update(dt) {
     super.update(dt);
   }
@@ -27,16 +32,19 @@ export class PlayScene extends Scene {
     DataManager.mapData = DataManager.map1;
     this.map = new Map();
     this.addChild(this.map);
-    this._initCar()
     this._initGround();
   }
 
-  _initCar() {
+  _initCar(carModel, color) {
     this.blue = new Color(GameConstant.BLUE_COLOR);
-    this.policeCar = new Car("model_car_muscle", this.blue);
-    this.policeCar.configWheel(WheelConfig.Police);
-    this.policeCar.setLocalPosition(45, 5, 45);
-    this.addChild(this.policeCar);
+    this.car = new Car(carModel, color);
+    if (carModel === "model_car_muscle") {
+      this.car.configWheel(WheelConfig.Muscle)
+    } else {
+      this.car.configWheel(WheelConfig.Police)
+    }
+    this.car.setLocalPosition(45, 5, 45);
+    this.addChild(this.car);
   }
 
   _initCameraFollow(){
@@ -47,7 +55,6 @@ export class PlayScene extends Scene {
       offset: new Vec3(0, 0, -10)
     });
   }
-
 
   _initGround() {
     this.ground = new Entity();

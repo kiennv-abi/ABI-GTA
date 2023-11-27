@@ -74,7 +74,6 @@ export class MapEditorScene extends Scene{
           inertiaFactor: 0.3, // Override default of 0 (no inertia)
         },
       });
-
       this.mainCamera.script.create("orbitCameraInputMouse");
       this.mainCamera.script.create("orbitCameraInputTouch");
     }
@@ -117,6 +116,7 @@ export class MapEditorScene extends Scene{
     this.inputHandler.on(InputHandlerEvent.PointerMove, this.raycast.onPointerMove, this.raycast);
     this.inputHandler.on(InputHandlerEvent.PointerUp, this.raycast.onPointerUp, this.raycast);
     
+    
     this.raycast.on(RaycastEvent.CastDown, this.onCastDown, this);
     this.raycast.on(RaycastEvent.CastMove, this.onCastMove, this);
     this.raycast.on(RaycastEvent.CastUp, this.onCastUp, this);
@@ -132,6 +132,7 @@ export class MapEditorScene extends Scene{
       for (let i = 0; i < bricks.length; i++) {
         let brick = bricks[i];
         let castBox = brick.castBox;
+        console.log(castBox.checkIntersects(ray))
         if (castBox.checkIntersects(ray)) {
           this.startBrick = brick;
           break;

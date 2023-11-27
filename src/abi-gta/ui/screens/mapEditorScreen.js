@@ -72,6 +72,7 @@ export class MapEditorScreen extends UIScreen{
     })
     this.addChild(this.buttonStart);
     this.buttonStart.text.element.text = "Start";
+    this.buttonStart.enabled = false;
     this.buttonStart.button.on("click", () => {
       this.fire(MapEditorScreenEvent.ButtonStartClicked);
     })
@@ -151,6 +152,7 @@ export class MapEditorScreen extends UIScreen{
     this.listMap.addItem(item);
     item.on(MapItemEvent.Selected, (type) => {
       this.fire(MapEditorScreenEvent.MapSelected, type);
+      this.buttonStart.enabled = true;
     });
     return item;
   }
