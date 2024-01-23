@@ -162,7 +162,7 @@ export class SelectScene extends Scene {
       else if(type === "CarMuscle") {
         this.policeCar.enabled = false;
         this.muscleCar.enabled = true;
-        this.selectCarScreen.changeProgressBar(140, 100);
+        this.selectCarScreen.changeProgressBar(130, 100);
         this.fire(SelectCarSceneEvent.ChangeCar, type)
       }
     })

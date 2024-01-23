@@ -1,4 +1,4 @@
-import { Color, ELEMENTTYPE_GROUP, ELEMENTTYPE_IMAGE, ELEMENTTYPE_TEXT, Entity, Texture, Vec2, Vec3, Vec4, log, app, type, TextHandler } from "playcanvas";
+import { Color, ELEMENTTYPE_GROUP, ELEMENTTYPE_IMAGE, ELEMENTTYPE_TEXT, Entity, Texture, Vec2, Vec3, Vec4, log, app, type, TextHandler, AssetListLoader } from "playcanvas";
 import { UIScreen } from "../../../template/ui/uiScreen";
 import { GameConstant } from "../../../gameConstant";
 import { AssetLoader } from "../../../assetLoader/assetLoader";
@@ -15,9 +15,10 @@ export class SelectCarScreen extends UIScreen{
     super(GameConstant.SCREEN_SELECT_CAR);
     this._initButtonSelectColor();
     this._initButtonSelectCar();
-    this._initSprInfor()
+    this._initSprInfor();
+    this._initProgressBarMax();
     this._initProgressBar();
-    this._createSelectCar();
+    this._createTxtSelectCar();
     this._initTextInfor();
     this._createButtonPlay();
   }
@@ -43,7 +44,12 @@ export class SelectCarScreen extends UIScreen{
     this.speed = this._createProgressBar(120, new Vec4(0.05, 0.86, 0.05, 0.86));
     this.handle = this._createProgressBar(80, new Vec4(0.05, 0.76, 0.05, 0.76));
   }
-  
+
+  _initProgressBarMax() {
+    this.speedMax = this._createProgressBarMax(new Vec4(0.05, 0.86, 0.05, 0.86));
+    this.handleMax = this._createProgressBarMax(new Vec4(0.05, 0.76, 0.05, 0.76));
+  }
+
   _initTextInfor() {
     this.textInfor = this._createTextInforCar("INFOR CAR", new Vec4(0.08, 0.95, 0.08, 0.95), 25);
     this.textSpeed = this._createTextInforCar("Speed", new Vec4(0.06, 0.873, 0.06, 0.873), 15);
@@ -56,7 +62,7 @@ export class SelectCarScreen extends UIScreen{
     this.sprHandle = this._createSprInforCar([0.03, 0.774, 0.03, 0.774],"spr_handle", 35, 35)
   }
 
-  _createSelectCar() {
+  _createTxtSelectCar() {
     this.selectCar = new Entity();
     this.selectCar.addComponent("element", {
       anchor: [0.5, 0.93, 0.5, 0.93],
@@ -67,6 +73,20 @@ export class SelectCarScreen extends UIScreen{
       spriteAsset: app.assets.find("spr_selectCar")
     })
     this.addChild(this.selectCar)
+   }
+
+   _createProgressBarMax(anchor) {
+    let progressBarMax = new Entity();
+    progressBarMax.addComponent("element", {
+      anchor : anchor,
+      type: ELEMENTTYPE_IMAGE,
+      width : 140,
+      height : 20,
+      spriteAsset : AssetLoader.getAssetByKey("spr_ progressBarMax") 
+    });
+    this.addChild(progressBarMax);
+    return progressBarMax;
+
    }
 
   _createProgressBar(width, anchor) {
@@ -122,7 +142,7 @@ export class SelectCarScreen extends UIScreen{
         type: ELEMENTTYPE_IMAGE,
         width: width,
         useInput: true,
-        spriteAsset : app.assets.find(spriteAsset)
+        spriteAsset : AssetLoader.getAssetByKey(spriteAsset)
     });
     this.addChild(butonSelectColor);
     butonSelectColor.element.on("click", () => {
